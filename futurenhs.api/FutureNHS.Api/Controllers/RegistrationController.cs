@@ -1,3 +1,4 @@
+using FutureNHS.Api.Attributes;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Models.Group;
 using FutureNHS.Api.DataAccess.Models.Registration;
@@ -132,23 +133,23 @@ namespace FutureNHS.Api.Controllers
             return Ok(response);
 
         }
-        
-        // [HttpGet]
-        // [Route("user/{userId}/registration/domains/{domainId}")]
-        // public async Task<IActionResult> GetDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
-        // {
-        //     var rowVersion = _etagService.GetIfMatch();
-        //     await _registrationService.GetDomainAsync(userId, domainId, cancellationToken);
-        //
-        //     return Ok();
-        // }
+
+        [HttpGet]
+        [Route("user/{userId}/registration/domains/{domainId}")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
+        {
+            await _registrationService.GetDomainAsync(userId, domainId, cancellationToken);
+
+            return Ok();
+        }
 
         [HttpDelete]
         [Route("user/{userId}/registration/domains/{domainId}")]
         public async Task<IActionResult> DeleteDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
         {
             var rowVersion = _etagService.GetIfMatch();
-            await _registrationService.DeleteDomainAsync(userId, rowVersion, cancellationToken);
+            await _registrationService.DeleteDomainAsync(userId, domainId, rowVersion, cancellationToken);
 
             return Ok();
         }

@@ -55,7 +55,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
  
                     FROM        ApprovedDomain
-                    ORDER BY    EmailDomain desc
+                    ORDER BY    EmailDomain asc
                     OFFSET      @Offset ROWS
                     FETCH NEXT  @Limit ROWS ONLY;
 

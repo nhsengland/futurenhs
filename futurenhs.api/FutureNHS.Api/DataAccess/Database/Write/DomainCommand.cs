@@ -19,21 +19,48 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             _logger = logger;
         }
 
+        public async Task<DomainDto> GetDomainAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(DomainDto.Id)}]                   = Id,
+                                [{nameof(DomainDto.EmailDomain)}]          = EmailDomain
+                                [{nameof(DomainDto.RowVersion)}]           = RowVersion
+ 
+                    FROM        ApprovedDomain
+                    WHERE       Id = @Id";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var reader = await dbConnection.QueryMultipleAsync(query, new
+            {
+                Id = id
+            });
+
+            var domain = await reader.ReadSingleAsync<DomainDto>();
+
+            if (domain is null)
+            {
+                _logger.LogError("Error: User request to get domain was unsuccessful.", query);
+                throw new DataException("Error: User unable to get domain.");
+            }
+
+            return domain;
+        }
+
         public async Task CreateApprovedDomainAsync(DomainDto emailDomain, CancellationToken cancellationToken)
         {
             try
             {
                 const string query =
-                 @"INSERT INTO [dbo].[ApprovedDomain] 
-                        ([Id]
-		                ,[EmailDomain])
+                  @"INSERT 
+                    INTO [dbo].[ApprovedDomain] 
+                        ([EmailDomain])
 	                VALUES 
-                        (@Id
-		                ,@EmailDomain)";
+                        (@EmailDomain)";
 
                 var queryDefinition = new CommandDefinition(query, new
                 {
-                    Id = emailDomain.Id,
                     EmailDomain = emailDomain.EmailDomain,
                 }, cancellationToken: cancellationToken);
 
@@ -60,15 +87,16 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 const string query =
 
                     @"  
-	                DELETE FROM   [dbo].[ApprovedDomain]
+	                DELETE 
+                    FROM    [dbo].[ApprovedDomain]
                     WHERE         
-                         [EmailDomain] = @EmailDomain
-                          AND [RowVersion] = @RowVersion
-                    ";
+                            [Id] = @Id
+                    AND 
+                            [RowVersion] = @RowVersion";
 
                 var queryDefinition = new CommandDefinition(query, new
                 {
-                    EmailDomain = emailDomain.EmailDomain,
+                    Id = emailDomain.Id,
                     RowVersion = emailDomain.RowVersion,
                 }, cancellationToken: cancellationToken);
 
