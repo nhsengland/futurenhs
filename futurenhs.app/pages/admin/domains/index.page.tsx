@@ -34,6 +34,9 @@ import { deleteDomain } from '@services/deleteDomain'
 import { useNotification } from '@helpers/hooks/useNotification'
 import { notifications } from '@constants/notifications'
 import { NotificationsContext } from '@helpers/contexts'
+import { routes } from '@constants/routes'
+import {ActionLink} from "@components/generic/ActionLink";
+
 
 declare interface ContentText extends GenericPageTextContent {
     mainHeading: string
@@ -119,20 +122,19 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
                     },
                     {
                         children: (
-                            <ClickLink
-                                onClick={() => {
-                                    handleDeleteDomain(domain, id)
-                                }}
+                            <ActionLink
+                                href={`${routes.domainsRoot}/${id}/update`}
                                 text={{
-                                    body: 'Delete',
-                                    ariaLabel: `Delete domain ${domain}`,
+                                    body: 'Edit',
+                                    ariaLabel: `Edit domain ${domain}`,
                                 }}
-                                iconName="icon-delete"
+                                iconName="icon-edit"
                             />
                         ),
                         className:
                             'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                         headerClassName: 'u-hidden',
+                        
                     },
                 ]
 
