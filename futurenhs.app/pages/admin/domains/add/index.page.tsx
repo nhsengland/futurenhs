@@ -101,7 +101,7 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
                                 },
                             }}
                             submitAction={handleSubmit}
-                            cancelHref={routes.adminUsersRoot}
+                            cancelHref={routes.adminDomainsRoot}
                             shouldClearOnSubmitSuccess={true}
                             bodyClassName="u-mb-14 u-p-4 tablet:u-px-14 tablet:u-pt-12 u-pb-8 u-bg-theme-1"
                         >
@@ -146,7 +146,7 @@ export const getServerSideProps: GetServerSideProps = async (
              * Return page not found if user doesn't have permissions to invite a user
              */
             if (
-                !props.actions?.includes(actionConstants.SITE_ADMIN_MEMBERS_ADD)
+                !props.actions?.includes(actionConstants.SITE_ADMIN_DOMAINS_ADD)
             ) {
                 return {
                     notFound: true,

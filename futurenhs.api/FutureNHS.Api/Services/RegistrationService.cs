@@ -23,7 +23,7 @@ namespace FutureNHS.Api.Services
     public sealed class RegistrationService : IRegistrationService
     {
         private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
-        private const string ListDomainsRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/list";
+        private const string ViewDomainsRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/view";
         private const string AddDomainRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/add";
         private const string UpdateDomainRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/edit";
         private const string DeleteDomainRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/delete";
@@ -300,7 +300,7 @@ namespace FutureNHS.Api.Services
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (Guid.Empty == id) throw new ArgumentOutOfRangeException(nameof(id));
             
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ListDomainsRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ViewDomainsRole, cancellationToken);
 
             if (!userCanPerformAction)
             {
@@ -315,7 +315,7 @@ namespace FutureNHS.Api.Services
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
 
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ListDomainsRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ViewDomainsRole, cancellationToken);
 
             if (!userCanPerformAction)
             {

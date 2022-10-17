@@ -2,8 +2,10 @@ export interface Routes {
     siteRoot: string
     usersRoot: string
     adminRoot: string
+    domainsRoot: string
     adminUsersRoot: string
     adminUsersInvite: string
+    adminDomainsRoot: string
     adminDomainsAdd: string
     adminGroupsRoot: string
     adminGroupsCreate: string

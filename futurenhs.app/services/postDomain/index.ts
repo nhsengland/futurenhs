@@ -47,7 +47,7 @@ export const postDomain = async (
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to ban the domain',
+            'An unexpected error occurred when attempting to add the domain',
             {
                 serviceId: services.ADD_DOMAIN,
                 status: status,
