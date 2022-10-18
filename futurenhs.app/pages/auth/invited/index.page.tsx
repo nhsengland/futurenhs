@@ -80,7 +80,7 @@ export const getServerSideProps: GetServerSideProps = async (
             const props: Partial<Props> = selectPageProps(context)
             const { id } = context.query
             if (id && typeof id === 'string') {
-                const callbackUrl: string = `${process.env.APP_URL}/api/auth/callback/azure-ad-b2c`
+                const callbackUrl: string = `${process.env.APP_URL}/api/auth/signin`
                 const b2cUrl = `https://${process.env.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_SIGNUP_USER_FLOW}/oauth2/v2.0/authorize?client_id=${process.env.AZURE_AD_B2C_CLIENT_ID}&scope=offline_access%20openid&response_type=code&redirect_uri=${callbackUrl}&prompt=login`
                 try {
                     const res = await getGroupsByInvite({ id })
