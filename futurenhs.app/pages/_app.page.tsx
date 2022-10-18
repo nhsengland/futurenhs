@@ -18,7 +18,6 @@ import {
 } from '@helpers/contexts/index'
 import { layoutIds } from '@constants/routes'
 import { SessionProvider, useSession } from 'next-auth/react'
-import useSessionStore from 'store/session'
 
 const CustomApp = ({ Component, pageProps }) => {
     const activeRequests: any = useRef([])

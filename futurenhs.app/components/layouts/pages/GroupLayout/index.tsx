@@ -11,9 +11,6 @@ import { Image } from '@appTypes/image'
 import { Routes } from '@appTypes/routing'
 import { User } from '@appTypes/user'
 import StandardLayout from '@components/layouts/pages/StandardLayout'
-import { useSession } from 'next-auth/react'
-import useSessionStore from 'store/session'
-import { useEffect } from 'react'
 
 export interface Props {
     tabId: 'index' | 'forum' | 'files' | 'members'

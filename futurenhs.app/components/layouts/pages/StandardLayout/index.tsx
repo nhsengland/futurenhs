@@ -25,8 +25,6 @@ import { Notification } from '@components/layouts/NotificationBanner/interfaces'
 import { NotificationsContext } from '@helpers/contexts/index'
 import { PageBody } from '@components/layouts/PageBody'
 import { actions } from '@constants/actions'
-import { useSession } from 'next-auth/react'
-import useSessionStore from 'store/session'
 
 export interface Props {
     routeId?: string
