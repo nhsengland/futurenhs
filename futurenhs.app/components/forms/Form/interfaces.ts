@@ -24,4 +24,5 @@ export interface Props {
     shouldAddErrorTitle?: boolean
     shouldClearOnSubmitSuccess?: boolean
     shouldRenderSubmitButton?: boolean
+    shouldRenderBackToTopIcon?: boolean
 }

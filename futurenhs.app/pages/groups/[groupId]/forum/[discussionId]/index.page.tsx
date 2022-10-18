@@ -166,7 +166,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     const createdDate: string = dateTime({ value: created })
     const lastCommentUserName: string = modifiedBy?.text?.userName
     const lastCommentDate: string = dateTime({ value: modified })
-
+    let renderBackToTopIcon: boolean = false;
     /**
      * Handle likes on comments
      */
@@ -508,14 +508,14 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
 
                 {responseCount > 2 && (
                     <div>
+                        {renderBackToTopIcon = true}
                         <button
                             onClick={handleAddCommentClick}
                             className="c-form_submit-button c-button u-w-full tablet:u-w-auto u-mb-6">
                             Reply to this topic
                         </button>
                     </div>
-
-                )}
+                ) }
                 <ErrorBoundary boundaryId="group-discussion-comments">
                     {hasDiscussionComments && (
                         <DynamicListContainer
@@ -685,6 +685,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                             shouldClearOnSubmitSuccess={true}
                             validationFailAction={handleValidationFailure}
                             submitAction={handleCommentSubmit}
+                            shouldRenderBackToTopIcon={renderBackToTopIcon}
                         />
                         </div>
                     </>
