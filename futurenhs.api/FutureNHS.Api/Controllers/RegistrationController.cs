@@ -139,9 +139,11 @@ namespace FutureNHS.Api.Controllers
         [TypeFilter(typeof(ETagFilter))]
         public async Task<IActionResult> GetDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
         {
-            await _registrationService.GetDomainAsync(userId, domainId, cancellationToken);
+            var domain = await _registrationService.GetDomainAsync(userId, domainId, cancellationToken);
+            if (domain is null)
+                return NotFound();
 
-            return Ok();
+            return Ok(domain);
         }
 
         [HttpDelete]

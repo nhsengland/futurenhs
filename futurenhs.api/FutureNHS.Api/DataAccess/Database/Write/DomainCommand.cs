@@ -24,7 +24,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             const string query =
                 @$" SELECT
                                 [{nameof(DomainDto.Id)}]                   = Id,
-                                [{nameof(DomainDto.EmailDomain)}]          = EmailDomain
+                                [{nameof(DomainDto.EmailDomain)}]          = EmailDomain,
                                 [{nameof(DomainDto.RowVersion)}]           = RowVersion
  
                     FROM        ApprovedDomain
