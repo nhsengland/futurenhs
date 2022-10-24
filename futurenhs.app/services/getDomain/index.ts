@@ -17,10 +17,8 @@ import { Pagination } from '@appTypes/pagination'
 import { User } from '@appTypes/user'
 import { GroupMember } from '@appTypes/group'
 import { Domain } from '@appTypes/domain'
-import { api } from '@constants/routes'
 
 declare type Options = {
-    headers?: any
     user: User
     domainId: string
 }
@@ -30,41 +28,43 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const deleteDomain = async (
-    { headers, user, domainId }: Options,
+export const getDomain = async (
+    { user, domainId }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<null>> => {
+): Promise<ServiceResponse<Domain>> => {
+    const serviceResponse: ServiceResponse<Domain> = {
+        data: null,
+    }
+
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
     const id: string = user.id
-    const domainPath = api.GET_DOMAIN.replace('%USER_ID%', id).replace(
-        '%DOMAIN%',
-        domainId
-    )
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/user/${id}/registration/domains/${domainId}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            headers,
-            method: requestMethods.DELETE,
-        }),
+        setFetchOptions({ method: requestMethods.GET }),
         defaultTimeOutMillis
     )
-    const apiData: ApiPaginatedResponse<any> = apiResponse.json
+    const apiData: any = apiResponse.json
     const apiMeta: any = apiResponse.meta
 
-    const { ok, status, statusText } = apiMeta
+    const { ok, status, statusText, headers } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to delete domain',
+            'An unexpected error occurred when attempting to get the domain',
             {
-                serviceId: services.DELETE_DOMAIN,
+                serviceId: services.GET_DOMAINS,
                 status: status,
                 statusText: statusText,
                 body: apiData,
             }
         )
     }
-    return null
+    serviceResponse.data = {
+        id: apiData.id,
+        domain: apiData.emailDomain,
+    }
+    serviceResponse.headers = headers
+    return serviceResponse
 }

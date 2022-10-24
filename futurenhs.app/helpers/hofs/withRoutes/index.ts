@@ -18,7 +18,6 @@ export const withRoutes: Hof = (context) => {
                 siteRoot: '/',
                 usersRoot: '/users',
                 adminRoot: '/admin',
-                domainsRoot: '/domains',
                 adminUsersRoot: '/admin/users',
                 adminUsersInvite: '/admin/users/invite',
                 adminDomainsRoot: '/admin/domains',

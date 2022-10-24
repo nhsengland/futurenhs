@@ -57,5 +57,7 @@ export const enum services {
     GET_GROUP_INVITE = 'getGroupInvite',
     GET_INVITE_DETAILS = 'getInviteDetails',
     GET_DOMAINS = 'getDomains',
+    GET_DOMAIN = 'getDomain',
     ADD_DOMAIN = 'postDomain',
+    DELETE_DOMAIN = 'deleteDomain',
 }

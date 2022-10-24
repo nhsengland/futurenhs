@@ -35,8 +35,12 @@ import { useNotification } from '@helpers/hooks/useNotification'
 import { notifications } from '@constants/notifications'
 import { NotificationsContext } from '@helpers/contexts'
 import { routes } from '@constants/routes'
-import {ActionLink} from "@components/generic/ActionLink";
-
+import { ActionLink } from '@components/generic/ActionLink'
+import { getDomain } from '@services/getDomain'
+import { getStandardServiceHeaders } from '@helpers/fetch'
+import { getServiceErrorDataValidationErrors } from '@services/index'
+import { FormErrors } from '@appTypes/form'
+import { getGenericFormError } from '@helpers/util/form'
 
 declare interface ContentText extends GenericPageTextContent {
     mainHeading: string
@@ -59,6 +63,7 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
     routes,
     domainsList,
     user,
+    csrfToken,
 }) => {
     const [dynamicDomainsList, setDomainsList] = useState(domainsList)
     const [dynamicPagination, setPagination] = useState(pagination)
@@ -66,12 +71,23 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
 
     const { secondaryHeading, noDomains, addDomain } = contentText ?? {}
     const handleDeleteDomain = async (domain, domainId: string) => {
-        debugger
         try {
-            const res = await deleteDomain({
+            const res = await getDomain({
                 domainId,
                 user,
             })
+            const etag = res.headers.get('etag')
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag,
+            })
+            await deleteDomain({
+                domainId,
+                user,
+                headers,
+            })
+            const { data } = await getDomains({ user, pagination })
+            setDomainsList(data ?? [])
             useNotification({
                 notificationsContext,
                 text: {
@@ -80,7 +96,9 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
                 },
             })
             return Promise.resolve({})
-        } catch (error) {}
+        } catch (error) {
+            console.log(error)
+        }
     }
     const hasDomains: boolean = true
     const shouldEnableLoadMore: boolean = true
@@ -98,50 +116,46 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
         },
     ]
 
-    const rowList = useMemo(
-        () =>
-            dynamicDomainsList.map(({ id, domain }) => {
-                const generatedCellClasses = {
-                    domain: classNames({
-                        ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']:
-                            true,
-                    }),
-                }
-
-                const generatedHeaderCellClasses = {
-                    domain: classNames({
-                        ['u-text-bold']: true,
-                    }),
-                }
-
-                const rows = [
-                    {
-                        children: <span>{domain}</span>,
-                        className: generatedCellClasses.domain,
-                        headerClassName: generatedHeaderCellClasses.domain,
-                    },
-                    {
-                        children: (
-                            <ActionLink
-                                href={`${routes.domainsRoot}/${id}/update`}
-                                text={{
-                                    body: 'Edit',
-                                    ariaLabel: `Edit domain ${domain}`,
-                                }}
-                                iconName="icon-edit"
-                            />
-                        ),
-                        className:
-                            'u-w-full tablet:u-w-1/8 tablet:u-text-right',
-                        headerClassName: 'u-hidden',
-                        
-                    },
-                ]
-
-                return rows
+    const rowList = dynamicDomainsList.map(({ id, domain }) => {
+        const generatedCellClasses = {
+            domain: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']:
+                    true,
             }),
-        []
-    )
+        }
+
+        const generatedHeaderCellClasses = {
+            domain: classNames({
+                ['u-text-bold']: true,
+            }),
+        }
+
+        const rows = [
+            {
+                children: <span>{domain}</span>,
+                className: generatedCellClasses.domain,
+                headerClassName: generatedHeaderCellClasses.domain,
+            },
+            {
+                children: (
+                    <ClickLink
+                        onClick={() => {
+                            handleDeleteDomain(domain, id)
+                        }}
+                        text={{
+                            body: 'Delete',
+                            ariaLabel: `Delete domain ${domain}`,
+                        }}
+                        iconName="icon-delete"
+                    />
+                ),
+                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
+                headerClassName: 'u-hidden',
+            },
+        ]
+
+        return rows
+    })
 
     /**
      * Handle client-side pagination
@@ -240,7 +254,6 @@ export const getServerSideProps: GetServerSideProps = async (
              */
             try {
                 const res = await getDomains({ user, pagination })
-
                 props.domainsList = res.data ?? []
                 props.pagination = res.pagination
             } catch (error) {
