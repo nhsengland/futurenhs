@@ -100,7 +100,7 @@ describe('folders/folderId page', () => {
         ).not.toBe(0)
     })
 
-    it('renders view details link when it is a file', () => {
+    it('renders file information link when it is a file', () => {
         const propsCopy = Object.assign({}, props, {
             actions: [
                 actions.GROUPS_FOLDERS_EDIT,
@@ -129,7 +129,7 @@ describe('folders/folderId page', () => {
 
         render(<GroupFolderIdContentsPage {...propsCopy} />)
 
-        expect(screen.getAllByText('View details').length).toBe(1)
+        expect(screen.getAllByText('File information').length).toBe(1)
     })
 
     it('renders download link when is file', () => {
@@ -164,7 +164,7 @@ describe('folders/folderId page', () => {
         expect(screen.getAllByText('Download file').length).toBe(1)
     })
 
-    it('does not render view details and download link when not a file', () => {
+    it('does not render file information and download link when not a file', () => {
         const propsCopy = Object.assign({}, props, {
             actions: [
                 actions.GROUPS_FOLDERS_EDIT,
@@ -194,7 +194,7 @@ describe('folders/folderId page', () => {
         render(<GroupFolderIdContentsPage {...propsCopy} />)
 
         expect(screen.queryAllByText('Download file').length).toBe(0)
-        expect(screen.queryAllByText('View details').length).toBe(0)
+        expect(screen.queryAllByText('File information').length).toBe(0)
     })
 
     it('renders folder body text when available', () => {

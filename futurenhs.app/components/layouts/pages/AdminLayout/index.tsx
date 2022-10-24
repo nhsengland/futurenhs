@@ -2,9 +2,7 @@ import Head from 'next/head'
 import StandardLayout from '@components/layouts/pages/StandardLayout'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Theme } from '@appTypes/theme'
-import { useEffect } from 'react'
-import { useSession } from 'next-auth/react'
-import useSessionStore from 'store/session'
+
 export interface Props {
     shouldRenderSearch?: boolean
     shouldRenderUserNavigation?: boolean

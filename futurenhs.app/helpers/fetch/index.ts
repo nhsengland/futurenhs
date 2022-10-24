@@ -2,7 +2,6 @@ import { requestMethods } from '@constants/fetch'
 import { cacheNames } from '@constants/caches'
 import { clearClientCaches } from '@helpers/util/data'
 import { FetchOptions, FetchResponse } from '@appTypes/fetch'
-import useSessionStore from 'store/session'
 
 /**
  * Generic wrapper for Fetch which will reject on timeOut

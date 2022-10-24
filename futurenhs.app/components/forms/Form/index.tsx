@@ -2,14 +2,14 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Form as FinalForm, Field, FormSpy } from 'react-final-form'
 import classNames from 'classnames'
-
+import { SVGIcon } from '@components/generic/SVGIcon'
 import { Link } from '@components/generic/Link'
 import { formComponents } from '@components/forms'
 import { Dialog } from '@components/generic/Dialog'
 import { validate } from '@helpers/validators'
 import { requestMethods } from '@constants/fetch'
 import { FormField, FormErrors } from '@appTypes/form'
-
+import { ActionLink } from '@components/generic/ActionLink'
 import { Props } from './interfaces'
 
 /**
@@ -36,6 +36,7 @@ export const Form: (props: Props) => JSX.Element = ({
     shouldAddErrorTitle = true,
     shouldRenderSubmitButton = true,
     shouldClearOnSubmitSuccess,
+    shouldRenderBackToTopIcon,
 }) => {
     const router = useRouter()
 
@@ -377,7 +378,22 @@ export const Form: (props: Props) => JSX.Element = ({
                                     {submitButton}
                                 </button>
                             )}
+                           
+
+                            {shouldRenderBackToTopIcon && (
+                               <div>
+                                   <a href="#top" >
+                                       <SVGIcon
+                                           name="icon-arrow-up"
+                                           className="c-svg-icon u-w-4 u-h-14 u-mr-1 u-align-middle"
+                                       />
+                                       Back to top
+                                   </a>
+                               </div>
+                            )}
+                            
                         </div>
+                       
                         <FormSpy
                             subscription={{
                                 values: true,
