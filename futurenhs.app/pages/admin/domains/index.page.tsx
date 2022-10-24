@@ -41,6 +41,7 @@ import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getServiceErrorDataValidationErrors } from '@services/index'
 import { FormErrors } from '@appTypes/form'
 import { getGenericFormError } from '@helpers/util/form'
+import { Dialog } from '@components/generic/Dialog'
 
 declare interface ContentText extends GenericPageTextContent {
     mainHeading: string
@@ -67,10 +68,15 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
 }) => {
     const [dynamicDomainsList, setDomainsList] = useState(domainsList)
     const [dynamicPagination, setPagination] = useState(pagination)
+    const [domainToDelete, setDomainToDelete] = useState<Domain | null>(null)
+    const isDeleteDomainOpen = !!domainToDelete
     const notificationsContext: any = useContext(NotificationsContext)
 
     const { secondaryHeading, noDomains, addDomain } = contentText ?? {}
-    const handleDeleteDomain = async (domain, domainId: string) => {
+    const handleDeleteDomain = async () => {
+        if (!domainToDelete) return
+
+        const { id: domainId, domain } = domainToDelete
         try {
             const res = await getDomain({
                 domainId,
@@ -140,7 +146,10 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
                 children: (
                     <ClickLink
                         onClick={() => {
-                            handleDeleteDomain(domain, id)
+                            setDomainToDelete({
+                                domain,
+                                id,
+                            })
                         }}
                         text={{
                             body: 'Delete',
@@ -178,6 +187,26 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
 
     return (
         <>
+            <Dialog
+                id="dialog-delete-domain"
+                isOpen={isDeleteDomainOpen}
+                text={{
+                    cancelButton: 'Cancel',
+                    confirmButton: 'Yes, delete domain',
+                    heading: 'Delete this domain',
+                }}
+                cancelAction={() => {
+                    setDomainToDelete(null)
+                }}
+                confirmAction={() => {
+                    handleDeleteDomain()
+                    setDomainToDelete(null)
+                }}
+            >
+                <p className="u-text-bold">
+                    {`Are you sure you would like to delete the domain ${domainToDelete?.domain}?`}
+                </p>
+            </Dialog>
             <LayoutColumnContainer className="u-w-full u-flex u-flex-col tablet:u-flex-row-reverse">
                 {shouldRenderAddDomainLink && (
                     <LayoutColumn tablet={3} className="c-page-body">
