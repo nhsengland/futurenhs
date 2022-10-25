@@ -28,6 +28,7 @@ export const updateSiteMemberForm: FormConfig = {
                         label: 'First name',
                     },
                     component: 'input',
+                    autoComplete: "given-name",
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
@@ -48,6 +49,7 @@ export const updateSiteMemberForm: FormConfig = {
                         label: 'Last name (optional)',
                     },
                     component: 'input',
+                    autoComplete: "family-name",
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {

@@ -40,6 +40,7 @@ export interface FormField {
     serviceId?: serviceId;
     className?: string;
     optionClassName?: string;
+    autoComplete?: string;
 }
 
 export interface FormStep {
