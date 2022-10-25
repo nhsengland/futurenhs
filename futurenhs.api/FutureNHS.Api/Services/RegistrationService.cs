@@ -6,6 +6,7 @@ using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Domain;
 using FutureNHS.Api.DataAccess.Models.Registration;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Domain.Request;
@@ -22,6 +23,10 @@ namespace FutureNHS.Api.Services
     public sealed class RegistrationService : IRegistrationService
     {
         private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
+        private const string ViewDomainsRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/view";
+        private const string AddDomainRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/add";
+        private const string UpdateDomainRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/edit";
+        private const string DeleteDomainRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/delete";
 
         private readonly string _fqdn;
         private readonly ILogger<AdminUserService> _logger;
@@ -103,6 +108,14 @@ namespace FutureNHS.Api.Services
             {
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
+            
+            var domain = emailAddress.Host;
+            var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+            if (!domainIsAllowed)
+            {
+                throw new InvalidOperationException("Email domain is not accepted");
+            }
+            
             var groupId = await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
             var userInvite = new GroupInviteDto
             {
@@ -153,6 +166,13 @@ namespace FutureNHS.Api.Services
             {
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
+            
+            var domain = emailAddress.Host;
+            var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+            if (!domainIsAllowed)
+            {
+                throw new InvalidOperationException("Email domain is not accepted");
+            }
 
             var userInvite = new GroupInviteDto
             {
@@ -187,6 +207,13 @@ namespace FutureNHS.Api.Services
             catch (Exception)
             {
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
+            }
+
+            var domain = emailAddress.Host;
+            var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+            if (!domainIsAllowed)
+            {
+                throw new InvalidOperationException("Email domain is not accepted");
             }
 
             if (await _userService.IsMemberInvitedAsync(registrationRequest.Email, cancellationToken))
@@ -239,28 +266,86 @@ namespace FutureNHS.Api.Services
             return invite;
         }
 
-        public async Task<Boolean> UpdateDomainAsync(string domain, CancellationToken cancellationToken)
+        public async Task DeleteDomainAsync(Guid userId, Guid domainId, byte[] rowVersion, CancellationToken cancellationToken)
         {
-            return true;
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, UpdateDomainRole, cancellationToken);
+
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: DeleteDomainAsync - User:{0} does not have access to perform admin actions", userId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            try
+            {         
+                var domainDto = new DomainDto
+                {
+                    Id = domainId,
+                    RowVersion = rowVersion
+                };
+                await _domainCommand.DeleteApprovedDomainAsync(domainDto, cancellationToken);
+            }
+            catch (DBConcurrencyException ex)
+            {
+                _logger.LogError(ex, $"Error: Error updating domain");
+                throw;
+            }
         }
         
-        public async Task<Boolean> AddDomainAsync(RegisterDomainRequest domainRequest, CancellationToken cancellationToken)
+        public async Task AddDomainAsync(Guid userId, RegisterDomainRequest domainRequest, CancellationToken cancellationToken)
         {
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, AddDomainRole, cancellationToken);
+
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: AddDomainAsync - User:{0} does not have access to perform admin actions", userId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
             try
             {
                 var domainDto = new DomainDto
                 {
-                    Id = Guid.NewGuid(),
                     EmailDomain = domainRequest.EmailDomain
                 };
                 await _domainCommand.CreateApprovedDomainAsync(domainDto, cancellationToken);
-                return true;
             }
             catch (DBConcurrencyException ex)
             {
                 _logger.LogError(ex, $"Error: Error creating new domain");
                 throw;
             }
+        }
+
+        public async Task<DomainDto> GetDomainAsync(Guid userId, Guid id, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (Guid.Empty == id) throw new ArgumentOutOfRangeException(nameof(id));
+            
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ViewDomainsRole, cancellationToken);
+
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetDomainAsync - User:{0} does not have access to perform admin actions", userId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            return await _domainCommand.GetDomainAsync(id, cancellationToken);
+        }
+
+        public async Task<(uint, IEnumerable<ApprovedDomain>)> GetDomainsAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ViewDomainsRole, cancellationToken);
+
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetDomainsAsync - User:{0} does not have access to perform admin actions", userId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            return await _domainDataProvider.GetDomainsAsync(offset, limit, cancellationToken);
         }
 
         private string CreateRegistrationLink(Guid userInviteId)

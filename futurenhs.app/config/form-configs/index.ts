@@ -6,6 +6,7 @@ import { createFileForm } from './create-file'
 import { createGroupForm } from './create-group'
 import { updateGroupForm } from './update-group'
 import { acceptGroupMemberForm } from './accept-group-member'
+import { addDomainForm } from './add-domain'
 import { rejectGroupMemberForm } from './reject-group-member'
 import { deleteGroupMemberForm } from './delete-group-member'
 import { updateGroupMemberForm } from './update-group-member'
@@ -19,6 +20,7 @@ import { formTypes } from '@constants/forms'
 import { registerSiteMemberForm } from './register-site-user'
 
 export default {
+    [formTypes.ADD_DOMAIN]: addDomainForm,
     [formTypes.CREATE_DISCUSSION]: createDiscussionForm,
     [formTypes.CREATE_DISCUSSION_COMMENT]: createDiscussionCommentForm,
     [formTypes.CREATE_DISCUSSION_COMMENT_REPLY]:

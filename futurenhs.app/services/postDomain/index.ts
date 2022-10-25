@@ -7,10 +7,12 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { api } from '@constants/routes'
+import { User } from '@appTypes/user'
 
 declare type Options = {
     headers?: any
     domain: string
+    user: User
 }
 
 declare type Dependencies = {
@@ -18,14 +20,14 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const postApprovedDomain = async (
-    { headers, domain }: Options,
+export const postDomain = async (
+    { headers, domain, user }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const domainPath = api.BAN_DOMAIN
+    const domainPath = api.ALLOW_DOMAIN.replace('%USER_ID%', user.id)
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
@@ -38,16 +40,16 @@ export const postApprovedDomain = async (
         }),
         defaultTimeOutMillis
     )
-
+    debugger
     const apiMeta: any = apiResponse.meta
     const apiData: any = apiResponse.json
 
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to ban the domain',
+            'An unexpected error occurred when attempting to add the domain',
             {
-                serviceId: services.PUT_SITE_USER,
+                serviceId: services.ADD_DOMAIN,
                 status: status,
                 statusText: statusText,
                 body: apiData,

@@ -15,7 +15,6 @@ import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { Card } from '@components/generic/Card'
 import { Page } from '@appTypes/page'
 import { SearchResult } from '@appTypes/search'
-import { postApprovedDomain } from '@services/postApprovedDomain'
 
 export interface Props extends Page {
     term: string | Array<string>
@@ -31,16 +30,6 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
 }) => {
     const generatedClasses = {}
 
-    const submitDomainBan = async (e) => {
-        e.preventDefault()
-        const emailInput = e.target.querySelector('#emailAddress')
-        try {
-            const res = await postApprovedDomain({ domain: emailInput.value })
-        } catch (e) {
-            console.log(e)
-        }
-    }
-
     const shouldRenderUsersLink: boolean =
         actions.includes(actionConstants.SITE_ADMIN_MEMBERS_ADD) ||
         actions.includes(actionConstants.SITE_ADMIN_MEMBERS_EDIT) ||
@@ -49,6 +38,10 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
         actions.includes(actionConstants.SITE_ADMIN_GROUPS_ADD) ||
         actions.includes(actionConstants.SITE_ADMIN_GROUPS_EDIT) ||
         actions.includes(actionConstants.SITE_ADMIN_GROUPS_DELETE)
+
+    const shouldRenderDomains: boolean =
+        actions.includes(actionConstants.SITE_ADMIN_DOMAINS_ADD) ||
+        actions.includes(actionConstants.SITE_ADMIN_DOMAINS_DELETE)
 
     return (
         <>
@@ -62,10 +55,6 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
                                 </Link>
                             </h2>
                         </Card>
-                        <form onSubmit={(e) => submitDomainBan(e)}>
-                            <label htmlFor="">email address</label>
-                            <input id="emailAddress"></input>
-                        </form>
                     </LayoutColumn>
                 )}
                 {shouldRenderGroupsLink && (
@@ -74,6 +63,17 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
                             <h2 className="nhsuk-card__heading nhsuk-heading-m">
                                 <Link href={routes.ADMIN_GROUPS}>
                                     Manage groups
+                                </Link>
+                            </h2>
+                        </Card>
+                    </LayoutColumn>
+                )}
+                {shouldRenderGroupsLink && (
+                    <LayoutColumn tablet={4}>
+                        <Card clickableHref={routes.ADMIN_DOMAINS}>
+                            <h2 className="nhsuk-card__heading nhsuk-heading-m">
+                                <Link href={routes.ADMIN_DOMAINS}>
+                                    Manage domains
                                 </Link>
                             </h2>
                         </Card>

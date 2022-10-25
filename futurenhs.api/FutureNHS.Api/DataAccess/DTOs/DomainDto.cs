@@ -6,6 +6,5 @@ namespace FutureNHS.Api.DataAccess.DTOs
     {
         public Guid Id { get; set; }
         public string EmailDomain { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }
