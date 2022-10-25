@@ -19,4 +19,5 @@ export interface Props {
     shouldRenderRemainingCharacterCount?: boolean
     validators?: Array<any>
     className?: string
+    autoComplete?: string
 }
