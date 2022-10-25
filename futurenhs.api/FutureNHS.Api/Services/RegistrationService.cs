@@ -108,6 +108,14 @@ namespace FutureNHS.Api.Services
             {
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
+            
+            var domain = emailAddress.Host;
+            var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+            if (!domainIsAllowed)
+            {
+                throw new InvalidOperationException("Email domain is not accepted");
+            }
+            
             var groupId = await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
             var userInvite = new GroupInviteDto
             {
@@ -158,6 +166,13 @@ namespace FutureNHS.Api.Services
             {
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
+            
+            var domain = emailAddress.Host;
+            var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+            if (!domainIsAllowed)
+            {
+                throw new InvalidOperationException("Email domain is not accepted");
+            }
 
             var userInvite = new GroupInviteDto
             {
@@ -192,6 +207,13 @@ namespace FutureNHS.Api.Services
             catch (Exception)
             {
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
+            }
+
+            var domain = emailAddress.Host;
+            var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+            if (!domainIsAllowed)
+            {
+                throw new InvalidOperationException("Email domain is not accepted");
             }
 
             if (await _userService.IsMemberInvitedAsync(registrationRequest.Email, cancellationToken))
