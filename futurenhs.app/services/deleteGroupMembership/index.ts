@@ -9,9 +9,10 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
-    csrfToken: string
+    headers: any
     groupId: string
     user: User
 }
@@ -27,7 +28,7 @@ export type DeleteGroupMembershipService = (
 ) => Promise<ServiceResponse<Group>>
 
 export const deleteGroupMembership = async (
-    { csrfToken, groupId, user }: Options,
+    { headers, groupId, user }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<Group>> => {
     const setFetchOptions =
@@ -36,15 +37,15 @@ export const deleteGroupMembership = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/leave`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/members/leave`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.DELETE,
+        headers: headers,
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.DELETE,
-            body: {
-                _csrf: csrfToken,
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

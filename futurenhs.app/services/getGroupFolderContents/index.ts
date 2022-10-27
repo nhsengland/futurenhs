@@ -16,6 +16,7 @@ import {
 } from '@appTypes/service'
 import { FolderContent } from '@appTypes/file'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -55,12 +56,17 @@ export const getGroupFolderContents = async (
 
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }/v1/users/${id}/groups/${groupId}/folders${
+    }/v1/groups/${groupId}/folders${
         folderId ? '/' + folderId + '/contents' : ''
     }?${paginationQueryParams}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.GET,
+        headers: authHeader,
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

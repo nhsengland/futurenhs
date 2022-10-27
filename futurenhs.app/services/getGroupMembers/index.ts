@@ -15,6 +15,7 @@ import {
 import { Pagination } from '@appTypes/pagination'
 import { User } from '@appTypes/user'
 import { GroupMember } from '@appTypes/group'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -48,10 +49,15 @@ export const getGroupMembers = async (
         },
     })
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members?${paginationQueryParams}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/members?${paginationQueryParams}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.GET,
+        headers: authHeader,
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        apiHeaders,
         defaultTimeOutMillis
     )
     const apiData: ApiPaginatedResponse<any> = apiResponse.json

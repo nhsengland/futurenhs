@@ -40,7 +40,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(Member.Slug)}]                 = member.Slug, 
                                 [{nameof(Member.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
                                 [{nameof(Member.DateJoinedUtc)}]        = member.CreatedAtUTC,
-                                [{nameof(Member.LastLoginUtc)}]         = member.LastLoginDateUTC,
+                                [{nameof(Member.LastLoginUtc)}]         = memberactivity.LastActivityDateUTC,
                                 [{nameof(Member.Role)}]                 = memberRoles.RoleName
 
                     FROM        MembershipUser member 
@@ -48,6 +48,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					ON			membersInRole.UserIdentifier = member.Id
                     JOIN        MembershipRole memberRoles 
                     ON          membersInRole.RoleIdentifier = memberRoles.Id
+                    JOIN        MembershipUserActivity memberactivity 
+                    ON          memberactivity.MembershipUserId = member.Id
                     WHERE       member.IsDeleted = 0
                     ORDER BY    RoleName asc, member.FirstName asc
 
@@ -85,10 +87,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(MemberDetails.Email)}]                = member.Email, 
                                 [{nameof(MemberDetails.Pronouns)}]             = member.Pronouns, 
                                 [{nameof(MemberDetails.DateJoinedUtc)}]        = member.CreatedAtUTC,
-                                [{nameof(MemberDetails.LastLoginUtc)}]         = member.LastLoginDateUTC,
+                                [{nameof(MemberDetails.LastLoginUtc)}]         = memberactivity.LastActivityDateUTC,
                                 [{nameof(MemberDetails.RowVersion)}]           = member.RowVersion 
 
                     FROM        MembershipUser member 
+                    JOIN        MembershipUserActivity memberactivity 
+                    ON          memberactivity.MembershipUserId = member.Id
                     WHERE       member.Id = @UserId
                     AND         member.IsDeleted = 0";
 

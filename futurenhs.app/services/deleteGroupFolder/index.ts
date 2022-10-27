@@ -7,12 +7,13 @@ import { services } from '@constants/services'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     groupId: string
     folderId: string
     user: User
-    csrfToken: string
+    headers: any
 }
 
 declare type Dependencies = {
@@ -21,7 +22,7 @@ declare type Dependencies = {
 }
 
 export const deleteGroupFolder = async (
-    { groupId, folderId, user, csrfToken }: Options,
+    { groupId, folderId, user, headers }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
@@ -30,15 +31,15 @@ export const deleteGroupFolder = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/folders/${folderId}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.DELETE,
+        headers: headers,
+    })
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.DELETE,
-            headers: {
-                'csrf-token': csrfToken,
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

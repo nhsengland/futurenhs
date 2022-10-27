@@ -13,7 +13,7 @@ namespace FutureNHS.Api.Controllers
     [Route("api/v{version:apiVersion}")]
     [ApiController]
     [ApiVersion("1.0")]
-    public sealed class FolderController : ControllerBase
+    public sealed class FolderController : ControllerIdentityBase
     {
         private readonly ILogger<FolderController> _logger;
         private readonly IFileAndFolderDataProvider _fileAndFolderDataProvider;
@@ -23,8 +23,8 @@ namespace FutureNHS.Api.Controllers
         private readonly IHtmlSanitizer _htmlSanitizer;
 
 
-        public FolderController(ILogger<FolderController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IFolderService folderService,
-            IPermissionsService permissionsService, IEtagService etagService, IHtmlSanitizer htmlSanitizer)
+        public FolderController(ILogger<ControllerIdentityBase> baseLogger, IUserService userService, ILogger<FolderController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IFolderService folderService,
+            IPermissionsService permissionsService, IEtagService etagService, IHtmlSanitizer htmlSanitizer) : base(baseLogger, userService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _fileAndFolderDataProvider = fileAndFolderDataProvider ?? throw new ArgumentNullException(nameof(fileAndFolderDataProvider));
@@ -35,7 +35,7 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{userId}/groups/{slug}/folders")]
+        [Route("groups/{slug}/folders")]
         public async Task<IActionResult> GetFolderContentsAsync(string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
@@ -47,8 +47,8 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("users/{userId:guid}/groups/{slug}/folders")]
-        public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug, Folder folder, CancellationToken cancellationToken)
+        [Route("groups/{slug}/folders")]
+        public async Task<IActionResult> CreateFolderAsync(string slug, Folder folder, CancellationToken cancellationToken)
         {
             var sanitisedFolder = new Folder
             {
@@ -56,13 +56,14 @@ namespace FutureNHS.Api.Controllers
                 Description = _htmlSanitizer.Sanitize(folder.Description)
             };
 
-            var folderId = await _folderService.CreateFolderAsync(userId, slug, sanitisedFolder, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var folderId = await _folderService.CreateFolderAsync(identity.MembershipUserId, slug, sanitisedFolder, cancellationToken);
 
             return Ok(folderId);
         }
 
         [HttpPost]
-        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}")]
+        [Route("groups/{slug}/folders/{folderId:guid}")]
         public async Task<IActionResult> CreateFolderAsync(Guid userId, string slug, Guid folderId, Folder folder, CancellationToken cancellationToken)
         {            
             var sanitisedFolder = new Folder
@@ -71,17 +72,19 @@ namespace FutureNHS.Api.Controllers
                 Description = _htmlSanitizer.Sanitize(folder.Description)
             };
 
-			var childFolderId = await _folderService.CreateChildFolderAsync(userId, slug, folderId, sanitisedFolder, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+			var childFolderId = await _folderService.CreateChildFolderAsync(identity.MembershipUserId, slug, folderId, sanitisedFolder, cancellationToken);
 
             return Ok(childFolderId);
         }
 
         [HttpGet]
-        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/update")]
+        [Route("groups/{slug}/folders/{folderId:guid}/update")]
         [TypeFilter(typeof(ETagFilter))]
         public async Task<IActionResult> GetUpdateFolderAsync(Guid userId, string slug, Guid folderId, CancellationToken cancellationToken)
         {
-            var folder = await _folderService.GetFolderAsync(userId, slug, folderId, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var folder = await _folderService.GetFolderAsync(identity.MembershipUserId, slug, folderId, cancellationToken);
 
             if (folder is null)
             {
@@ -92,7 +95,7 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPut]
-        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/update")]
+        [Route("groups/{slug}/folders/{folderId:guid}/update")]
         public async Task<IActionResult> UpdateFolderAsync(Guid userId, string slug, Guid folderId, Folder folder, CancellationToken cancellationToken)
         {
             var sanitisedFolder = new Folder
@@ -102,13 +105,14 @@ namespace FutureNHS.Api.Controllers
             };
             var rowVersion = _etagService.GetIfMatch();
 
-            await _folderService.UpdateFolderAsync(userId, slug, folderId, sanitisedFolder, rowVersion, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            await _folderService.UpdateFolderAsync(identity.MembershipUserId, slug, folderId, sanitisedFolder, rowVersion, cancellationToken);
 
             return Ok();
         }
 
         [HttpGet]
-        [Route("users/{userId}/groups/{slug}/folders/{id:guid}")]
+        [Route("groups/{slug}/folders/{id:guid}")]
         public async Task<IActionResult> GetFolderAsync(Guid id, CancellationToken cancellationToken)
         {
             var folder = await _fileAndFolderDataProvider.GetFolderAsync(id, cancellationToken);
@@ -122,7 +126,7 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{userId}/groups/{slug}/folders/{id:guid}/contents")]
+        [Route("groups/{slug}/folders/{id:guid}/contents")]
         public async Task<IActionResult> GetFolderContentsAsync(Guid id, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;

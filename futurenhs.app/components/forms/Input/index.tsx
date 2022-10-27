@@ -89,7 +89,7 @@ export const Input: (props: Props) => JSX.Element = ({
                 id={id}
                 type={inputType}
                 className={generatedClasses.input}
-                autoComplete={autoComplete ? autoComplete : "off"}
+                autoComplete={autoComplete ? autoComplete : 'off'}
             />
             {shouldRenderRemainingCharacterCount && maxLength && (
                 <RemainingCharacterCount

@@ -9,6 +9,7 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     csrfToken: string
@@ -36,15 +37,18 @@ export const postGroupMembership = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/join`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/members/join`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.POST,
+        headers: authHeader,
+        body: {
+            _csrf: csrfToken,
+        },
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.POST,
-            body: {
-                _csrf: csrfToken,
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

@@ -120,22 +120,19 @@ export const getServerSideProps: GetServerSideProps = async (
                     /**
                      * Ensure the request to clear the token is passed through to the browser
                      */
-                    context.res.setHeader(
-                        'Set-Cookie',
-                        'next-auth.session-token.0=; path=/; max-age=0'
-                    )
-                    context.res.setHeader(
-                        'Set-Cookie',
-                        'next-auth.session-token.1=; path=/; max-age=0'
-                    )
-                    context.res.setHeader(
-                        'Set-Cookie',
-                        'next-auth.session-token.1.0=; path=/; max-age=0'
-                    )
-                    context.res.setHeader(
-                        'Set-Cookie',
-                        'next-auth.session-token.1.1=; path=/; max-age=0'
-                    )
+                     const cookieHeader = context.req.headers?.cookie;
+                     cookieHeader.split(`;`).forEach(function(cookie) {
+                         let [ name, ...rest] = cookie.split(`=`);
+                         name = name?.trim();
+                         if (name.indexOf('next-auth.session-token') >= 0)
+                         {
+                             console.log("Cookie found = " + name)
+                             context.res.setHeader(
+                                 'Set-Cookie',
+                                 `${name}=; path=/; max-age=0`
+                             )
+                         }
+                     });
 
                     /**
                      * Sign out on Azure

@@ -9,6 +9,7 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     headers?: any
@@ -37,13 +38,14 @@ export const deleteGroupMember = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/${groupUserId}/delete`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/members/${groupUserId}/delete`
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.DELETE,
+        headers: headers,
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.DELETE,
-            headers: headers,
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

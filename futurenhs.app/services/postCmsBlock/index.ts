@@ -7,6 +7,7 @@ import { requestMethods, defaultTimeOutMillis } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -31,15 +32,18 @@ export const postCmsBlock = async (
     const { id } = user
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/block/${id}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.POST,
+        headers: authHeader,
+        body: {
+            contentType: blockContentTypeId,
+            parentId: parentBlockId ?? pageId,
+        },
+    })
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.POST,
-            body: {
-                contentType: blockContentTypeId,
-                parentId: parentBlockId ?? pageId,
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

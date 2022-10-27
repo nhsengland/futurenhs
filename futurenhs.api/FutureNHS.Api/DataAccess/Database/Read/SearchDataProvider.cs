@@ -1,23 +1,39 @@
-﻿using Dapper;
+﻿using System.Security;
+using Dapper;
 using FutureNHS.Api.Application.Application.HardCodedSettings;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models.Search;
+using FutureNHS.Api.Services.Interfaces;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
 {
     public class SearchDataProvider : ISearchDataProvider
     {
+	    private const string SearchRole = $"https://schema.collaborate.future.nhs.uk/platform/v1/search";
+	    
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
         private readonly ILogger<SearchDataProvider> _logger;
+        private readonly IPermissionsService _permissionsService;
 
-        public SearchDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<SearchDataProvider> logger)
+        public SearchDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<SearchDataProvider> logger, IPermissionsService permissionsService)
         {
             _logger = logger;
+            _permissionsService = permissionsService;
             _connectionFactory = connectionFactory;
         }
-        public async Task<(uint totalCount, SearchResults)> Search(string term, uint offset, uint limit, CancellationToken cancellationToken)
+        public async Task<(uint totalCount, SearchResults)> Search(Guid userId, string term, uint offset, uint limit, CancellationToken cancellationToken)
         {
+	        if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+	        
+	        var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, SearchRole, cancellationToken);
+
+	        if (!userCanPerformAction)
+	        {
+		        _logger.LogError($"Error: CreateFolderAsync - User:{0} does not have access to search", userId);
+		        throw new SecurityException($"Error: User does not have access");
+	        }
+	        
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
                 throw new ArgumentOutOfRangeException(nameof(limit));

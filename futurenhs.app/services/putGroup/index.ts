@@ -7,6 +7,7 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     groupId: string
@@ -30,15 +31,17 @@ export const putGroup = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/update`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/update`
+
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.PUT,
+        headers: headers,
+        isMultiPartForm: true,
+        body: body,
+    })
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.PUT,
-            headers: headers,
-            isMultiPartForm: true,
-            body: body,
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

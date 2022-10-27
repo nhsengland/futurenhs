@@ -7,6 +7,7 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     headers?: any
@@ -30,18 +31,20 @@ export const putSiteUserRole = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/users/${targetUserId}/roles`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/admin/users/${targetUserId}/roles`
+
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.PUT,
+        headers: headers,
+        body: {
+            newRoleId: body.get('newRoleId'),
+            currentRoleId: body.get('currentRoleId'),
+        },
+    })
 
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.PUT,
-            headers: headers,
-            body: {
-                newRoleId: body.get('newRoleId'),
-                currentRoleId: body.get('currentRoleId'),
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

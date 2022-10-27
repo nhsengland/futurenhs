@@ -76,26 +76,29 @@ export const setFetchOpts = ({
     body,
 }: {
     method: requestMethods
-    headers?: Headers
+    headers?: Record<string, string>
     isMultiPartForm?: boolean
     body?: any
 }): FetchOptions => {
-    let defaultHeaders: any = {
-        ...headers,
+    const headersToUse: Headers = new Headers({
         Accept: 'application/json',
-    }
+    })
 
     if (!isMultiPartForm) {
-        defaultHeaders = {
-            ...defaultHeaders,
-            'Content-Type': 'application/json',
+        headersToUse.set('Content-Type', 'application/json')
+    }
+
+    if (headers) {
+        for (const key in headers) {
+            console.log('key: ' + key + ' , value: ' + headers[key])
+            headersToUse.set(key, headers[key])
         }
     }
 
     const fetchOpts: FetchOptions = {
         method: method,
         credentials: 'include',
-        headers: defaultHeaders,
+        headers: headersToUse,
     }
 
     if (
@@ -125,10 +128,12 @@ export const timer = (delay: number) =>
 export const getStandardServiceHeaders = ({
     csrfToken,
     etag,
+    accessToken,
     propertyToUse,
 }: {
     csrfToken: string
     etag?: string | Record<string, string>
+    accessToken?: string
     propertyToUse?: string
 }) => {
     const headers: Record<string, string> = {}
@@ -141,6 +146,10 @@ export const getStandardServiceHeaders = ({
         typeof etag === 'object'
             ? (headers['If-Match'] = etag[propertyToUse])
             : (headers['If-Match'] = etag)
+    }
+
+    if (accessToken) {
+        headers['Authorization'] = `Bearer ${accessToken}`
     }
 
     return headers

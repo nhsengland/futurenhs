@@ -9,6 +9,7 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -30,7 +31,6 @@ export const getGroup = async (
     { user, groupId, isForUpdate }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<Group>> => {
-
     const serviceResponse: ServiceResponse<Group> = {
         data: null,
     }
@@ -43,11 +43,15 @@ export const getGroup = async (
 
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }/v1/users/${id}/groups/${groupId}${isForUpdate ? '/update' : ''}`
-
+    }/v1/groups/${groupId}${isForUpdate ? '/update' : ''}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.GET,
+        headers: authHeader,
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

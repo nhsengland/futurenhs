@@ -16,6 +16,7 @@ import {
 import { Pagination } from '@appTypes/pagination'
 import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -49,10 +50,15 @@ export const getSiteGroups: Service = async (
         },
     })
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/admin/groups?${paginationQueryParams}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/admin/groups?${paginationQueryParams}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.GET,
+        headers: authHeader,
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

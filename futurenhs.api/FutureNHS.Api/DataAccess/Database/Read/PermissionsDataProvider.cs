@@ -25,17 +25,21 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/edit");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/delete");
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/list");
+                    permissions.Add($"{Schema}/members/{DefaultApiVerison}/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/delete");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/view");
+                    permissions.Add($"{Schema}/platform/{DefaultApiVerison}/search");
                     permissions.Add($"{Schema}/domain/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/domain/{DefaultApiVerison}/edit");
                     permissions.Add($"{Schema}/domain/{DefaultApiVerison}/delete");
                     permissions.Add($"{Schema}/domain/{DefaultApiVerison}/view");
                     break;
                 case "Standard Members":
+                    permissions.Add($"{Schema}/members/{DefaultApiVerison}/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/view");
+                    permissions.Add($"{Schema}/platform/{DefaultApiVerison}/search");
                     break;
                 case "Guest":
                     break;

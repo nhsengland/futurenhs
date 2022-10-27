@@ -21,7 +21,7 @@ export const registerSiteMemberForm: FormConfig = {
                         label: 'First name',
                     },
                     component: 'input',
-                    autoComplete: "given-name",
+                    autoComplete: 'given-name',
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {
@@ -42,7 +42,7 @@ export const registerSiteMemberForm: FormConfig = {
                         label: 'Last name (optional)',
                     },
                     component: 'input',
-                    autoComplete: "family-name",
+                    autoComplete: 'family-name',
                     shouldRenderRemainingCharacterCount: true,
                     validators: [
                         {

@@ -52,6 +52,7 @@ export interface Props extends Page {
     subjectId: string
     emailAddress: string
     issuer: string
+    accessToken: string
 }
 
 const AuthRegisterPage: (props: Props) => JSX.Element = ({
@@ -63,6 +64,7 @@ const AuthRegisterPage: (props: Props) => JSX.Element = ({
     subjectId,
     emailAddress,
     issuer,
+    accessToken,
 }) => {
     const router = useRouter()
     const errorSummaryRef: any = useRef()
@@ -100,6 +102,7 @@ const AuthRegisterPage: (props: Props) => JSX.Element = ({
             const headers = getStandardServiceHeaders({
                 csrfToken,
                 etag: etagToUse,
+                accessToken: accessToken,
             })
 
             postRegisterSiteUser({
@@ -186,6 +189,7 @@ export const getServerSideProps: GetServerSideProps = async (
             props.subjectId = session.sub as string
             props.emailAddress = session.user?.email
             props.issuer = session.iss as string
+            props.accessToken = session.accesstoken as string
 
             /**
              * Hide breadcrumbs
@@ -216,6 +220,7 @@ export const getServerSideProps: GetServerSideProps = async (
                         const headers = {
                             ...getStandardServiceHeaders({
                                 csrfToken,
+                                accessToken: session.accesstoken as string,
                             }),
                             ...submission.getHeaders(),
                         }

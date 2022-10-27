@@ -1,39 +1,38 @@
 using FutureNHS.Api.Attributes;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Models.FileAndFolder;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace FutureNHS.Api.Controllers
 {
+    [Authorize]
     [Route("api/v{version:apiVersion}")]
     [ApiController]
     [ApiVersion("1.0")]
-    public sealed class FileController : ControllerBase
+    public sealed class FileController : ControllerIdentityBase
     {
-        private readonly string _fqdn;
         private readonly ILogger<FileController> _logger;
         private readonly IFileAndFolderDataProvider _fileAndFolderDataProvider;
         private readonly IFileService _fileService;
-        private readonly IPermissionsService _permissionsService;
         private readonly IFileServerService _fileServerService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public FileController(IHttpContextAccessor httpContextAccessor, ILogger<FileController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IPermissionsService permissionsService, IFileService fileService, IFileServerService fileServerService, IOptionsSnapshot<ApplicationGateway> gatewayConfig)
+        public FileController(ILogger<ControllerIdentityBase> _baseLogger,IUserService userService, IHttpContextAccessor httpContextAccessor, ILogger<FileController> logger, IFileAndFolderDataProvider fileAndFolderDataProvider, IPermissionsService permissionsService, IFileService fileService, IFileServerService fileServerService, IOptionsSnapshot<ApplicationGateway> gatewayConfig) : base(_baseLogger, userService)
         {
             _logger = logger;
             _fileAndFolderDataProvider = fileAndFolderDataProvider;
             _fileService = fileService;
-            _permissionsService = permissionsService;
             _fileServerService = fileServerService;
-            _httpContextAccessor = httpContextAccessor;
-            _fqdn = gatewayConfig.Value.FQDN;
         }
 
         [HttpGet]
-        [Route("users/{userId}/groups/{slug}/files/{id:guid}")]
+        [Route("groups/{slug}/files/{id:guid}")]
 
         public async Task<IActionResult> GetFileAsync(Guid id, CancellationToken cancellationToken)
         {
@@ -48,11 +47,12 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{userId}/groups/{slug}/files/{id:guid}/download")]
+        [Route("groups/{slug}/files/{id:guid}/download")]
 
         public async Task<IActionResult> GetFileDownloadUrlAsync(Guid userId, string slug, Guid id, CancellationToken cancellationToken)
         {
-            var file = await _fileService.GetFileDownloadUrl(userId, slug,id, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var file = await _fileService.GetFileDownloadUrl(identity.MembershipUserId, slug, id, cancellationToken);
 
             if (file is null)
             {
@@ -63,27 +63,33 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{userId}/groups/{slug}/files/{id:guid}/view")]
+        [Route("groups/{slug}/files/{id:guid}/view")]
 
         public async Task<IActionResult> GetViewCollaboraUrlAsync(Guid userId, string slug, Guid id, CancellationToken cancellationToken)
         {
-            var file = await _fileServerService.GetCollaboraFileUrl(userId,slug, "view", id, HttpContext.Request, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var authHeader = HttpContext.Request.Headers.Authorization.FirstOrDefault();
+
+            if (authHeader is null)
+                throw new FieldAccessException("Authorization header was not found");
+
+            var file = await _fileServerService.GetCollaboraFileUrl(identity.MembershipUserId, slug, "view",  id, authHeader, cancellationToken);
 
             return Ok(file);
         }
 
-        //[HttpPost]
-        //[Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/files")]
+        [HttpGet]
+        [Route("files/{id:guid}/auth")]
+        public async Task<IActionResult> CheckUserAccessForFile(Guid id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
 
-        //public async Task<IActionResult> CreateFileAsync(Guid userId, string slug, Guid folderId, FutureNHS.Api.Models.File.File file, CancellationToken cancellationToken)
-        //{
-        //    await _fileService.CreateFileAsync(userId, slug, folderId, file, cancellationToken);
-
-        //    return Ok(file);
-        //}
+            var userAccess = await _fileService.CheckUserAccess(identity.MembershipUserId, id, cancellationToken);
+            return Ok(userAccess);
+        }
 
         [HttpOptions]
-        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/files")]
+        [Route("groups/{slug}/folders/{folderId:guid}/files")]
         public async Task<IActionResult> PreFlightRoute()
         {
             return NoContent();
@@ -91,16 +97,17 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPost]
         [DisableFormValueModelBinding]
-        [Route("users/{userId:guid}/groups/{slug}/folders/{folderId:guid}/files")]
-        public async Task<IActionResult> UploadDocumentStream(Guid userId, string slug, Guid folderId, CancellationToken cancellationToken)
+        [Route("groups/{slug}/folders/{folderId:guid}/files")]
+        public async Task<IActionResult> UploadDocumentStream(string slug, Guid folderId, CancellationToken cancellationToken)
         {
             if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
                 return BadRequest("The data submitted is not in the multiform format");
             }
 
-            await _fileService.UploadFileMultipartDocument(userId,slug,folderId,HttpContext.Request.Body, HttpContext.Request.ContentType, cancellationToken);
-            
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            await _fileService.UploadFileMultipartDocument(identity.MembershipUserId, slug, folderId, HttpContext.Request.Body, HttpContext.Request.ContentType, cancellationToken);
+
             return Ok();
         }
     }

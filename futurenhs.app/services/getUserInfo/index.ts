@@ -8,10 +8,12 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 export type Options = {
     subjectId: string
     emailAddress: string
+    accessToken: string
 }
 
 export type Dependencies = {
@@ -25,22 +27,21 @@ export type GetUserInfoService = (
 ) => Promise<ServiceResponse<User>>
 
 export const getUserInfo: GetUserInfoService = async (
-    { subjectId, emailAddress },
+    { subjectId, emailAddress, accessToken },
     dependencies
 ): Promise<ServiceResponse<User>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-
+   
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/info`
-    const apiResponse: FetchResponse = await fetchJSON(
-        apiUrl,
-        setFetchOptions({
-            method: requestMethods.POST,
-            body: { subjectId, emailAddress },
-        }),
-        1000
-    )
+    const authHeader = jwtHeader(accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.POST,
+        headers: authHeader,
+        body: { subjectId, emailAddress },
+    })
+    const apiResponse: FetchResponse = await fetchJSON(apiUrl, apiHeaders, 1000)
 
     const apiData: ApiResponse<any> = apiResponse.json
     const apiMeta: any = apiResponse.meta
@@ -72,6 +73,7 @@ export const getUserInfo: GetUserInfoService = async (
                       altText: apiData?.UserAvatar?.AltText ?? null,
                   }
                 : null,
+            accessToken,
         },
     }
 }

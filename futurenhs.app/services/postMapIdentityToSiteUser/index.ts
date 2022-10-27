@@ -7,11 +7,13 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { api } from '@constants/routes'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     subjectId: string
     emailAddress: string
     issuer: string
+    accessToken: string
 }
 
 declare type Dependencies = {
@@ -20,7 +22,7 @@ declare type Dependencies = {
 }
 
 export const postMapIdentityToSiteUser = async (
-    { subjectId, emailAddress, issuer }: Options,
+    { subjectId, emailAddress, issuer, accessToken }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
@@ -28,10 +30,12 @@ export const postMapIdentityToSiteUser = async (
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
     const mapIdentity = api.MAP_IDENTITY
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${mapIdentity}`
+    const authHeader = jwtHeader(accessToken)
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.POST,
+            headers: authHeader,
             body: {
                 SubjectId: subjectId,
                 EmailAddress: emailAddress,

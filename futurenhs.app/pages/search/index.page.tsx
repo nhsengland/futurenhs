@@ -24,8 +24,11 @@ import { ContentType } from '@appTypes/search-content'
 import { matchText } from '@helpers/formatters/matchText'
 import { capitalise } from '@helpers/formatters/capitalise'
 import { Page } from '@appTypes/page'
+import { User } from '@appTypes/user'
+import { selectUser } from '@helpers/selectors/context'
 
 export interface Props extends Page {
+    user: User
     term: string | Array<string>
     minLength: number
     resultsList: Array<SearchResult>
@@ -35,6 +38,7 @@ export interface Props extends Page {
  * Search listing template
  */
 export const SearchListingPage: (props: Props) => JSX.Element = ({
+    user,
     term,
     minLength,
     contentText,
@@ -66,6 +70,7 @@ export const SearchListingPage: (props: Props) => JSX.Element = ({
     }) => {
         const { data: additionalSearchResults, pagination } =
             await getSearchResults({
+                user,
                 term: term as string,
                 pagination: {
                     pageNumber: requestedPageNumber,
@@ -345,6 +350,7 @@ export const getServerSideProps: GetServerSideProps = async (
             /**
              * Get data from request context
              */
+            const user: User = selectUser(context)
             const props: Partial<Props> = selectPageProps(context)
             const term: string = selectQuery(context, 'term')
             const pagination: Pagination = selectPagination(context)
@@ -356,9 +362,10 @@ export const getServerSideProps: GetServerSideProps = async (
              */
             try {
                 const [searchResults] = await Promise.all([
-                    getSearchResults({ term, pagination, minLength }),
+                    getSearchResults({ user, term, pagination, minLength }),
                 ])
 
+                props.user = user
                 props.term = term
                 props.minLength = minLength
                 props.resultsList = searchResults.data ?? []

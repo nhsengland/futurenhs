@@ -8,6 +8,7 @@ import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 import { ServerSideFormData } from '@helpers/util/form'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     groupId: string
@@ -33,18 +34,19 @@ export const postGroupFolder = async (
     const { id } = user
 
     const subFolder: string = folderId ? `/${folderId}` : ''
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders${subFolder}`
-
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/folders${subFolder}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.POST,
+        headers: headers,
+        body: {
+            Name: body.get('Name'),
+            Description: body.get('Description'),
+        },
+    })
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.POST,
-            headers: headers,
-            body: {
-                Name: body.get('Name'),
-                Description: body.get('Description'),
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

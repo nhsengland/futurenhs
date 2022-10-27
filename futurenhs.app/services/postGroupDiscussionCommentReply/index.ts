@@ -7,6 +7,7 @@ import { requestMethods, defaultTimeOutMillis } from '@constants/fetch'
 import { ServiceError } from '..'
 import { Service, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     groupId: string
@@ -35,16 +36,17 @@ export const postGroupDiscussionCommentReply: Service = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments/${commentId}/replies`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/discussions/${discussionId}/comments/${commentId}/replies`
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.POST,
+        headers: headers,
+        body: {
+            Content: body.get(`content-${body.get('_instance-id')}`),
+        },
+    })
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.POST,
-            headers: headers,
-            body: {
-                Content: body.get(`content-${body.get('_instance-id')}`),
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

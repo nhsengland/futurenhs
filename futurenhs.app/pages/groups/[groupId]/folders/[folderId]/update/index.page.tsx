@@ -75,7 +75,11 @@ export const GroupUpdatePage: (props: Props) => JSX.Element = ({
                 router.asPath.indexOf('/update') > -1
                     ? putGroupFolder
                     : postGroupFolder
-            const headers = getStandardServiceHeaders({ csrfToken, etag })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag,
+                accessToken: user.accessToken,
+            })
 
             serviceToUse({ groupId, folderId, user, headers, body: formData })
                 .then((folderId: any) => {
@@ -220,6 +224,7 @@ export const getServerSideProps: GetServerSideProps = async (
                         const headers = getStandardServiceHeaders({
                             csrfToken,
                             etag,
+                            accessToken: user.accessToken,
                         })
 
                         await putGroupFolder({

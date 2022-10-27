@@ -43,7 +43,7 @@ namespace FutureNHS_WOPI_Host_UnitTests
         public async Task Invoke_CallsNextMiddlewareInPipelineIfInjected()
         {
             var configurationData = new Dictionary<string, string>() {
-                { "App:MvcForumUserInfoUrl", "https://my.absolute.url/" }
+                { "App:UserInfoUrl", "https://my.absolute.url/" }
             };
 
             var configurationBuilder = new ConfigurationBuilder();
@@ -200,7 +200,7 @@ namespace FutureNHS_WOPI_Host_UnitTests
         public async Task Invoke_ProcessRequest_TransparentlyIgnoresNoneWopiRequests()
         {
             var configurationData = new Dictionary<string, string>() {
-                { "App:MvcForumUserInfoUrl", "https://my.absolute.url/" }
+                 { "App:UserInfoUrl", "https://my.absolute.url/" }
             };
 
             var configurationBuilder = new ConfigurationBuilder();

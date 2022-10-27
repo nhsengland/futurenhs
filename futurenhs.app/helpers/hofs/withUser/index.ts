@@ -36,10 +36,12 @@ export const withUser: Hof = async (
     }
 
     if (session) {
+        const accessToken = session.accesstoken as string
         try {
             const { data } = await getUserInfoService({
                 subjectId: session.sub as string,
                 emailAddress: session.user?.email,
+                accessToken: accessToken,
             })
 
             user = data
@@ -53,6 +55,7 @@ export const withUser: Hof = async (
                         subjectId: session.sub as string,
                         emailAddress: session.user?.email,
                         issuer: session.iss as string,
+                        accessToken: accessToken,
                     })
                     return {
                         redirect: {

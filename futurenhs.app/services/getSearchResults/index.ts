@@ -14,8 +14,11 @@ import {
 } from '@appTypes/service'
 import { Pagination } from '@appTypes/pagination'
 import { SearchResult } from '@appTypes/search'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
+import { User } from '@appTypes/user'
 
 declare type Options = {
+    user: User
     term: string
     pagination?: Pagination
     minLength?: Number
@@ -27,7 +30,7 @@ declare type Dependencies = {
 }
 
 export const getSearchResults = async (
-    { term, pagination, minLength }: Options,
+    { user, term, pagination, minLength }: Options,
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<SearchResult>>> => {
     const serviceResponse: ServicePaginatedResponse<Array<any>> = {
@@ -51,9 +54,14 @@ export const getSearchResults = async (
     })
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/search?term=${term}&${paginationQueryParams}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.GET,
+        headers: authHeader,
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

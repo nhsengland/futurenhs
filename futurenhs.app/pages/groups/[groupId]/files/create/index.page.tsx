@@ -72,7 +72,12 @@ export const GroupCreateFilePage: (props: Props) => JSX.Element = ({
 
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
         return new Promise((resolve) => {
-            postGroupFile({ groupId, folderId, user, body: formData })
+            const headers =
+                getStandardServiceHeaders({
+                    csrfToken,
+                    accessToken: user.accessToken,
+                })
+            postGroupFile({ groupId, folderId, user, headers, body: formData })
                 .then(() => {
                     router.push(folderHref)
                     resolve({})
@@ -184,7 +189,10 @@ export const getServerSideProps: GetServerSideProps = async (
                  */
                 if (formData && requestMethod === requestMethods.POST) {
                     const headers = {
-                        ...getStandardServiceHeaders({ csrfToken }),
+                        ...getStandardServiceHeaders({
+                            csrfToken,
+                            accessToken: user.accessToken,
+                        }),
                         ...formData.getHeaders(),
                     }
 

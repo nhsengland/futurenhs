@@ -3,15 +3,17 @@ using FutureNHS.Api.Models.Discussion;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Ganss.XSS;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
 {
+    [Authorize]
     [Route("api/v{version:apiVersion}")]
     [ApiController]
     [ApiVersion("1.0")]
-    public sealed class DiscussionController : ControllerBase
+    public sealed class DiscussionController : ControllerIdentityBase
     {
         private readonly ILogger<DiscussionController> _logger;
         private readonly IDiscussionDataProvider _discussionDataProvider;
@@ -19,7 +21,8 @@ namespace FutureNHS.Api.Controllers
         private readonly IPermissionsService _permissionsService;
         private readonly IHtmlSanitizer _htmlSanitizer;
 
-        public DiscussionController(ILogger<DiscussionController> logger, IDiscussionDataProvider discussionDataProvider, IPermissionsService permissionsService, IDiscussionService discussionService, IHtmlSanitizer htmlSanitizer)
+        public DiscussionController(ILogger<ControllerIdentityBase> baseLogger, IUserService userService, ILogger<DiscussionController> logger, IDiscussionDataProvider discussionDataProvider,
+            IPermissionsService permissionsService, IDiscussionService discussionService, IHtmlSanitizer htmlSanitizer) : base(baseLogger, userService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
             _discussionDataProvider = discussionDataProvider ?? throw new ArgumentNullException(nameof(discussionDataProvider)); ;
@@ -30,12 +33,12 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("groups/{slug}/discussions")]
-        [Route("users/{userId}/groups/{slug}/discussions")]
 
         public async Task<IActionResult> GetDiscussionsForGroupAsync(Guid? userId, string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
-            var discussions = await _discussionDataProvider.GetDiscussionsForGroupAsync(userId, slug, filter.Offset, filter.Limit, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var discussions = await _discussionDataProvider.GetDiscussionsForGroupAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, cancellationToken);
             var total = await _discussionDataProvider.GetDiscussionCountForGroupAsync(slug, cancellationToken);
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(discussions, filter, total, route);
@@ -45,11 +48,11 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("groups/{slug}/discussions/{id:guid}")]
-        [Route("users/{userId}/groups/{slug}/discussions/{id:guid}")]
 
         public async Task<IActionResult> GetDiscussionAsync(Guid? userId, string slug, Guid id, CancellationToken cancellationToken)
         {
-            var discussion = await _discussionDataProvider.GetDiscussionAsync(userId, slug, id, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var discussion = await _discussionDataProvider.GetDiscussionAsync(identity.MembershipUserId, slug, id, cancellationToken);
 
             if (discussion is null)
             {
@@ -60,12 +63,13 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpPost]
-        [Route("users/{userId:guid}/groups/{slug}/discussions")]
+        [Route("groups/{slug}/discussions")]
         public async Task<IActionResult> CreateDiscussionAsync(Guid userId, string slug, Discussion discussion, CancellationToken cancellationToken)
         {
             discussion.Content = _htmlSanitizer.Sanitize(discussion.Content);
+            var identity = await GetUserIdentityAsync(cancellationToken);
 
-            await _discussionService.CreateDiscussionAsync(userId, slug, discussion, cancellationToken);
+            await _discussionService.CreateDiscussionAsync(identity.MembershipUserId, slug, discussion, cancellationToken);
 
             return Ok();
         }

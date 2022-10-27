@@ -1,10 +1,11 @@
 using AspNetCore.Authentication.ApiKey;
 using Azure.Identity;
-using FutureNHS.Api.Authorization;
+using Dapper;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess;
 using FutureNHS.Api.DataAccess.Database.Providers;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Providers.Mappers;
 using FutureNHS.Api.DataAccess.Database.Providers.RetryPolicy;
 using FutureNHS.Api.DataAccess.Storage.Providers;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
@@ -15,27 +16,18 @@ using FutureNHS.Api.Providers;
 using FutureNHS.Api.Providers.Interfaces;
 using FutureNHS.Api.Providers.Logging;
 using FutureNHS.Api.Services;
+using FutureNHS.Api.Services.Interfaces;
 using Ganss.XSS;
 using Microsoft.ApplicationInsights.DependencyCollector;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration.AzureAppConfiguration;
-//using Microsoft.Extensions.Internal;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication;
-using FutureNHS.Api.Services.Interfaces;
-using ImageProcessor.Imaging.Colors;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging.EventLog;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
+using Microsoft.Extensions.Options;
+using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Dapper;
-using FutureNHS.Api.DataAccess.Database.Providers.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -296,31 +288,8 @@ builder.Services.AddScoped<IHtmlSanitizer, HtmlSanitizer>();
 // It requires Realm to be set in the options if SuppressWWWAuthenticateHeader is not set.
 // If an implementation of IApiKeyProvider interface is used as well as options.Events.OnValidateKey delegate is also set then this delegate will be used first.
 
-builder.Services.AddScoped<IApiKeyRepository>(
-    sp => {
-    var config = sp.GetRequiredService<IOptionsSnapshot<SharedSecrets>>().Value;
 
-    if (config is null) throw new ApplicationException("Unable to load the azure sql configuration");
-    if (string.IsNullOrWhiteSpace(config.WebApplication)) throw new ApplicationException("The Web Application Key is missing from the Shared secrets configuration section");
-    if (string.IsNullOrWhiteSpace(config.Owner)) throw new ApplicationException("The Owner Key is missing from the Shared secrets configuration section");
-
-    var logger = sp.GetRequiredService<ILogger<IApiKeyRepository>>();
-
-    return new ApiKeyRepository(config.WebApplication, config.Owner, logger);
-});
-
-builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
-
-
-//The below AddApiKeyInHeaderOrQueryParams without type parameter will require options.Events.OnValidateKey delegete to be set.
-//    .AddApiKeyInHeaderOrQueryParams(options =>
-
-// The below AddApiKeyInHeaderOrQueryParams with type parameter will add the ApiKeyProvider to the dependency container. 
-.AddApiKeyInAuthorizationHeader<ApiKeyProvider>(options =>
-{
-    options.SuppressWWWAuthenticateHeader = true;
-    options.KeyName = "Bearer";
-});
+builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzurePlatform:AzureAdB2C");
 
 builder.Services.AddAzureClients(clientBuilder =>
 {
@@ -328,27 +297,16 @@ builder.Services.AddAzureClients(clientBuilder =>
     clientBuilder.AddQueueServiceClient(builder.Configuration["AzureImageBlobStorage:queue"], preferMsi: true);
 });
 
-//// By default, authentication is not challenged for every request which is ASP.NET Core's default intended behaviour.
-//// So to challenge authentication for every requests please use below FallbackPolicy option.
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-});
-
 var app = builder.Build();
-
-
-
 
 app.UseRouting();
 app.UseCors(policyName);
-
 
 var swaggerBasePath = "api";
 var swaggerFullPath = swaggerBasePath;
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment()) 
+if (!app.Environment.IsDevelopment())
 {
     swaggerFullPath = $"gateway/{swaggerBasePath}";
 }

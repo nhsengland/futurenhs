@@ -33,6 +33,7 @@ import { useFormConfig } from '@helpers/hooks/useForm'
 import { useNotification } from '@helpers/hooks/useNotification'
 import { GroupPage } from '@appTypes/page'
 import { postGroupUserInvite } from '@services/postGroupUserInvite'
+import { getStandardServiceHeaders } from '@helpers/fetch'
 
 export interface Props extends GroupPage {}
 
@@ -59,9 +60,15 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
      * Client-side submission handler - TODO: Pending API
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
+        const headers =
+                getStandardServiceHeaders({
+                    csrfToken,
+                    accessToken: user.accessToken,
+                })
         try {
             await postGroupUserInvite({
                 user,
+                headers,
                 body: formData as any,
                 groupId,
             })

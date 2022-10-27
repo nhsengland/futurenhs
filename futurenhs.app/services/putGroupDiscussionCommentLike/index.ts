@@ -8,6 +8,7 @@ import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     groupId: string
@@ -34,12 +35,17 @@ export const putGroupDiscussionCommentLike = async (
 
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }/v1/users/${id}/groups/${groupId}/discussions/${discussionId}/comments/${commentId}/${
+    }/v1/groups/${groupId}/discussions/${discussionId}/comments/${commentId}/${
         shouldLike ? 'like' : 'unlike'
     }`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.PUT,
+        headers: authHeader,
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.PUT }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

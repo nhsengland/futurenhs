@@ -110,7 +110,10 @@ export const GroupMemberListingPage: (props: Props) => JSX.Element = ({
         formData: FormData
     ): Promise<FormErrors> => {
         return new Promise((resolve) => {
-            const headers = getStandardServiceHeaders({ csrfToken })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                accessToken: user.accessToken,
+            })
 
             postGroupMemberAccept({ user, groupId, body: formData, headers })
                 .then(async () => {
@@ -145,7 +148,10 @@ export const GroupMemberListingPage: (props: Props) => JSX.Element = ({
         formData: FormData
     ): Promise<FormErrors> => {
         return new Promise((resolve) => {
-            const headers = getStandardServiceHeaders({ csrfToken })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                accessToken: user.accessToken,
+            })
 
             postGroupMemberReject({ user, groupId, body: formData, headers })
                 .then(async () => {
@@ -513,6 +519,7 @@ export const getServerSideProps: GetServerSideProps = async (
                 if (currentValues && requestMethod === requestMethods.POST) {
                     const headers = getStandardServiceHeaders({
                         csrfToken,
+                        accessToken: user.accessToken,
                     })
 
                     const isAcceptForm: boolean = checkMatchingFormType(

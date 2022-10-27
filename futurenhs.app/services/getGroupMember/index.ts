@@ -10,6 +10,7 @@ import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 import { GroupMember } from '@appTypes/group'
 import { mapToProfileImageObject } from '@helpers/util/data'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -39,12 +40,17 @@ export const getGroupMember = async (
 
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }/v1/users/${id}/groups/${groupId}/members/${memberId}${
+    }/v1/groups/${groupId}/members/${memberId}${
         isForUpdate ? '/update' : ''
     }`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.GET,
+        headers: authHeader,
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

@@ -92,7 +92,11 @@ export const GroupUpdatePage: (props: Props) => JSX.Element = ({
         }
 
         return new Promise((resolve) => {
-            const headers = getStandardServiceHeaders({ csrfToken, etag })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag,
+                accessToken: user.accessToken,
+            })
 
             services
                 .putGroup({ groupId, user, headers, body: formData })
@@ -220,14 +224,17 @@ export const getServerSideProps: GetServerSideProps = async (
                     error: new Error('405 Method Not Allowed'),
                 })
             }
-
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                accessToken: props.user.accessToken,
+            })
             /**
              * Get data from services
              */
             try {
                 await deleteGroupMembership({
                     groupId,
-                    csrfToken,
+                    headers,
                     user: props.user,
                 })
 

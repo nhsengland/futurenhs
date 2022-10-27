@@ -17,6 +17,7 @@ import { Pagination } from '@appTypes/pagination'
 import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
 import { mapGroupData } from '@helpers/formatters/mapGroupData'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -33,7 +34,6 @@ export const getGroups: Service = async (
     { user, isMember, pagination }: Options,
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<Group>>> => {
-
     const serviceResponse: ServicePaginatedResponse<Array<Group>> = {
         data: [],
     }
@@ -54,10 +54,16 @@ export const getGroups: Service = async (
         ? '&ismember=true'
         : '&ismember=false'
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups?${paginationQueryParams}${memberShipQueryParam}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups?${paginationQueryParams}${memberShipQueryParam}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.GET,
+        headers: authHeader,
+    })
+
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

@@ -166,7 +166,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     const createdDate: string = dateTime({ value: created })
     const lastCommentUserName: string = modifiedBy?.text?.userName
     const lastCommentDate: string = dateTime({ value: modified })
-    let renderBackToTopIcon: boolean = false;
+    let renderBackToTopIcon: boolean = false
     /**
      * Handle likes on comments
      */
@@ -200,7 +200,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
      */
     const handleAddCommentClick = () => {
         commentButtonRef.current.scrollIntoView({ behavior: 'smooth' })
-    };
+    }
 
     /**
      * Handle client-side comment submission
@@ -209,7 +209,10 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
         formData: FormData
     ): Promise<FormErrors> => {
         return new Promise((resolve) => {
-            const headers: any = getStandardServiceHeaders({ csrfToken })
+            const headers: any = getStandardServiceHeaders({
+                csrfToken,
+                accessToken: user.accessToken,
+            })
 
             services
                 .postGroupDiscussionComment({
@@ -252,7 +255,10 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     ): Promise<FormErrors> => {
         return new Promise((resolve) => {
             const commentId: any = formData.get('_instance-id')
-            const headers: any = getStandardServiceHeaders({ csrfToken })
+            const headers: any = getStandardServiceHeaders({
+                csrfToken,
+                accessToken: user.accessToken,
+            })
 
             services
                 .postGroupDiscussionCommentReply({
@@ -508,14 +514,15 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
 
                 {responseCount > 2 && (
                     <div>
-                        {renderBackToTopIcon = true}
+                        {(renderBackToTopIcon = true)}
                         <button
                             onClick={handleAddCommentClick}
-                            className="c-form_submit-button c-button u-w-full tablet:u-w-auto u-mb-6">
+                            className="c-form_submit-button c-button u-w-full tablet:u-w-auto u-mb-6"
+                        >
                             Reply to this topic
                         </button>
                     </div>
-                ) }
+                )}
                 <ErrorBoundary boundaryId="group-discussion-comments">
                     {hasDiscussionComments && (
                         <DynamicListContainer
@@ -676,17 +683,17 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                             </Link>
                         </p>
                         <div ref={commentButtonRef}>
-                        <Form
-                            csrfToken={csrfToken}
-                            formConfig={commentFormConfig}
-                            text={{
-                                submitButton: 'Submit reply',
-                            }}
-                            shouldClearOnSubmitSuccess={true}
-                            validationFailAction={handleValidationFailure}
-                            submitAction={handleCommentSubmit}
-                            shouldRenderBackToTopIcon={renderBackToTopIcon}
-                        />
+                            <Form
+                                csrfToken={csrfToken}
+                                formConfig={commentFormConfig}
+                                text={{
+                                    submitButton: 'Submit reply',
+                                }}
+                                shouldClearOnSubmitSuccess={true}
+                                validationFailAction={handleValidationFailure}
+                                submitAction={handleCommentSubmit}
+                                shouldRenderBackToTopIcon={renderBackToTopIcon}
+                            />
                         </div>
                     </>
                 )}
@@ -742,6 +749,7 @@ export const getServerSideProps: GetServerSideProps = async (
                 const commentId: string = formData.get('_instance-id')
                 const headers = getStandardServiceHeaders({
                     csrfToken,
+                    accessToken: user.accessToken,
                 })
 
                 try {

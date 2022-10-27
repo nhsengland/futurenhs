@@ -9,6 +9,7 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 import { CmsContentBlock } from '@appTypes/contentBlock'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -36,14 +37,17 @@ export const putCmsPageContent = async (
     const id: string = user.id
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/page/${id}/${pageId}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.PUT,
+        headers: authHeader,
+        body: {
+            blocks: pageBlocks,
+        },
+    })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.PUT,
-            body: {
-                blocks: pageBlocks,
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

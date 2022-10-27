@@ -2,6 +2,7 @@
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
+using FutureNHS.Api.DataAccess.Models.Identity;
 using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
 using FutureNHS.Api.Exceptions;
@@ -31,6 +32,7 @@ namespace FutureNHS.Api.Services
     {
         private const string ListMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
         private const string EditMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/edit";
+        private const string ViewMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/view";
 
 
         private readonly string _fqdn;
@@ -43,7 +45,7 @@ namespace FutureNHS.Api.Services
         private readonly IUserImageService _imageService;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
         private readonly string _defaultRole;
-        
+
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 5242880; // 5MB
 
@@ -88,6 +90,22 @@ namespace FutureNHS.Api.Services
             }
 
             return await _userCommand.GetMemberAsync(targetUserId, cancellationToken);
+        }
+        
+        public async Task<MemberProfile> GetMemberProfileAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (Guid.Empty == targetUserId) throw new ArgumentOutOfRangeException(nameof(targetUserId));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, ViewMembersRole, cancellationToken);
+
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetMemberAsync - User:{0} does not have access to view the target user:{1}", userId, targetUserId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            return await _userDataProvider.GetMemberProfileAsync(targetUserId, cancellationToken);
         }
 
         public async Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid userId, uint offset, uint limit, string sort, CancellationToken cancellationToken)
@@ -136,7 +154,7 @@ namespace FutureNHS.Api.Services
                 if (userValidationResult.Errors.Count > 0)
                     throw new ValidationException(userValidationResult);
             }
-            
+
             try
             {
                 if (image is not null)
@@ -310,8 +328,8 @@ namespace FutureNHS.Api.Services
 
             if (formAccumulator.HasValues)
             {
-                var formValues = formAccumulator.GetResults();                
-                
+                var formValues = formAccumulator.GetResults();
+
                 // Check if users been updated
                 // Unable to place in controller due to disabling form value model binding
                 var user = await _userCommand.GetMemberAsync(targetUserId, cancellationToken);
@@ -371,41 +389,54 @@ namespace FutureNHS.Api.Services
             }
             return mediaType.Encoding;
         }
-        
 
-
-        public async Task<MemberInfoResponse> GetMemberInfoAsync(MemberIdentityRequest memberIdentityRequest, CancellationToken cancellationToken)
+        public async Task<Identity> GetMemberIdentityAsync(string subjectId, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(memberIdentityRequest.SubjectId)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.SubjectId));
-            if (string.IsNullOrWhiteSpace(memberIdentityRequest.EmailAddress)) throw new ArgumentOutOfRangeException(nameof(memberIdentityRequest.EmailAddress));
+            if (string.IsNullOrWhiteSpace(subjectId)) throw new ArgumentOutOfRangeException(nameof(subjectId));
+
+            var identity = await _userCommand.GetMemberIdentityAsync(subjectId, cancellationToken);
+
+            // Don't wait for this to return as we don't care if it fails
+            _ = _userCommand.RecordUserActivityAsync(identity.MembershipUserId, _systemClock.UtcNow.UtcDateTime, cancellationToken);
+
+            return identity;
+
+        }
+
+        public async Task<MemberInfoResponse> GetMemberInfoAsync(string subjectId, string? emailAddress, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(subjectId)) throw new ArgumentOutOfRangeException(nameof(subjectId));    
 
 
-            var memberInfo = await _userCommand.GetMemberInfoAsync(memberIdentityRequest.SubjectId, cancellationToken);
+            var memberInfo = await _userCommand.GetMemberInfoAsync(subjectId, cancellationToken);
             if (memberInfo is not null)
             {
                 memberInfo.Status = MemberStatus.Member.ToString();
                 return memberInfo;
             }
 
-            var memberDetailsResponse = await _userCommand.GetMemberByEmailAsync(memberIdentityRequest.EmailAddress, cancellationToken); ;
-            if (memberDetailsResponse is not null)
+            if (emailAddress is not null)
             {
-                return new MemberInfoResponse
+                var memberDetailsResponse = await _userCommand.GetMemberByEmailAsync(emailAddress, cancellationToken); ;
+                if (memberDetailsResponse is not null)
                 {
-                    FirstName = memberDetailsResponse.FirstName,
-                    LastName = memberDetailsResponse.LastName,
-                    MembershipUserId = memberDetailsResponse.Id,
-                    Status = MemberStatus.LegacyMember.ToString()
-                };
-            }
+                    return new MemberInfoResponse
+                    {
+                        FirstName = memberDetailsResponse.FirstName,
+                        LastName = memberDetailsResponse.LastName,
+                        MembershipUserId = memberDetailsResponse.Id,
+                        Status = MemberStatus.LegacyMember.ToString()
+                    };
+                }
 
-            var isMemberInvited = await _userDataProvider.IsMemberInvitedAsync(memberIdentityRequest.EmailAddress, cancellationToken);
-            if (isMemberInvited)
-            {
-                return new MemberInfoResponse
+                var isMemberInvited = await _userDataProvider.IsMemberInvitedAsync(emailAddress, cancellationToken);
+                if (isMemberInvited)
                 {
-                    Status = MemberStatus.Invited.ToString()
-                };
+                    return new MemberInfoResponse
+                    {
+                        Status = MemberStatus.Invited.ToString()
+                    };
+                }
             }
 
             return new MemberInfoResponse

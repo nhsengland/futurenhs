@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,11 +44,9 @@ namespace FutureNHS.WOPIHost
             _httpClientFactory = httpClientFactory                         ?? throw new ArgumentNullException(nameof(httpClientFactory));
             _appConfiguration = appConfiguration?.Value                    ?? throw new ArgumentNullException(nameof(appConfiguration));
 
-            var mvcForumUserInfoUrl = _appConfiguration.MvcForumUserInfoUrl;
+            var mvcForumUserInfoUrl = _appConfiguration.UserInfoUrl;
 
-            if (mvcForumUserInfoUrl is null) throw new ApplicationException($"The {nameof(AppConfiguration.MvcForumUserInfoUrl)} is null");
-
-            if (!mvcForumUserInfoUrl.IsAbsoluteUri) throw new ApplicationException($"The {nameof(AppConfiguration.MvcForumUserInfoUrl)} is not an absolute URI = {mvcForumUserInfoUrl}");
+            if (mvcForumUserInfoUrl is null) throw new ApplicationException($"The {nameof(AppConfiguration.UserInfoUrl)} is null");
         }
 
         async Task<AuthenticatedUser?> IUserAuthenticationService.GetForFileContextAsync(HttpContext httpContext, File file, CancellationToken cancellationToken)
@@ -72,7 +71,7 @@ namespace FutureNHS.WOPIHost
 
             var httpRequest = httpContext.Request;
 
-            var authenticatedUserByCookie = await AuthenticateCookieAsync(httpRequest, cancellationToken);
+            var authenticatedUserByCookie = await AuthenticateCookieAsync(httpRequest,file, cancellationToken);
 
             var authenticatedUserByAccessToken = await AuthenticateAccessTokenAsync(httpRequest, file, cancellationToken);
 
@@ -128,7 +127,7 @@ namespace FutureNHS.WOPIHost
             return authenticatedUser with { FileMetadata = userFileMetadata };
         }
 
-        private async Task<AuthenticatedUser?> AuthenticateCookieAsync(HttpRequest httpRequest, CancellationToken cancellationToken)
+        private async Task<AuthenticatedUser?> AuthenticateCookieAsync(HttpRequest httpRequest,File file, CancellationToken cancellationToken)
         {
             // If a user is logged into the system, we can defer to the web application to verify who they are and return to us the user
             // metadata that we are interested in.
@@ -136,56 +135,57 @@ namespace FutureNHS.WOPIHost
             // This cookie is forwarded to all incoming requests (whether from Collabora or the Browser), but it is encrypted.   Rather than 
             // share encryption secrets with an old style ASP MVC application, simpler for now to call it, present the token and have it authenticate
             // while also renewing the cookie so it does not expire
+            try
+            {
+            var authHeader = httpRequest.Headers.Authorization.FirstOrDefault();
+            var userInfoUrl = _appConfiguration.UserInfoUrl;
+            var fileIdPlaceHolder = _appConfiguration.TemplateUrlFileIdPlaceholder;
 
-            var requestCookies = httpRequest.Headers["Cookie"].AsEnumerable();
-
-            var hasCookies = requestCookies.Any();
-
-            if (!hasCookies) return Forbidden("There is no Cookie header attached to the request");
-
-            var mvcForumUserInfoUrl = _appConfiguration.MvcForumUserInfoUrl;
+            if (string.IsNullOrEmpty(authHeader)) return Forbidden("There is no Auth header attached to the request");
 
             var httpClient = _httpClientFactory.CreateClient("mvcforum-userinfo");
 
-            using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, mvcForumUserInfoUrl);
+            var fileRequestUrl = userInfoUrl.Replace(fileIdPlaceHolder, file.Id);
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri(fileRequestUrl));
 
             httpRequestMessage.Headers.Add("Accept", "application/json; charset=utf-8");
 
-            httpRequestMessage.Headers.Add("Cookie", requestCookies);
-
-            try
-            {
+            httpRequestMessage.Headers.Authorization = AuthenticationHeaderValue.Parse(authHeader);
+          
                 using var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
-
-                _logger?.LogDebug("Status code of response from Forum App is '{StatusCode}'", httpResponseMessage.StatusCode);
 
                 if (!httpResponseMessage.IsSuccessStatusCode) return Forbidden("The authenticate user request sent to the forum app returned a non-success status code");
 
                 var httpContent = httpResponseMessage.Content;
 
-                if (httpContent is null) return Forbidden("The forum app returned a success status code but did not include a body");
+                if (httpContent is null) return Forbidden("The Api returned a success status code but did not include a body");
 
                 var mediaType = httpContent.Headers.ContentType?.MediaType;
 
-                _logger?.LogDebug("Media Type of Response from Forum App UserInfo = '{MediaType'", mediaType);
-
-                if (!mediaType?.Contains("application/json") ?? true) return Forbidden("The forum app response is for a media type the File Server does not support");
+                if (!mediaType?.Contains("application/json") ?? true) return Forbidden("The Api response is for a media type the File Server does not support");
 
                 using var utf8JsonStream = await httpContent.ReadAsStreamAsync(cancellationToken);
 
                 var authenticatedUser = await JsonSerializer.DeserializeAsync<AuthenticatedUser>(utf8JsonStream, cancellationToken: cancellationToken);
 
-                if (authenticatedUser is null) return Forbidden("Unable to convert the json body of the response from the forum app into an AuthenticatedUser");
+                if (authenticatedUser is null) return Forbidden("Unable to convert the json body of the response from the Api into an AuthenticatedUser");
 
                 return authenticatedUser;
             }
             catch (HttpRequestException ex)
             {
-                _logger?.LogError(ex, "Failed to connect to the MVCForum UserInfo endpoint to verify the user attached to the current request");
+                _logger?.LogDebug($"http request exception {ex.Message}");
+                _logger?.LogError(ex, "Failed to connect to the UserInfo endpoint to verify the user attached to the current request");
             }
             catch (JsonException ex)
             {
-                _logger?.LogError(ex, "Failed to deserialize the JSON response from the MVCForum UserInfo endpoint");
+                _logger?.LogDebug($"json exception {ex.Message}");
+                _logger?.LogError(ex, "Failed to deserialize the JSON response from the UserInfo endpoint");
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogDebug($"exception {ex.Message}");
+                _logger?.LogError(ex, "Exception");
             }
 
             return Forbidden();
@@ -193,7 +193,7 @@ namespace FutureNHS.WOPIHost
 
         private AuthenticatedUser? Forbidden(string? message = default)
         {
-            _logger?.LogDebug("The current user (associated with the incoming request) could not be identified.  {Message}", message);
+            _logger?.LogDebug($"The current user (associated with the incoming request) could not be identified. {message}");
 
             return default;
         }

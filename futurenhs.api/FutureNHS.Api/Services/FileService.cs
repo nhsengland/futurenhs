@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 using Microsoft.Azure.Storage.Blob;
 using FutureNHS.Api.Services.Validation;
+using FutureNHS.Api.DataAccess.Models.FileAndFolder;
 
 namespace FutureNHS.Api.Services
 {
@@ -76,8 +77,22 @@ namespace FutureNHS.Api.Services
             return downloadUri;
         }
 
+        public async Task<AuthUser> CheckUserAccess(Guid userId, Guid fileId, CancellationToken cancellationToken)
+        {
+            var userAccess = await _fileCommand.GetFileAccess(userId, fileId, cancellationToken);
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userAccess.Id, userAccess.GroupSlug, DownloadFileRole, cancellationToken);
+            if (userCanPerformAction is false)
+            {
+                _logger.LogError($"Error: CheckUserAccess - User:{0} does not have access to group:{1}", userId, userAccess.GroupSlug);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            return new AuthUser { Id = userAccess.Id, FullName = userAccess.FullName, Initials = userAccess.Initials, EmailAddress = userAccess.EmailAddress };
+        }
+
         // TODO Need to figure out how we rollback if cancellation is requested or prevent it?
-            public async Task UploadFileMultipartDocument(Guid userId, string slug, Guid folderId, Stream requestBody, string? contentType, CancellationToken cancellationToken)
+        public async Task UploadFileMultipartDocument(Guid userId, string slug, Guid folderId, Stream requestBody, string? contentType, CancellationToken cancellationToken)
         {
             var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, AddFileRole, cancellationToken);
 

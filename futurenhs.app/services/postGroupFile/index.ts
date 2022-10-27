@@ -7,12 +7,13 @@ import { requestMethods, defaultTimeOutMillis } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     groupId: string
     folderId: string
     user: User
-    headers?: any
+    headers?: Record<string, string>
     body: FormData
 }
 
@@ -31,15 +32,18 @@ export const postGroupFile = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/folders/${folderId}/files`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/folders/${folderId}/files`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.POST,
+        headers: headers,
+        isMultiPartForm: true,
+        body: body,
+    })
+    
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.POST,
-            headers: headers,
-            isMultiPartForm: true,
-            body: body,
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

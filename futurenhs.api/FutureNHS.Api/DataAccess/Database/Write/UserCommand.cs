@@ -224,7 +224,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(UserDto.Email)}]               = membershipUser.Email,
                                 [{nameof(UserDto.CreatedAtUtc)}]        = membershipUser.CreatedAtUTC,
                                 [{nameof(UserDto.ModifiedAtUtc)}]       = membershipUser.ModifiedAtUTC,
-                                [{nameof(UserDto.LastLoginDateUtc)}]    = membershipUser.LastLoginDateUTC,
+                                [{nameof(UserDto.LastLoginDateUtc)}]    = memberactivity.LastActivityDateUTC,
                                 [{nameof(UserDto.Slug)}]                = membershipUser.Slug,
                                 [{nameof(UserDto.FirstName)}]           = membershipUser.FirstName,
                                 [{nameof(UserDto.LastName)}]            = membershipUser.Surname,
@@ -237,6 +237,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
 
                     FROM        [MembershipUser] membershipUser
+                    JOIN        MembershipUserActivity memberactivity 
+                    ON          memberactivity.MembershipUserId = membershipUser.Id
                     LEFT JOIN   Image [image]
                     ON          [image].Id = membershipUser.ImageId   
                     WHERE       
@@ -434,6 +436,30 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             }          
         }
 
+        public async Task<Identity> GetMemberIdentityAsync(string subjectId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" SELECT                                
+                                [{nameof(Identity.MembershipUserId)}]                = id.MembershipUser_Id,
+                                [{nameof(Identity.SubjectId)}]                       = id.Subject_Id,
+                                [{nameof(Identity.Issuer)}]                          = id.Issuer        
+				    
+                    FROM        [Identity] id
+                    JOIN        [MembershipUser] member ON member.Id = id.MembershipUser_Id          
+                    WHERE       id.[Subject_Id] = @subjectId
+                    AND         member.IsDeleted = 0
+                    AND         member.IsBanned = 0;";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var memberIdentity = await dbConnection.QuerySingleAsync<Identity>(query, new            
+                {
+                    SubjectId = subjectId
+                });
+
+            return memberIdentity;
+        }
+
         public async Task<MemberInfoResponse> GetMemberInfoAsync(string subjectId, CancellationToken cancellationToken)
         {
             const string query =
@@ -545,5 +571,51 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             }
         }
 
+        public async Task RecordUserActivityAsync(Guid userId,DateTime activityDate, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$" UPDATE       [dbo].[MembershipUserActivity]
+                    SET 
+                                 [LastActivityDateUTC]  = @ActivityAtUtc
+                    
+                    WHERE 
+                                 [MembershipUserId] = @Id";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                Id = userId,
+                ActivityAtUtc = activityDate,
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var result = await dbConnection.ExecuteAsync(queryDefinition);
+
+            if (result != 1)
+            {
+                var createQuery =
+                @$" INSERT INTO     [dbo].[MembershipUserActivity]
+                                    ([MembershipUserId],
+                                    [LastActivityDateUTC])              
+                    VALUES
+                                    (@Id,
+                                    @ActivityAtUtc)";
+
+                var createQueryDefinition = new CommandDefinition(createQuery, new
+                {
+                    Id = userId,
+                    ActivityAtUtc = activityDate,
+                }, cancellationToken: cancellationToken);
+
+                using var createdbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+                
+                var createResult = await createdbConnection.ExecuteAsync(createQueryDefinition);
+
+                if (createResult != 1)
+                {
+                    _logger.LogError("Error: Recording user activity failed", createQueryDefinition);
+                }
+            }
+        }
     }
 }

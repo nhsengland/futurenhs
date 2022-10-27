@@ -9,6 +9,7 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 import { CmsContentBlock } from '@appTypes/contentBlock'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -25,7 +26,6 @@ export const getCmsPageContent = async (
     { user, pageId, isPublished = true }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<any>> => {
-
     const serviceResponse: ServiceResponse<Array<CmsContentBlock>> = {
         data: null,
     }
@@ -39,10 +39,15 @@ export const getCmsPageContent = async (
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
     }/v1/page/${pageId}/${isPublished ? 'published' : 'draft'}`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.GET,
+        headers: authHeader,
+    })
 
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 
@@ -63,8 +68,8 @@ export const getCmsPageContent = async (
         )
     }
 
-    serviceResponse.headers = headers;
-    serviceResponse.data = apiData?.data?.content?.blocks ?? [];
+    serviceResponse.headers = headers
+    serviceResponse.data = apiData?.data?.content?.blocks ?? []
 
     return serviceResponse
 }

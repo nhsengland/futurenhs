@@ -1,4 +1,5 @@
-﻿using FutureNHS.Api.Models.File;
+﻿using FutureNHS.Api.DataAccess.Models.FileAndFolder;
+using FutureNHS.Api.Models.File;
 
 namespace FutureNHS.Api.Services.Interfaces
 {
@@ -8,5 +9,7 @@ namespace FutureNHS.Api.Services.Interfaces
             string? contentType, CancellationToken cancellationToken);
 
         Task<string> GetFileDownloadUrl(Guid userId, string slug, Guid fileId, CancellationToken cancellationToken);
+
+        Task<AuthUser> CheckUserAccess(Guid userId, Guid fileId, CancellationToken cancellationToken);
     }
 }

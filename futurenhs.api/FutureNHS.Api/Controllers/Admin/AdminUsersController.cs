@@ -15,7 +15,7 @@ namespace FutureNHS.Api.Controllers
     [Route("api/v{version:apiVersion}")]
     [ApiController]
     [ApiVersion("1.0")]
-    public sealed class AdminUsersController : ControllerBase
+    public sealed class AdminUsersController : ControllerIdentityBase
     {
         private readonly ILogger<UsersController> _logger;
         private readonly IPermissionsService _permissionsService;
@@ -23,11 +23,10 @@ namespace FutureNHS.Api.Controllers
         private readonly IUserService _userService;
         private readonly IEtagService _etagService;
 
-        public AdminUsersController(ILogger<UsersController> logger, 
+        public AdminUsersController(ILogger<ControllerIdentityBase> baseLogger, IUserService userService, ILogger<UsersController> logger, 
             IPermissionsService permissionsService,
             IAdminUserService adminUserService,
-            IUserService userService,
-            IEtagService etagService)
+            IEtagService etagService) : base(baseLogger, userService)
         {
             _logger = logger;
             _permissionsService = permissionsService;
@@ -37,13 +36,14 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{adminUserId:guid}/admin/users/search")]
+        [Route("admin/users/search")]
         public async Task<IActionResult> SearchMembersAsync(Guid adminUserId, [FromQuery, MinLength(SearchSettings.TermMinimum), MaxLength(SearchSettings.TermMaximum)] string term, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
+            var identity = await GetUserIdentityAsync(cancellationToken);
 
             term = term.Trim();
-            var (total, members) = await _adminUserService.SearchMembersAsync(adminUserId, term, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+            var (total, members) = await _adminUserService.SearchMembersAsync(identity.MembershipUserId, term, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(members, filter, total, route);
 
@@ -51,12 +51,13 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{adminUserId:guid}/admin/users")]
+        [Route("admin/users")]
         public async Task<IActionResult> GetMembersAsync(Guid adminUserId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
+            var identity = await GetUserIdentityAsync(cancellationToken);
 
-            var (total, members) = await _adminUserService.GetMembersAsync(adminUserId, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+            var (total, members) = await _adminUserService.GetMembersAsync(identity.MembershipUserId, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(members, filter, total, route);
 
@@ -64,10 +65,11 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{adminUserId:guid}/admin/users/roles")]
+        [Route("admin/users/roles")]
         public async Task<IActionResult> GetMembershipRolesAsync(Guid adminUserId, CancellationToken cancellationToken)
         {
-            var roles = await _adminUserService.GetMemberRolesAsync(adminUserId, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var roles = await _adminUserService.GetMemberRolesAsync(identity.MembershipUserId, cancellationToken);
 
             if (roles is null)
                 return NotFound();
@@ -76,11 +78,12 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{adminUserId:guid}/admin/users/{userId:guid}/roles")]
+        [Route("admin/users/{userId:guid}/roles")]
         [TypeFilter(typeof(ETagFilter))]
         public async Task<IActionResult> GetMemberForRoleUpdateAsync(Guid adminUserId, Guid userId, CancellationToken cancellationToken)
         {
-            var member = await _adminUserService.GetMemberRoleAsync(adminUserId, userId, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var member = await _adminUserService.GetMemberRoleAsync(identity.MembershipUserId, userId, cancellationToken);
 
             if (member is null)
                 return NotFound();
@@ -90,14 +93,15 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPut]
         [DisableFormValueModelBinding]
-        [Route("users/{adminUserId:guid}/admin/users/{userId:guid}/roles")]
+        [Route("admin/users/{userId:guid}/roles")]
         public async Task<IActionResult> UpdateMemberRoleAsync(Guid adminUserId, Guid userId, [FromBody] MemberRoleUpdate memberRoleUpdate, CancellationToken cancellationToken)
         {
             var rowVersion = _etagService.GetIfMatch();
+            var identity = await GetUserIdentityAsync(cancellationToken);
 
             memberRoleUpdate.MembershipUserId = userId;
 
-            await _adminUserService.UpdateMemberRoleAsync(adminUserId, memberRoleUpdate, rowVersion, cancellationToken);
+            await _adminUserService.UpdateMemberRoleAsync(identity.MembershipUserId, memberRoleUpdate, rowVersion, cancellationToken);
 
             return Ok();
         }

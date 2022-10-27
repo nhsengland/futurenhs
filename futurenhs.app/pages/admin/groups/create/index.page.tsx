@@ -62,8 +62,13 @@ export const AdminCreateGroupPage: (props: Props) => JSX.Element = ({
      * Client-side submission handler
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
+        const headers =
+                getStandardServiceHeaders({
+                    csrfToken,
+                    accessToken: user.accessToken,
+                })
         try {
-            await services.postGroup({ user, body: formData as any })
+            await services.postGroup({ user, headers, body: formData as any })
 
             router.replace(`${routes.adminGroupsRoot}`)
 
@@ -164,7 +169,10 @@ export const getServerSideProps: GetServerSideProps = async (
              * handle server-side form POST
              */
             if (formData && requestMethod === requestMethods.POST) {
-                const headers = getStandardServiceHeaders({ csrfToken })
+                const headers = getStandardServiceHeaders({
+                    csrfToken,
+                    accessToken: user.accessToken,
+                })
 
                 try {
                     await postGroup({

@@ -45,6 +45,7 @@ import { getGenericFormError } from '@helpers/util/form'
 import { useFormConfig } from '@helpers/hooks/useForm'
 import { GenericPageTextContent } from '@appTypes/content'
 import { Page } from '@appTypes/page'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare interface ContentText extends GenericPageTextContent {
     firstNameLabel: string
@@ -116,10 +117,11 @@ export const UserUpdatePage: (props: Props) => JSX.Element = ({
         return new Promise((resolve) => {
             const etagToUse: string =
                 typeof etag === 'object' ? etag.profileEtag : etag
-
+            const authHeader = jwtHeader(user.accessToken)
             const headers = getStandardServiceHeaders({
                 csrfToken,
                 etag: etagToUse,
+                accessToken: user.accessToken,
             })
 
             putSiteUser({
@@ -158,6 +160,7 @@ export const UserUpdatePage: (props: Props) => JSX.Element = ({
             const headers = getStandardServiceHeaders({
                 csrfToken,
                 etag: etagToUse,
+                accessToken: user.accessToken,
             })
 
             putSiteUserRole({
@@ -366,6 +369,7 @@ export const getServerSideProps: GetServerSideProps = async (
                             const headers = getStandardServiceHeaders({
                                 csrfToken,
                                 etag: roleEtag,
+                                accessToken: user.accessToken,
                             })
 
                             await putSiteUserRole({
@@ -392,6 +396,7 @@ export const getServerSideProps: GetServerSideProps = async (
                             ...getStandardServiceHeaders({
                                 csrfToken,
                                 etag: profileEtag,
+                                accessToken: user.accessToken,
                             }),
                             ...submission.getHeaders(),
                         }

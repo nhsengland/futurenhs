@@ -243,7 +243,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMember.Slug)}]                 = member.Slug, 
                                 [{nameof(GroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
                                 [{nameof(GroupMember.DateJoinedUtc)}]        = groupUser.ApprovedToJoinDateUTC,
-                                [{nameof(GroupMember.LastLoginUtc)}]         = member.LastLoginDateUTC,
+                                [{nameof(GroupMember.LastLoginUtc)}]         = memberactivity.LastActivityDateUTC,
                                 [{nameof(GroupMember.Role)}]                 = memberRoles.RoleName
 
                     FROM        GroupUser groupUser
@@ -253,6 +253,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          member.Id = groupUser.MembershipUser_Id
                     JOIN        MembershipRole memberRoles 
                     ON          memberRoles.Id = groupUser.MembershipRole_Id 
+                    JOIN        MembershipUserActivity memberactivity 
+                    ON          memberactivity.MembershipUserId = member.Id
                     WHERE       groups.Slug = @Slug
                     AND         groupUser.Approved = 1
                     AND         member.IsDeleted = 0
@@ -298,14 +300,16 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(PendingGroupMember.Slug)}]                 = member.Slug, 
                                 [{nameof(PendingGroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
                                 [{nameof(PendingGroupMember.ApplicationDateUtc)}]   = groupUser.RequestToJoinDateUTC,
-                                [{nameof(PendingGroupMember.LastLoginUtc)}]         = member.LastLoginDateUTC,
+                                [{nameof(PendingGroupMember.LastLoginUtc)}]         = memberactivity.LastActivityDateUTC,
                                 [{nameof(PendingGroupMember.Email)}]                = member.Email
 
                     FROM        GroupUser groupUser
                     JOIN        [Group] groups 
                     ON          groups.Id = groupUser.Group_Id
                     JOIN        MembershipUser member 
-                    ON          member.Id = groupUser.MembershipUser_Id      
+                    ON          member.Id = groupUser.MembershipUser_Id
+                    JOIN        MembershipUserActivity memberactivity 
+                    ON          memberactivity.MembershipUserId = member.Id
                     WHERE       groups.Slug = @Slug
                     AND         groupUser.Approved = 0
                     AND         groupUser.Rejected = 0
@@ -356,7 +360,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMemberDetails.Email)}]                = member.Email, 
                                 [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
                                 [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = groupUser.ApprovedToJoinDateUTC,
-                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = member.LastLoginDateUTC,
+                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = memberactivity.LastActivityDateUTC,
                                 [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName,
                                 [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id,
                                 [{nameof(ImageData.Id)}]		                    = [image].Id,
@@ -373,6 +377,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          member.Id = groupUser.MembershipUser_Id
                     JOIN        MembershipRole memberRoles 
                     ON          memberRoles.Id = groupUser.MembershipRole_Id 
+                    JOIN        MembershipUserActivity memberactivity 
+                    ON          memberactivity.MembershipUserId = member.Id
                     LEFT JOIN   Image [image]
                     ON          [image].Id = member.ImageId   
                     WHERE       groups.Slug = @Slug
@@ -412,7 +418,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(GroupMemberDetails.Email)}]                = member.Email, 
                                 [{nameof(GroupMemberDetails.Pronouns)}]             = member.Pronouns, 
                                 [{nameof(GroupMemberDetails.DateJoinedUtc)}]        = groupUser.ApprovedToJoinDateUTC,
-                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = member.LastLoginDateUTC,
+                                [{nameof(GroupMemberDetails.LastLoginUtc)}]         = memberactivity.LastActivityDateUTC,
                                 [{nameof(GroupMemberDetails.Role)}]                 = memberRoles.RoleName,
                                 [{nameof(GroupMemberDetails.RoleId)}]               = groupUser.MembershipRole_Id
 
@@ -423,6 +429,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          member.Id = groupUser.MembershipUser_Id
                     JOIN        MembershipRole memberRoles 
                     ON          memberRoles.Id = groupUser.MembershipRole_Id 
+                    JOIN        MembershipUserActivity memberactivity 
+                    ON          memberactivity.MembershipUserId = member.Id
                     WHERE       groups.Slug = @GroupSlug
                     AND         member.IsDeleted = 0
                     AND         groupUser.MembershipRole_Id = (SELECT Id FROM MembershipRole WHERE RoleName = 'Admin')";

@@ -8,6 +8,7 @@ import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 import { ServerSideFormData } from '@helpers/util/form'
 import { ServiceError } from '@services/index'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     groupId: string
@@ -31,17 +32,18 @@ export const postGroupMemberAccept = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/accept`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/members/accept`
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.POST,
+        headers: headers,
+        body: {
+            MembershipUserId: body.get('MembershipUserId'),
+        },
+    })
 
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.POST,
-            headers: headers,
-            body: {
-                MembershipUserId: body.get('MembershipUserId'),
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

@@ -68,9 +68,15 @@ export const GroupCreateDiscussionPage: (props: Props) => JSX.Element = ({
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
         try {
+            const headers =
+                getStandardServiceHeaders({
+                    csrfToken,
+                    accessToken: user.accessToken,
+                })
             await services.postGroupDiscussion({
                 groupId,
                 user,
+                headers,
                 body: formData as any,
             })
 
@@ -173,6 +179,7 @@ export const getServerSideProps: GetServerSideProps = async (
                 try {
                     const headers: any = getStandardServiceHeaders({
                         csrfToken,
+                        accessToken: user.accessToken,
                     })
 
                     await postGroupDiscussion({

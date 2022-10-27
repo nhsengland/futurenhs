@@ -8,11 +8,12 @@ import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 import { ServerSideFormData } from '@helpers/util/form'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     groupId: string
     user: User
-    headers?: Headers
+    headers?: Record<string, string>
     body: FormData | ServerSideFormData
 }
 
@@ -31,17 +32,18 @@ export const postGroupDiscussion = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/discussions`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/discussions`
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.POST,
+        headers: headers,
+        body: {
+            Title: body.get('Title'),
+            Content: body.get('Content'),
+        },
+    })
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.POST,
-            headers: headers,
-            body: {
-                Title: body.get('Title'),
-                Content: body.get('Content'),
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

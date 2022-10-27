@@ -112,7 +112,11 @@ export const GroupMemberUpdatePage: (props: Props) => JSX.Element = ({
         formData: FormData
     ): Promise<FormErrors> => {
         return new Promise((resolve) => {
-            const headers = getStandardServiceHeaders({ csrfToken, etag })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag,
+                accessToken: user.accessToken,
+            })
 
             putGroupMemberRole({
                 user,
@@ -160,7 +164,11 @@ export const GroupMemberUpdatePage: (props: Props) => JSX.Element = ({
      */
     const handleDeleteMemberSubmitConfirm = async (): Promise<FormErrors> => {
         return new Promise((resolve) => {
-            const headers = getStandardServiceHeaders({ csrfToken, etag })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag,
+                accessToken: user.accessToken,
+            })
 
             deleteGroupMember({
                 groupId,
@@ -367,6 +375,7 @@ export const getServerSideProps: GetServerSideProps = async (
                     const headers = getStandardServiceHeaders({
                         csrfToken,
                         etag,
+                        accessToken: user.accessToken,
                     })
 
                     const isRoleForm = checkMatchingFormType(

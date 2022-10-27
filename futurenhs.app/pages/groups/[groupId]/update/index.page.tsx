@@ -101,7 +101,11 @@ export const GroupUpdatePage: (props: Props) => JSX.Element = ({
         }
 
         return new Promise((resolve) => {
-            const headers = getStandardServiceHeaders({ csrfToken, etag })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag,
+                accessToken: user.accessToken,
+            })
 
             services
                 .putGroup({ groupId, user, headers, body: formData })
@@ -265,6 +269,7 @@ export const getServerSideProps: GetServerSideProps = async (
                         ...getStandardServiceHeaders({
                             csrfToken,
                             etag,
+                            accessToken: user.accessToken,
                         }),
                         ...submission.getHeaders(),
                     }

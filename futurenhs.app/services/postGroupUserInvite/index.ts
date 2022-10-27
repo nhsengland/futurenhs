@@ -9,6 +9,7 @@ import { ServerSideFormData } from '@helpers/util/form'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
 import { api } from '@constants/routes'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -32,20 +33,18 @@ export const postGroupUserInvite = async (
     const emailAddress: FormDataEntryValue = body.get('Email')
 
     const gateway = process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    const registrationPath = api.GROUP_INVITE.replace(
-        '%USER_ID%',
-        user.id
-    ).replace('%GROUP_ID%', groupId)
+    const registrationPath = api.GROUP_INVITE.replace('%GROUP_ID%', groupId)
     const apiUrl: string = gateway + registrationPath
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.POST,
+        headers: headers,
+        body: {
+            emailAddress: emailAddress,
+        },
+    })
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.POST,
-            headers: headers,
-            body: {
-                emailAddress: emailAddress,
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

@@ -4,6 +4,7 @@ using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Comment;
+using FutureNHS.Api.DataAccess.Models.FileAndFolder;
 using FutureNHS.Api.Exceptions;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
@@ -143,6 +144,37 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
             var result = await dbConnection.QueryFirstAsync<Guid>(queryDefinition);
+
+            return result;
+        }
+        public async Task<AuthUserData> GetFileAccess(Guid userId,Guid fileId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$"
+                    SELECT 
+                                [{nameof(AuthUserData.Id)}]                 = membershipUser.Id,
+                                [{nameof(AuthUserData.EmailAddress)}]       = membershipUser.Email,          
+                                [{nameof(AuthUserData.FullName)}]           = TRIM(ISNULL(membershipUser.FirstName, '') + ' ' + ISNULL(membershipUser.Surname, '')),
+                                [{nameof(AuthUserData.Initials)}]           = membershipUser.Initials, 
+                                [{nameof(AuthUserData.FileId)}]             = files.Id, 
+                                [{nameof(AuthUserData.GroupSlug)}]          = groups.Slug 
+
+                    FROM MembershipUser membershipUser
+                    JOIN [File] files on files.Id = @FileId
+                    JOIN Folder folder on folder.Id = files.ParentFolder
+                    JOIN [Group] groups on groups.Id = folder.Group_Id
+                    WHERE membershipUser.Id = @UserId
+                ";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                UserId = userId,
+                FileId = fileId
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var result = await dbConnection.QueryFirstAsync<AuthUserData>(queryDefinition);
 
             return result;
         }

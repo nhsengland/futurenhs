@@ -2,11 +2,13 @@
 using FutureNHS.Api.Models.Member;
 using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.Models.Identity.Response;
+using FutureNHS.Api.DataAccess.Models.Identity;
 
 namespace FutureNHS.Api.DataAccess.Database.Write.Interfaces
 {
     public interface IUserCommand
     {
+        Task<Identity> GetMemberIdentityAsync(string subjectId, CancellationToken cancellationToken);
         Task<UserDto> GetUserAsync(Guid userId, CancellationToken cancellationToken);
         Task<Guid> CreateInviteUserAsync(GroupInviteDto entityLike, CancellationToken cancellationToken);
         Task UpdateUserAsync(MemberDto userDto, byte[] rowVersion, CancellationToken cancellationToken);
@@ -19,5 +21,6 @@ namespace FutureNHS.Api.DataAccess.Database.Write.Interfaces
         Task<MemberInfoResponse> GetMemberInfoAsync(string subjectId, CancellationToken cancellationToken = default);
         Task<Guid> RegisterUserAsync(MemberDto user, string subjectId, string issuer, string defaultRole, CancellationToken cancellationToken);
         Task MapIdentityToExistingUserAsync(Guid membershipUserId, string subjectId, string issuer, CancellationToken cancellationToken);
+        Task RecordUserActivityAsync(Guid userId, DateTime activityDate, CancellationToken cancellationToken);
     }
 }

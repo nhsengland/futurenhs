@@ -1,41 +1,36 @@
 using FutureNHS.Api.Attributes;
-using FutureNHS.Api.Configuration;
-using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.Helpers;
-using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.Controllers
 {
+    [Authorize]
     [Route("api/v{version:apiVersion}")]
     [ApiController]
     [ApiVersion("1.0")]
-    public sealed class UsersController : ControllerBase
+    public sealed class UsersController : ControllerIdentityBase
     {
-        private readonly string? _defaultGroup;
         private readonly ILogger<UsersController> _logger;
         private readonly IPermissionsService _permissionsService;
-        private readonly IUserDataProvider _userDataProvider;
         private readonly IUserService _userService;
         private readonly IEtagService _etagService;
   
-        public UsersController(ILogger<UsersController> logger, IPermissionsService permissionsService, IUserDataProvider userDataProvider, IUserService userService, IEtagService etagService, IGroupMembershipService groupMembershipService, IOptionsMonitor<DefaultSettings> defaultSettings)
+        public UsersController(ILogger<ControllerIdentityBase> baseLogger, ILogger<UsersController> logger, IPermissionsService permissionsService, IUserService userService, IEtagService etagService, IGroupMembershipService groupMembershipService) : base(baseLogger, userService)
         {
             _logger = logger;
             _permissionsService = permissionsService;
-            _userDataProvider = userDataProvider;
             _userService = userService;
             _etagService = etagService;
-            _defaultGroup = defaultSettings.CurrentValue.DefaultGroup;
         }
 
         [HttpGet]
-        [Route("users/{userId:guid}/actions")]
-        public async Task<IActionResult> GetActionsUserCanPerformInGroupAsync(Guid userId, CancellationToken cancellationToken)
+        [Route("users/actions")]
+        public async Task<IActionResult> GetActionsUserCanPerformInGroupAsync(CancellationToken cancellationToken)
         {
-            var permissions = await _permissionsService.GetUserPermissionsAsync(userId, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var permissions = await _permissionsService.GetUserPermissionsAsync(identity.MembershipUserId, cancellationToken);
 
             if (permissions is null)
             {
@@ -46,10 +41,11 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{userId:guid}/users/{targetUserId:guid}")]
-        public async Task<IActionResult> GetMemberAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)
+        [Route("users/{targetUserId:guid}")]
+        public async Task<IActionResult> GetMemberAsync(Guid targetUserId, CancellationToken cancellationToken)
         {
-            var member = await _userDataProvider.GetMemberProfileAsync(targetUserId, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var member = await _userService.GetMemberProfileAsync(identity.MembershipUserId, targetUserId, cancellationToken);
 
             if (member is null)
                 return NotFound();
@@ -58,11 +54,12 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("users/{userId:guid}/users/{targetUserId:guid}/update")]
+        [Route("users/{targetUserId:guid}/update")]
         [TypeFilter(typeof(ETagFilter))]
         public async Task<IActionResult> GetMemberForUpdateAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)
-        {        
-           var member = await _userService.GetMemberAsync(userId, targetUserId, cancellationToken);
+        { 
+           var identity = await GetUserIdentityAsync(cancellationToken);
+           var member = await _userService.GetMemberAsync(identity.MembershipUserId, targetUserId, cancellationToken);
 
            if (member is null)
                return NotFound();
@@ -72,7 +69,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPut]
         [DisableFormValueModelBinding]
-        [Route("users/{userId:guid}/users/{targetUserId:guid}/update")]
+        [Route("users/{targetUserId:guid}/update")]
         public async Task<IActionResult> UpdateMemberAsync(Guid userId, Guid targetUserId, CancellationToken cancellationToken)
         {
             if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
@@ -82,16 +79,19 @@ namespace FutureNHS.Api.Controllers
 
             var rowVersion = _etagService.GetIfMatch();
 
-            await _userService.UpdateMemberAsync(userId, targetUserId, Request.Body, Request.ContentType, rowVersion, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            await _userService.UpdateMemberAsync(identity.MembershipUserId, targetUserId, Request.Body, Request.ContentType, rowVersion, cancellationToken);
 
             return Ok();
         }
         
         [HttpPost]
         [Route("users/info")]
-        public async Task<IActionResult> MemberInfoAsync([FromBody] MemberIdentityRequest memberIdentity, CancellationToken cancellationToken)
+        public async Task<IActionResult> MemberInfoAsync(CancellationToken cancellationToken)
         {
-            var memberInfoResponse = await _userService.GetMemberInfoAsync(memberIdentity, cancellationToken);
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var emailAddress = User.FindFirst("emails")?.Value;       
+            var memberInfoResponse = await _userService.GetMemberInfoAsync(identity.SubjectId, emailAddress, cancellationToken);
 
             return Ok(memberInfoResponse);
         }

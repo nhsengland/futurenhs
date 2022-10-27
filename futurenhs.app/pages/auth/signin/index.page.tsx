@@ -15,6 +15,9 @@ import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { RichText } from '@components/generic/RichText'
 import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
+import { getToken } from 'next-auth/jwt'
+import { authOptions } from '@pages/api/auth/[...nextauth].page'
+import { unstable_getServerSession } from 'next-auth'
 import SignInSubmitButton from '@components/forms/SignInSubmitButton'
 
 interface ContentText extends GenericPageTextContent {
@@ -85,7 +88,11 @@ export const getServerSideProps: GetServerSideProps = async (
             const props: Partial<Props> = selectPageProps(context)
             const { query } = context
             const error: string = selectQuery(context, 'error')
-            const session = await getSession(context)
+            const session = await unstable_getServerSession(
+                context.req,
+                context.res,
+                authOptions
+            )
 
             /**
              * Set base template properties

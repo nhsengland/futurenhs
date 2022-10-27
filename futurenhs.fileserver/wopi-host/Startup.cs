@@ -38,6 +38,7 @@ namespace FutureNHS.WOPIHost
             services.AddHttpClient("wopi-discovery-document").AddCoreResiliencyPolicies();
             services.AddHttpClient("mvcforum-userinfo").AddCoreResiliencyPolicies();
 
+
             services.AddMemoryCache(); //options => { });
 
             var appInsightsInstrumentationKey = _configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");

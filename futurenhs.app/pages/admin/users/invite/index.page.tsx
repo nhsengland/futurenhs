@@ -29,6 +29,7 @@ import { GroupPage } from '@appTypes/page'
 import { useNotification } from '@helpers/hooks/useNotification'
 import { NotificationsContext } from '@helpers/contexts/index'
 import { notifications } from '@constants/notifications'
+import { getStandardServiceHeaders } from '@helpers/fetch'
 
 export interface Props extends GroupPage {
     folderId: string
@@ -59,9 +60,15 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
      * Client-side submission handler
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
+        const headers =
+                getStandardServiceHeaders({
+                    csrfToken,
+                    accessToken: user.accessToken,
+                })
         try {
             await services.postSiteUserInvite({
                 user,
+                headers,
                 body: formData as any,
             })
             const emailAddress: FormDataEntryValue = formData.get('Email')
@@ -160,7 +167,7 @@ export const getServerSideProps: GetServerSideProps = async (
              */
             if (formData && requestMethod === requestMethods.POST) {
                 props.forms[formTypes.INVITE_USER].initialValues = formData
-
+                
                 try {
                     return {
                         props: props,

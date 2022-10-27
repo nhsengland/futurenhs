@@ -95,7 +95,11 @@ export const GroupJoinPage: (props: Props) => JSX.Element = ({
         }
 
         return new Promise((resolve) => {
-            const headers = getStandardServiceHeaders({ csrfToken, etag })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag,
+                accessToken: user.accessToken,
+            })
 
             services
                 .putGroup({ groupId, user, headers, body: formData })

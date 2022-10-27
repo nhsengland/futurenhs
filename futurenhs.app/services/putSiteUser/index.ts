@@ -7,9 +7,10 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
-    headers?: any
+    headers?: Record<string, string>
     body: FormData
     user: User
     targetUserId: string
@@ -30,15 +31,19 @@ export const putSiteUser = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/users/${targetUserId}/update`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${targetUserId}/update`
+
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.PUT,
+        headers: headers,
+        isMultiPartForm: true,
+        body: body,
+    })
+    console.log('test')
+    for (const key in headers) { console.log('key2: ' + key + ' , value2: ' + headers[key]) }
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.PUT,
-            headers: headers,
-            isMultiPartForm: true,
-            body: body,
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

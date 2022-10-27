@@ -95,6 +95,7 @@ export const getServerSideProps: GetServerSideProps = async (
                         const headers = {
                             ...getStandardServiceHeaders({
                                 csrfToken,
+                                accessToken: user.accessToken,
                             }),
                             ...submission.getHeaders(),
                         }

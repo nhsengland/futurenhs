@@ -7,6 +7,7 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     headers?: any
@@ -31,16 +32,18 @@ export const putGroupMemberRole = async (
 
     const { id } = user
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/users/${id}/groups/${groupId}/members/${memberId}/roles/update`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/members/${memberId}/roles/update`
+    const authHeader = jwtHeader(user.accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.PUT,
+        headers: headers,
+        body: {
+            groupUserRoleId: body.get('groupUserRoleId'),
+        },
+    })
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.PUT,
-            headers: headers,
-            body: {
-                groupUserRoleId: body.get('groupUserRoleId'),
-            },
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
 

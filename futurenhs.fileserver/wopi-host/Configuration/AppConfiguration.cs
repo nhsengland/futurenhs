@@ -4,7 +4,7 @@ namespace FutureNHS.WOPIHost.Configuration
 {
     public record AppConfiguration
     {
-        public Uri? MvcForumUserInfoUrl { get; set; }
-        public Uri? MvcForumHealthCheckUrl { get; set; }
+        public string? UserInfoUrl { get; set; }
+        public string TemplateUrlFileIdPlaceholder { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using FutureNHS.Api.Models.FileServer;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
+using System.Net.Http.Headers;
 
 namespace FutureNHS.Api.Services
 {
@@ -91,7 +92,7 @@ namespace FutureNHS.Api.Services
         //    }
         //}
 
-        public async Task<FileServerCollaboraResponse?> GetCollaboraFileUrl(Guid userId, string slug, string permission, Guid file, HttpRequest httpRequest, CancellationToken cancellationToken)
+        public async Task<FileServerCollaboraResponse?> GetCollaboraFileUrl(Guid userId, string slug, string permission, Guid file, string authHeader, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -107,20 +108,13 @@ namespace FutureNHS.Api.Services
 
             var fileRequestUrl = _fileServerPrimaryConnectionString.Replace(_fileServerFilePlaceHolderId, file.ToString());
 
-            var requestCookies = httpRequest.Headers["Cookie"].AsEnumerable();
-
-            var hasCookies = requestCookies.Any();
-
-            if (!hasCookies) return Forbidden(HttpStatusCode.Forbidden, "There is no Cookie header attached to the request");
-
-
             var httpClient = _httpClientFactory.CreateClient("fileserver-createurl");
 
             using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, fileRequestUrl);
 
             httpRequestMessage.Headers.Add("Accept", "application/json; charset=utf-8");
 
-            httpRequestMessage.Headers.Add("Cookie", requestCookies);
+            httpRequestMessage.Headers.Authorization = AuthenticationHeaderValue.Parse(authHeader);
 
             try
             {

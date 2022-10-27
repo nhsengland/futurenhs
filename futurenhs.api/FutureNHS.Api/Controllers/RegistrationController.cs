@@ -11,16 +11,18 @@ using FutureNHS.Api.Models.UserInvite;
 using FutureNHS.Api.Services;
 using FutureNHS.Api.Services.Admin.Interfaces;
 using FutureNHS.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.Controllers
 {
+    [Authorize]
     [Route("api/v{version:apiVersion}")]
     [ApiController]
     [ApiVersion("1.0")]
     //[FeatureGate(FeatureFlags.Groups)]
-    public sealed class RegistrationController : ControllerBase
+    public sealed class RegistrationController : ControllerIdentityBase
     {
         private readonly string? _defaultGroup;
         private readonly ILogger<RegistrationController> _logger;
@@ -30,7 +32,9 @@ namespace FutureNHS.Api.Controllers
         private readonly IUserService _userService;
         private readonly IEtagService _etagService;
 
-        public RegistrationController(ILogger<RegistrationController> logger, IEtagService etagService, IPermissionsService permissionsService, IUserService userService, IGroupMembershipService groupMembershipService, IRegistrationService registrationService, IOptionsMonitor<DefaultSettings> defaultSettings)
+        public RegistrationController(ILogger<ControllerIdentityBase> baseLogger, ILogger<RegistrationController> logger, IEtagService etagService, IPermissionsService permissionsService,
+            IUserService userService, IGroupMembershipService groupMembershipService, IRegistrationService registrationService, 
+            IOptionsMonitor<DefaultSettings> defaultSettings) : base(baseLogger, userService)
         {
             _logger = logger;
             _permissionsService = permissionsService;
@@ -39,14 +43,10 @@ namespace FutureNHS.Api.Controllers
             _groupMembershipService = groupMembershipService;
             _userService = userService;
             _etagService = etagService;
-
-
         }
 
-
-
         [HttpPost]
-        [Route("users/{userId:guid}/groups/{slug}/registration/invite")]
+        [Route("groups/{slug}/registration/invite")]
         public async Task<IActionResult> InviteMemberToGroupAndPlatformAsync(Guid userId,
             [FromBody] UserInvite userInvite, string slug, CancellationToken cancellationToken)
         {
@@ -54,14 +54,15 @@ namespace FutureNHS.Api.Controllers
             if (string.IsNullOrEmpty(userInvite.EmailAddress))
                 throw new ArgumentNullException(nameof(userInvite.EmailAddress));
         
-            await _registrationService.InviteMemberToGroupAndPlatformAsync(userId, slug,
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            await _registrationService.InviteMemberToGroupAndPlatformAsync(identity.MembershipUserId, slug,
                 userInvite.EmailAddress, cancellationToken);
         
             return Ok();
         }
         
         [HttpPost]
-        [Route("users/{userId:guid}/registration/invite")]
+        [Route("registration/invite")]
         public async Task<IActionResult> InviteMemberToPlatformAsync(Guid userId,
             [FromBody] UserInvite userInvite, CancellationToken cancellationToken)
         {
@@ -69,13 +70,14 @@ namespace FutureNHS.Api.Controllers
             if (string.IsNullOrEmpty(userInvite.EmailAddress))
                 throw new ArgumentNullException(nameof(userInvite.EmailAddress));
 
-            await _registrationService.InviteMemberToPlatformAsync(userId,
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            await _registrationService.InviteMemberToPlatformAsync(identity.MembershipUserId,
                 userInvite.EmailAddress, cancellationToken);
 
             return Ok();
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
         [Route("registration/invite/{id:guid}")]
         public async Task<IActionResult> GetRegistrationInviteDetailsAsync(Guid id, CancellationToken cancellationToken)
