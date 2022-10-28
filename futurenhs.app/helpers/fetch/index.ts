@@ -90,7 +90,6 @@ export const setFetchOpts = ({
 
     if (headers) {
         for (const key in headers) {
-            console.log('key: ' + key + ' , value: ' + headers[key])
             headersToUse.set(key, headers[key])
         }
     }
