@@ -17,6 +17,7 @@ import { Pagination } from '@appTypes/pagination'
 import { User } from '@appTypes/user'
 import { GroupMember } from '@appTypes/group'
 import { Domain } from '@appTypes/domain'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
@@ -43,7 +44,12 @@ export const getDomain = async (
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/user/${id}/registration/domains/${domainId}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({ method: requestMethods.GET }),
+        setFetchOptions({
+            method: requestMethods.GET,
+            headers: {
+                ...jwtHeader(user.accessToken),
+            },
+        }),
         defaultTimeOutMillis
     )
     const apiData: any = apiResponse.json

@@ -18,6 +18,7 @@ import { User } from '@appTypes/user'
 import { GroupMember } from '@appTypes/group'
 import { Domain } from '@appTypes/domain'
 import { api } from '@constants/routes'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     headers?: any
@@ -42,11 +43,15 @@ export const deleteDomain = async (
         '%DOMAIN%',
         domainId
     )
+    console.log(headers)
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
-            headers,
+            headers: {
+                ...headers,
+                ...jwtHeader(user.accessToken),
+            },
             method: requestMethods.DELETE,
         }),
         defaultTimeOutMillis

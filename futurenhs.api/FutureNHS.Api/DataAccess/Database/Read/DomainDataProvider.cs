@@ -20,6 +20,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
         public async Task<bool> IsDomainApprovedAsync(string emailDomain, CancellationToken cancellationToken = default)
         {
+            var domainToCheck = emailDomain;
+            var domainArr = domainToCheck.Split('.');
+            var domainHasPrefix = domainArr.Length >= 3;
+            if (domainHasPrefix)
+            {
+                domainToCheck = $"*.{domainArr[^2]}.{domainArr[^1]}";
+            }
             const string query =
                 @"SELECT 
                     CASE WHEN EXISTS 
@@ -32,7 +39,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                EmailDomain = emailDomain.ToLower()
+                EmailDomain = domainToCheck.ToLower()
             }, cancellationToken: cancellationToken);
             
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);

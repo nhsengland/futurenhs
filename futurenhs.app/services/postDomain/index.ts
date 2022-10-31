@@ -8,6 +8,7 @@ import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
 import { api } from '@constants/routes'
 import { User } from '@appTypes/user'
+import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     headers?: any
@@ -33,14 +34,16 @@ export const postDomain = async (
         apiUrl,
         setFetchOptions({
             method: requestMethods.POST,
-            headers: headers,
+            headers: {
+                ...headers,
+                ...jwtHeader(user.accessToken),
+            },
             body: {
                 EmailDomain: domain,
             },
         }),
         defaultTimeOutMillis
     )
-    debugger
     const apiMeta: any = apiResponse.meta
     const apiData: any = apiResponse.json
 
