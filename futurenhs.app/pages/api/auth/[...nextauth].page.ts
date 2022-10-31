@@ -1,5 +1,5 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
-import { decode, JWT } from 'next-auth/jwt'
+import { JWT } from 'next-auth/jwt'
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c'
 
 const getRefreshToken = async (token: JWT) => {
@@ -80,7 +80,6 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
-            if (profile?.iss) console.log('issuer :' + profile?.iss)
             if (profile?.iss) user.iss = profile?.iss
             return true
         },
@@ -103,14 +102,11 @@ export const authOptions: NextAuthOptions = {
                 token.id = profile.id
                 token.accessTokenExpires = account.expires_at * 1000
             }
-            console.log('expires at:', token.accessTokenExpires)
-            console.log('now : ' + Date.now())
             if (Date.now() < token.accessTokenExpires) {
                 return token
             }
 
             const refreshedToken = getRefreshToken(token)
-            console.log('USING NEW TOKEN:', await refreshedToken)
             return refreshedToken
         },
     },

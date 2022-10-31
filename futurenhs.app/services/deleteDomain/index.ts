@@ -43,7 +43,6 @@ export const deleteDomain = async (
         '%DOMAIN%',
         domainId
     )
-    console.log(headers)
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
