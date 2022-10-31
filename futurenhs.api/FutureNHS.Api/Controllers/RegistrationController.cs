@@ -77,6 +77,54 @@ namespace FutureNHS.Api.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("registration/domains/{domainId}")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var domain = await _registrationService.GetDomainAsync(identity.MembershipUserId, domainId, cancellationToken);
+            if (domain is null)
+                return NotFound();
+
+            return Ok(domain);
+        }
+
+        [HttpDelete]
+        [Route("registration/domains/{domainId}")]
+        public async Task<IActionResult> DeleteDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var rowVersion = _etagService.GetIfMatch();
+            await _registrationService.DeleteDomainAsync(identity.MembershipUserId, domainId, rowVersion, cancellationToken);
+
+            return Ok();
+        }
+        
+        [HttpPost]
+        [Route("registration/domains")]
+        public async Task<IActionResult> AddDomainAsync(Guid userId, RegisterDomainRequest registerDomainRequest, CancellationToken cancellationToken)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            await _registrationService.AddDomainAsync(identity.MembershipUserId, registerDomainRequest, cancellationToken);
+
+            return Ok();
+        }
+        
+        [HttpGet]
+        [Route("registration/domains")]
+        public async Task<IActionResult> GetDomainsAsync(Guid userId, Guid adminUserId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var route = Request.Path.Value;
+
+            var (total, domains) = await _registrationService.GetDomainsAsync(identity.MembershipUserId, filter.Offset, filter.Limit, cancellationToken);
+
+            var pagedResponse = PaginationHelper.CreatePagedResponse(domains, filter, total, route);
+
+            return Ok(pagedResponse);
+        }
+
         [AllowAnonymous]
         [HttpGet]
         [Route("registration/invite/{id:guid}")]
@@ -136,48 +184,6 @@ namespace FutureNHS.Api.Controllers
 
         }
 
-        [HttpGet]
-        [Route("user/{userId}/registration/domains/{domainId}")]
-        [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> GetDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
-        {
-            var domain = await _registrationService.GetDomainAsync(userId, domainId, cancellationToken);
-            if (domain is null)
-                return NotFound();
-
-            return Ok(domain);
-        }
-
-        [HttpDelete]
-        [Route("user/{userId}/registration/domains/{domainId}")]
-        public async Task<IActionResult> DeleteDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
-        {
-            var rowVersion = _etagService.GetIfMatch();
-            await _registrationService.DeleteDomainAsync(userId, domainId, rowVersion, cancellationToken);
-
-            return Ok();
-        }
         
-        [HttpPost]
-        [Route("user/{userId}/registration/domains")]
-        public async Task<IActionResult> AddDomainAsync(Guid userId, RegisterDomainRequest registerDomainRequest, CancellationToken cancellationToken)
-        {
-            await _registrationService.AddDomainAsync(userId, registerDomainRequest, cancellationToken);
-
-            return Ok();
-        }
-        
-        [HttpGet]
-        [Route("user/{userId}/registration/domains")]
-        public async Task<IActionResult> GetDomainsAsync(Guid userId, Guid adminUserId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
-        {
-            var route = Request.Path.Value;
-
-            var (total, domains) = await _registrationService.GetDomainsAsync(userId, filter.Offset, filter.Limit, cancellationToken);
-
-            var pagedResponse = PaginationHelper.CreatePagedResponse(domains, filter, total, route);
-
-            return Ok(pagedResponse);
-        }
     }
 }

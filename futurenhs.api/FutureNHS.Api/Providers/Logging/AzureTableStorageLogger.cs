@@ -12,7 +12,6 @@ namespace FutureNHS.Api.Providers.Logging
         public AzureTableLogger(string connectionString, string tableName)
         {
             var cloudTableClient = new TableClient(connectionString, tableName);
-            cloudTableClient.CreateIfNotExistsAsync();
             _tableClient = cloudTableClient;
         }
 

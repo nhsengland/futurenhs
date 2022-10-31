@@ -21,8 +21,8 @@ export const enum api {
     INVITE_DETAILS = '/v1/registration/invite/%INVITE_ID%',
     USER_REGISTER = '/v1/registration/register',
     MAP_IDENTITY = '/v1/registration/identity',
-    ALLOW_DOMAIN = '/v1/user/%USER_ID%/registration/domains',
-    GET_DOMAIN = '/v1/user/%USER_ID%/registration/domains/%DOMAIN%',
+    ALLOW_DOMAIN = '/v1/registration/domains',
+    GET_DOMAIN = '/v1/registration/domains/%DOMAIN%',
 }
 
 export const enum queryParams {

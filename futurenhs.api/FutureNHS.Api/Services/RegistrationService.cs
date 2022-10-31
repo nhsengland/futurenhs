@@ -268,7 +268,7 @@ namespace FutureNHS.Api.Services
 
         public async Task DeleteDomainAsync(Guid userId, Guid domainId, byte[] rowVersion, CancellationToken cancellationToken)
         {
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, UpdateDomainRole, cancellationToken);
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, DeleteDomainRole, cancellationToken);
 
             if (!userCanPerformAction)
             {

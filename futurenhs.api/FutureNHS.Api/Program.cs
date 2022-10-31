@@ -139,12 +139,6 @@ if (!string.IsNullOrWhiteSpace(appInsightsInstrumentationKey))
         });
 }
 
-builder.Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme);
-
-
-
-
-
 builder.Services.AddHttpContextAccessor();
 
 if (useAppConfig)

@@ -41,7 +41,7 @@ export const getDomain = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
     const id: string = user.id
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/user/${id}/registration/domains/${domainId}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/registration/domains/${domainId}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({

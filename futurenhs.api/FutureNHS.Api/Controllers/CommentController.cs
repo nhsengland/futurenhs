@@ -50,7 +50,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("groups/{slug}/discussions/{discussionId:guid}/comments")]
-        public async Task<IActionResult> GetCommentsForDiscussionAsync(Guid? userId, string slug, Guid discussionId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCommentsForDiscussionAsync(string slug, Guid discussionId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var route = Request.Path.Value;

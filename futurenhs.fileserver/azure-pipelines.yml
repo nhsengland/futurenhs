@@ -15,7 +15,7 @@ variables:
   solution: 'FutureNHS-WOPI-FileServer.sln'
   buildPlatform: 'x64'
   buildConfiguration: 'Release'
-  working-dir: 'futurenhs.fileserver'
+  working-dir: 'futurenhs.fileserver/FileServer'
 
 jobs:
 
@@ -49,30 +49,30 @@ jobs:
       configuration: 'Release'
 
     # Run all tests with "/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura" to generate the code coverage file
-   - task: DotNetCoreCLI@2
-     displayName: Test
-     inputs:
-      command: test
-      configuration: 'Release'
-      arguments: '--collect:"XPlat Code Coverage"'
-      projects: '$(Build.SourcesDirectory)/$(working-dir)/wopi-host-tests/FutureNHS-WOPI-Host-UnitTests/FutureNHS-WOPI-Host-UnitTests.csproj'
-      workingDirectory: '$(Build.SourcesDirectory)/$(working-dir)'
-      nobuild: true
+  # - task: DotNetCoreCLI@2
+  #   displayName: Test
+  #   inputs:
+  #    command: test
+  #    configuration: 'Release'
+  #    arguments: '--collect:"XPlat Code Coverage"'
+  #    projects: '$(Build.SourcesDirectory)/$(working-dir)/wopi-host-tests/FutureNHS-WOPI-Host-UnitTests/FutureNHS-WOPI-Host-UnitTests.csproj'
+  #    workingDirectory: '$(Build.SourcesDirectory)/$(working-dir)'
+  #    nobuild: true
 
-   - script: |
-       dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8
-       reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
-     displayName: Create Code coverage report
+  # - script: |
+  #     dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8
+  #     reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
+  #   displayName: Create Code coverage report
 
     # Publish the code coverage result (summary and web site)
     # The summary allows to view the coverage percentage in the summary tab
     # The web site allows to view which lines are covered directly in Azure Pipeline
-   - task: PublishCodeCoverageResults@1
-     displayName: 'Publish code coverage'
-     inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
-      failIfCoverageEmpty: false # Optional
+  # - task: PublishCodeCoverageResults@1
+  #   displayName: 'Publish code coverage'
+  #   inputs:
+  #    codeCoverageTool: Cobertura
+  #    summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+  #    failIfCoverageEmpty: false # Optional
       
    - task: DotNetCoreCLI@2
      displayName: 'Publish FutureNHS Api'
@@ -80,13 +80,13 @@ jobs:
       command: 'publish'
       configuration: 'Release'
       publishWebProjects: false
-      projects: '$(Build.SourcesDirectory)/$(working-dir)/**/*.csproj'
+      projects: '$(Build.SourcesDirectory)/$(working-dir)/*.csproj'
       zipAfterPublish: false
 
    - task: CopyFiles@2
      displayName: 'Copy files for artifact'
      inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/wopi-host/bin/Debug/net6.0/publish'
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/bin/Debug/net6.0/publish'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
@@ -105,7 +105,7 @@ jobs:
    - task: CopyFiles@2
      displayName: 'Copy files for Collabora artifact'
      inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/wopi-client/Azure'
+      SourceFolder: '$(Build.SourcesDirectory)/futurenhs.fileserver/wopi-client/Azure'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)/Collabora'
 

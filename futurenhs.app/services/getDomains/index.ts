@@ -48,7 +48,7 @@ export const getDomains = async (
             pageSize: 10,
         },
     })
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/user/${id}/registration/domains?${paginationQueryParams}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/registration/domains?${paginationQueryParams}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
