@@ -78,6 +78,9 @@ export const authOptions: NextAuthOptions = {
             },
         },
     },
+    session: {
+        maxAge: 24 * 60 * 60, // 30 days
+    },
     callbacks: {
         async signIn({ user, account, profile, email, credentials }) {
             if (profile?.iss) user.iss = profile?.iss
