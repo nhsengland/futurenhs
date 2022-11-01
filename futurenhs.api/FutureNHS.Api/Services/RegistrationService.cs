@@ -4,6 +4,7 @@ using System.Net.Mail;
 using System.Security;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
+using FutureNHS.Api.DataAccess.Database.Write;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Domain;
@@ -75,17 +76,41 @@ namespace FutureNHS.Api.Services
             _defaultRole = defaultSettings.CurrentValue.DefaultRole ?? throw new ArgumentOutOfRangeException(nameof(defaultSettings.CurrentValue.DefaultRole));
 
         }
-        
-        public async Task InviteMemberToGroupAndPlatformAsync(Guid userId, string groupSlug, string email, CancellationToken cancellationToken)
+
+        private async Task<Guid> CreatePlatformInviteAsync(Guid userId, MailAddress emailAddress, Guid? groupId, CancellationToken cancellationToken)
+        {
+            var domain = emailAddress.Host;
+            var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+            if (!domainIsAllowed)
+            {
+                throw new InvalidOperationException("The email address cannot be invited");
+            }
+
+            var userInvite = new PlatformInviteDto
+            {
+                EmailAddress = emailAddress.Address.ToLowerInvariant(),
+                GroupId = groupId,
+                CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
+                CreatedBy = userId
+
+            };
+
+            return await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
+        }
+        public async Task InviteMemberToGroupAndPlatformAsync(Guid userId, string groupSlug, string email,
+            CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(groupSlug)) throw new ArgumentOutOfRangeException(nameof(groupSlug));
 
-            
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, AddMembersRole, cancellationToken);
+
+            var userCanPerformAction =
+                await _permissionsService.UserCanPerformActionAsync(userId, AddMembersRole, cancellationToken);
             if (!userCanPerformAction)
             {
-                _logger.LogError($"Error: InviteMemberToGroupAndPlatformAsync - User:{0} does not have access to perform admin actions", userId);
+                _logger.LogError(
+                    $"Error: InviteMemberToGroupAndPlatformAsync - User:{0} does not have access to perform admin actions",
+                    userId);
                 throw new SecurityException($"Error: User does not have access");
             }
 
@@ -108,33 +133,28 @@ namespace FutureNHS.Api.Services
             {
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
-            
-            var domain = emailAddress.Host;
-            var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
-            if (!domainIsAllowed)
+
+            var userIsOnPlaform = await _userCommand.GetMemberByEmailAsync(email, cancellationToken);
+            if (userIsOnPlaform is null)
             {
-                throw new InvalidOperationException("Email domain is not accepted");
+                var groupId = await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
+                var userInviteId = CreatePlatformInviteAsync(userId, emailAddress, groupId, cancellationToken);
+                //TODO: Check user is on platform and add to group invites list
+                var registrationLink = CreateRegistrationLink(await userInviteId);
+                var personalisation = new Dictionary<string, dynamic>
+                {
+                    { "registration_link", registrationLink }
+                };
+
+                await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
             }
-            
-            var groupId = await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
-            var userInvite = new GroupInviteDto
-            {
-                EmailAddress = emailAddress.Address.ToLowerInvariant(),
-                GroupId = groupId,
-                CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
-                CreatedBy = userId
 
-            };
-
-            var userInviteId = await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
-            //TODO: Check user is on platform and add to group invites list
-            var registrationLink = CreateRegistrationLink(userInviteId);
-            var personalisation = new Dictionary<string, dynamic>
+            else
             {
-                {"registration_link", registrationLink}
-            };
-            
-            await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
+                //DONE: go update all SQL calls pointing to group invite to point to platform invite
+                //TODO: add a new entry to the group invites table
+                //TODO: Send an email
+            }
         }
         public async Task InviteMemberToPlatformAsync(Guid userId, string email, CancellationToken cancellationToken)
         {
@@ -171,24 +191,8 @@ namespace FutureNHS.Api.Services
             
             if (userInviteId.HasValue is false)
             {
-                var domain = emailAddress.Host;
-                var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
-                if (!domainIsAllowed)
-                {
-                    throw new InvalidOperationException("The email address cannot be invited");
-                }
-
-                var userInvite = new GroupInviteDto
-                {
-                    EmailAddress = emailAddress.Address.ToLowerInvariant(),
-                    CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
-                    CreatedBy = userId
-
-                };
-
-                userInviteId = await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
+                await CreatePlatformInviteAsync(userId, emailAddress, null, cancellationToken);
             }
-
             var registrationLink = CreateRegistrationLink(userInviteId.Value);
             var personalisation = new Dictionary<string, dynamic>
             {

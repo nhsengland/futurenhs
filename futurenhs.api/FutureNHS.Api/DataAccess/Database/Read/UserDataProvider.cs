@@ -113,7 +113,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         {
             const string query =
                 @$"	    SELECT [Id]
-	                    FROM GroupInvite
+	                    FROM PlatformInvite
 	                    WHERE  LOWER(EmailAddress) = LOWER(@EmailAddress)	                    
 	                    AND IsDeleted = 0
                 ";

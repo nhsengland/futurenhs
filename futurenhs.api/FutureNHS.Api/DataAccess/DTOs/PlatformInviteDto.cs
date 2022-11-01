@@ -2,10 +2,10 @@
 
 namespace FutureNHS.Api.DataAccess.DTOs
 {
-    public sealed class GroupInviteDto
+    public sealed class PlatformInviteDto
     {
         public Guid Id { get; set; }
-        public Guid MembershipUser_Id { get; set; }
+        public string EmailAddress { get; set; }
         public Guid? GroupId { get; set; }
         public DateTime CreatedAtUTC { get; set; }
         

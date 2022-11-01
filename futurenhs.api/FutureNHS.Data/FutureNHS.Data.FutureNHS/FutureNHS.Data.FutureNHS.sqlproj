@@ -45,7 +45,8 @@
     <Build Include="dbo\Tables\Folder.sql" />
     <Build Include="dbo\Tables\GlobalPermissionForRole.sql" />
     <Build Include="dbo\Tables\Group.sql" />
-    <Build Include="dbo\Tables\GroupInvite.sql" />
+    <Build Include="dbo\Tables\PlatformInvite.sql" />
+    <Build Include="dbo\Tables\GroupInvites.sql" />
     <Build Include="dbo\Tables\GroupNotification.sql" />
     <Build Include="dbo\Tables\GroupPermissionForRole.sql" />
     <Build Include="dbo\Tables\GroupUser.sql" />

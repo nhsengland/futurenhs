@@ -30,12 +30,13 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<Guid> CreateInviteUserAsync(GroupInviteDto groupInvite, CancellationToken cancellationToken)
+        public async Task<Guid> CreateInviteUserAsync(PlatformInviteDto groupInvite,
+            CancellationToken cancellationToken)
         {
             const string query =
 
                     @"
-                    INSERT INTO  [dbo].[GroupInvite]
+                    INSERT INTO  [dbo].[PlatformInvite]
                                  ([EmailAddress]
                                  ,[GroupId]
                                  ,[CreatedAtUTC]
@@ -69,6 +70,47 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 }
 
                 return result.Value;
+        }
+        
+        public async Task<Guid> CreateInviteGroupUserAsync(GroupInviteDto groupInvite, CancellationToken cancellationToken)
+        {
+            const string query =
+
+                @"
+                    INSERT INTO  [dbo].[GroupInvites]
+                                 ([MembershipUser_Id]
+                                 ,[GroupId]
+                                 ,[CreatedAtUTC]
+                                 ,[CreatedBy]
+                                 ,[ExpiresAtUTC])
+	                OUTPUT       INSERTED.[Id]
+                    VALUES
+                                 (@EmailAddress
+                                 ,@GroupId
+                                 ,@CreatedAtUTC
+                                 ,@CreatedBy
+                                 ,@ExpiresAtUTC)";
+
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                MembershipUser_Id = groupInvite.MembershipUser_Id,
+                GroupId = groupInvite.GroupId,
+                CreatedAtUTC = groupInvite.CreatedAtUTC,
+                CreatedBy = groupInvite.CreatedBy,
+                ExpiresAtUTC = groupInvite.ExpiresAtUTC
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var result = await dbConnection.ExecuteScalarAsync<Guid?>(queryDefinition);
+            if (result.HasValue is false)
+            {
+                _logger.LogError("Error: CreateInviteUserAsync - User request to create was not successful.", queryDefinition);
+                throw new DBConcurrencyException("Error: User request was not successful.");
+            }
+
+            return result.Value;
         }
 
         public async Task<MemberProfile> GetMemberAsync(Guid id, CancellationToken cancellationToken)
