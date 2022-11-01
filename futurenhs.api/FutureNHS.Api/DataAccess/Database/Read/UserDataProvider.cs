@@ -109,21 +109,18 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
        
 
-        public async Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken = default)
+        public async Task<Guid?> GetMemberInviteIdAsync(string emailAddress, CancellationToken cancellationToken = default)
         {
             const string query =
-                @$" SELECT CASE WHEN EXISTS (
-	                    SELECT *
+                @$"	    SELECT [Id]
 	                    FROM GroupInvite
-	                    WHERE  LOWER(EmailAddress) = LOWER(@EmailAddress)
+	                    WHERE  LOWER(EmailAddress) = LOWER(@EmailAddress)	                    
 	                    AND IsDeleted = 0
-                    )
-                    THEN CAST(1 AS BIT)
-                    ELSE CAST(0 AS BIT) END";
+                ";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            return await dbConnection.QuerySingleOrDefaultAsync<bool>(query, new
+            return await dbConnection.QueryFirstOrDefaultAsync<Guid?>(query, new
             {
                 EmailAddress = emailAddress
             });

@@ -166,24 +166,30 @@ namespace FutureNHS.Api.Services
             {
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
+
+            var userInviteId = await _userService.GetInviteIdForEmailAsync(email, cancellationToken);
             
-            var domain = emailAddress.Host;
-            var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
-            if (!domainIsAllowed)
+            if (userInviteId.HasValue is false)
             {
-                throw new InvalidOperationException("Email domain is not accepted");
+                var domain = emailAddress.Host;
+                var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+                if (!domainIsAllowed)
+                {
+                    throw new InvalidOperationException("The email address cannot be invited");
+                }
+
+                var userInvite = new GroupInviteDto
+                {
+                    EmailAddress = emailAddress.Address.ToLowerInvariant(),
+                    CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
+                    CreatedBy = userId
+
+                };
+
+                userInviteId = await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
             }
 
-            var userInvite = new GroupInviteDto
-            {
-                EmailAddress = emailAddress.Address.ToLowerInvariant(),
-                CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
-                CreatedBy = userId
-
-            };
-
-            var userInviteId = await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
-            var registrationLink = CreateRegistrationLink(userInviteId);
+            var registrationLink = CreateRegistrationLink(userInviteId.Value);
             var personalisation = new Dictionary<string, dynamic>
             {
                 {"registration_link", registrationLink}
@@ -209,13 +215,17 @@ namespace FutureNHS.Api.Services
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
 
+
+            
+            // if user is on an approved list of domains let them sign up
             var domain = emailAddress.Host;
             var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
-            if (!domainIsAllowed)
+            if (domainIsAllowed)
             {
-                throw new InvalidOperationException("Email domain is not accepted");
+                // register
             }
 
+            // else has the user been invited
             if (await _userService.IsMemberInvitedAsync(registrationRequest.Email, cancellationToken))
             {
                 var member = new MemberDto

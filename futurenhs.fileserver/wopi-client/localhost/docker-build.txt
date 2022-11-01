@@ -1,0 +1,6 @@
+docker build -t fnhs-wopi-client:localhost .
+
+docker run -t -d -p 0.0.0.0:9980:9980 -e "domain=host\\.docker\\.internal:44355" -e "username=admin" -e "password=S3cRet" --name=fnhs-wopi-client --restart always --cap-add MKNOD fnhs-wopi-client:localhost
+
+
+

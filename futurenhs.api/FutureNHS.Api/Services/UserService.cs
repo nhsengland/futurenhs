@@ -127,7 +127,15 @@ namespace FutureNHS.Api.Services
         {
             if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
 
-            return await _userDataProvider.IsMemberInvitedAsync(emailAddress, cancellationToken);
+            var inviteId =  await _userDataProvider.GetMemberInviteIdAsync(emailAddress, cancellationToken);
+            return inviteId.HasValue;
+        }
+        
+        public async Task<Guid?> GetInviteIdForEmailAsync(string emailAddress, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
+
+            return await _userDataProvider.GetMemberInviteIdAsync(emailAddress, cancellationToken);
         }
 
         public async Task UpdateMemberAsync(Guid userId, Guid targetUserId, Stream requestBody, string? contentType, byte[] rowVersion, CancellationToken cancellationToken)
@@ -429,7 +437,7 @@ namespace FutureNHS.Api.Services
                     };
                 }
 
-                var isMemberInvited = await _userDataProvider.IsMemberInvitedAsync(emailAddress, cancellationToken);
+                var isMemberInvited = await IsMemberInvitedAsync(emailAddress, cancellationToken);
                 if (isMemberInvited)
                 {
                     return new MemberInfoResponse

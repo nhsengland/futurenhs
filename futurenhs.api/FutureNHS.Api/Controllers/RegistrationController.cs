@@ -66,7 +66,6 @@ namespace FutureNHS.Api.Controllers
         public async Task<IActionResult> InviteMemberToPlatformAsync(Guid userId,
             [FromBody] UserInvite userInvite, CancellationToken cancellationToken)
         {
-            //CHECK EMAIL DOMAIN
             if (string.IsNullOrEmpty(userInvite.EmailAddress))
                 throw new ArgumentNullException(nameof(userInvite.EmailAddress));
 

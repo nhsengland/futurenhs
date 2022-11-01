@@ -34,8 +34,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
         {
             const string query =
 
-                    @"  
-	                INSERT INTO  [dbo].[GroupInvite]
+                    @"
+                    INSERT INTO  [dbo].[GroupInvite]
                                  ([EmailAddress]
                                  ,[GroupId]
                                  ,[CreatedAtUTC]
