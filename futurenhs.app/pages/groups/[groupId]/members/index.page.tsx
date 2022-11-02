@@ -282,7 +282,7 @@ export const GroupMemberListingPage: (props: Props) => JSX.Element = ({
             className: '',
         },
         {
-            children: 'Last logged in',
+            children: 'Last activity',
             className: '',
         },
     ]

@@ -63,7 +63,7 @@ const columnList = [
         className: '',
     },
     {
-        children: 'Last logged in',
+        children: 'Last activity',
         className: '',
     },
     {
