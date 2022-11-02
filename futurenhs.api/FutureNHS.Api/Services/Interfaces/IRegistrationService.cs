@@ -1,4 +1,5 @@
-﻿using FutureNHS.Api.DataAccess.DTOs;
+﻿using System.Net.Mail;
+using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Domain;
 using FutureNHS.Api.DataAccess.Models.Registration;
 using FutureNHS.Api.Models.Domain.Request;
@@ -10,7 +11,8 @@ namespace FutureNHS.Api.Services.Interfaces
 {
     public interface IRegistrationService
     {
-        Task InviteMemberToGroupAndPlatformAsync(Guid userId, string groupSlug, string email, CancellationToken cancellationToken);
+        Task InviteMemberToGroupAndPlatformAsync(Guid userId, string groupSlug, string email,
+            CancellationToken cancellationToken);
         
         Task InviteMemberToPlatformAsync(Guid userId, string email, CancellationToken cancellationToken);
 

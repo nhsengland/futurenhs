@@ -92,10 +92,23 @@ namespace FutureNHS.Api.Services
                 GroupId = groupId,
                 CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
                 CreatedBy = userId
-
             };
 
             return await _userCommand.CreateInviteUserAsync(userInvite, cancellationToken);
+        }
+        
+        private async Task<Guid> CreateGroupInviteAsync(Guid userId, Guid invitedUserId, Guid groupId, CancellationToken cancellationToken)
+        {
+            var userInvite = new GroupInviteDto
+            {
+                MembershipUser_Id = invitedUserId,
+                GroupId = groupId,
+                CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
+                CreatedBy = userId,
+                ExpiresAtUTC = null
+            };
+
+            return await _userCommand.CreateInviteGroupUserAsync(userInvite, cancellationToken);
         }
         public async Task InviteMemberToGroupAndPlatformAsync(Guid userId, string groupSlug, string email,
             CancellationToken cancellationToken)
@@ -134,13 +147,13 @@ namespace FutureNHS.Api.Services
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
 
-            var userIsOnPlaform = await _userCommand.GetMemberByEmailAsync(email, cancellationToken);
-            if (userIsOnPlaform is null)
+            var userIsOnPlatform = await _userCommand.GetMemberByEmailAsync(email, cancellationToken);
+            if (userIsOnPlatform is null)
             {
                 var groupId = await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
-                var userInviteId = CreatePlatformInviteAsync(userId, emailAddress, groupId, cancellationToken);
+                var userInviteId = await CreatePlatformInviteAsync(userId, emailAddress, groupId, cancellationToken);
                 //TODO: Check user is on platform and add to group invites list
-                var registrationLink = CreateRegistrationLink(await userInviteId);
+                var registrationLink = CreateRegistrationLink(userInviteId);
                 var personalisation = new Dictionary<string, dynamic>
                 {
                     { "registration_link", registrationLink }
@@ -151,6 +164,23 @@ namespace FutureNHS.Api.Services
 
             else
             {
+                var groupId = await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
+                if (groupId is null)
+                {
+                    throw new NotFoundException($"Group Id was not found.");
+                }
+                var memberDetails = await _userCommand.GetMemberByEmailAsync(email, cancellationToken);
+                if (memberDetails is null)
+                {
+                    throw new NotFoundException($"Group Id was not found.");
+                }
+                var userGroupInviteId = await CreateGroupInviteAsync(userId, memberDetails.Id, groupId.Value, cancellationToken);
+                var registrationLink = CreateRegistrationLink(userGroupInviteId);
+                var personalisation = new Dictionary<string, dynamic>
+                {
+                    { "registration_link", registrationLink }
+                };
+                await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
                 //DONE: go update all SQL calls pointing to group invite to point to platform invite
                 //TODO: add a new entry to the group invites table
                 //TODO: Send an email
@@ -191,7 +221,7 @@ namespace FutureNHS.Api.Services
             
             if (userInviteId.HasValue is false)
             {
-                await CreatePlatformInviteAsync(userId, emailAddress, null, cancellationToken);
+                userInviteId = await CreatePlatformInviteAsync(userId, emailAddress, null, cancellationToken);
             }
             var registrationLink = CreateRegistrationLink(userInviteId.Value);
             var personalisation = new Dictionary<string, dynamic>

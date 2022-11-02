@@ -12,6 +12,7 @@ using FutureNHS.Api.Models.Member;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using System.Data;
+using System.Net.Mail;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {
@@ -30,7 +31,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<Guid> CreateInviteUserAsync(PlatformInviteDto groupInvite,
+        public async Task<Guid> CreateInviteUserAsync(PlatformInviteDto platformInvite,
             CancellationToken cancellationToken)
         {
             const string query =
@@ -53,11 +54,11 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
                 var queryDefinition = new CommandDefinition(query, new
                 {
-                    EmailAddress = groupInvite.EmailAddress,
-                    GroupId = groupInvite.GroupId,
-                    CreatedAtUTC = groupInvite.CreatedAtUTC,
-                    CreatedBy = groupInvite.CreatedBy,
-                    ExpiresAtUTC = groupInvite.ExpiresAtUTC
+                    EmailAddress = platformInvite.EmailAddress,
+                    GroupId = platformInvite.GroupId,
+                    CreatedAtUTC = platformInvite.CreatedAtUTC,
+                    CreatedBy = platformInvite.CreatedBy,
+                    ExpiresAtUTC = platformInvite.ExpiresAtUTC
                 }, cancellationToken: cancellationToken);
 
                 using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
@@ -72,7 +73,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 return result.Value;
         }
         
-        public async Task<Guid> CreateInviteGroupUserAsync(GroupInviteDto groupInvite, CancellationToken cancellationToken)
+        public async Task<Guid> CreateInviteGroupUserAsync(GroupInviteDto groupInvites, CancellationToken cancellationToken)
         {
             const string query =
 
@@ -94,17 +95,17 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             var queryDefinition = new CommandDefinition(query, new
             {
-                MembershipUser_Id = groupInvite.MembershipUser_Id,
-                GroupId = groupInvite.GroupId,
-                CreatedAtUTC = groupInvite.CreatedAtUTC,
-                CreatedBy = groupInvite.CreatedBy,
-                ExpiresAtUTC = groupInvite.ExpiresAtUTC
+                MembershipUser_Id = groupInvites.MembershipUser_Id,
+                GroupId = groupInvites.GroupId,
+                CreatedAtUTC = groupInvites.CreatedAtUTC,
+                CreatedBy = groupInvites.CreatedBy,
+                ExpiresAtUTC = groupInvites.ExpiresAtUTC
             }, cancellationToken: cancellationToken);
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
             var result = await dbConnection.ExecuteScalarAsync<Guid?>(queryDefinition);
-            if (result.HasValue is false)
+            if (result is null)
             {
                 _logger.LogError("Error: CreateInviteUserAsync - User request to create was not successful.", queryDefinition);
                 throw new DBConcurrencyException("Error: User request was not successful.");
@@ -561,7 +562,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(MemberDetails.RowVersion)}]           = member.RowVersion 
 
                     FROM        MembershipUser member 
-                    WHERE       member.Email = @EmailAddress";
+                    WHERE       LOWER(Email) = LOWER(@EmailAddress)";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 

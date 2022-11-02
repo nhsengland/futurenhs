@@ -76,7 +76,7 @@ namespace FutureNHS.Api.Services
             
             var createdComment = await _commentCommand.CreateCommentAsync(commentDto, cancellationToken);
 
-            _ = Task.Run(() => _commentNotificationService.SendNotificationToDiscussionCreatorAsync(userId, parentEntityId, cancellationToken), cancellationToken);
+            _ = _commentNotificationService.SendNotificationToDiscussionCreatorAsync(userId, parentEntityId, cancellationToken);
 
             return createdComment;
         }
