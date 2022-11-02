@@ -237,7 +237,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
 
                     FROM        [MembershipUser] membershipUser
-                    JOIN        MembershipUserActivity memberactivity 
+                    LEFT JOIN   MembershipUserActivity memberactivity 
                     ON          memberactivity.MembershipUserId = membershipUser.Id
                     LEFT JOIN   Image [image]
                     ON          [image].Id = membershipUser.ImageId   

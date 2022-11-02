@@ -308,7 +308,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          groups.Id = groupUser.Group_Id
                     JOIN        MembershipUser member 
                     ON          member.Id = groupUser.MembershipUser_Id
-                    JOIN        MembershipUserActivity memberactivity 
+                    LEFT JOIN   MembershipUserActivity memberactivity 
                     ON          memberactivity.MembershipUserId = member.Id
                     WHERE       groups.Slug = @Slug
                     AND         groupUser.Approved = 0
@@ -377,7 +377,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          member.Id = groupUser.MembershipUser_Id
                     JOIN        MembershipRole memberRoles 
                     ON          memberRoles.Id = groupUser.MembershipRole_Id 
-                    JOIN        MembershipUserActivity memberactivity 
+                    LEFT JOIN   MembershipUserActivity memberactivity 
                     ON          memberactivity.MembershipUserId = member.Id
                     LEFT JOIN   Image [image]
                     ON          [image].Id = member.ImageId   
@@ -429,7 +429,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     ON          member.Id = groupUser.MembershipUser_Id
                     JOIN        MembershipRole memberRoles 
                     ON          memberRoles.Id = groupUser.MembershipRole_Id 
-                    JOIN        MembershipUserActivity memberactivity 
+                    LEFT JOIN   MembershipUserActivity memberactivity 
                     ON          memberactivity.MembershipUserId = member.Id
                     WHERE       groups.Slug = @GroupSlug
                     AND         member.IsDeleted = 0

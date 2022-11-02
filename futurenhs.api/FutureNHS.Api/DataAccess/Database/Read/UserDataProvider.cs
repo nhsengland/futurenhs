@@ -48,7 +48,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 					ON			membersInRole.UserIdentifier = member.Id
                     JOIN        MembershipRole memberRoles 
                     ON          membersInRole.RoleIdentifier = memberRoles.Id
-                    JOIN        MembershipUserActivity memberactivity 
+                    LEFT JOIN   MembershipUserActivity memberactivity 
                     ON          memberactivity.MembershipUserId = member.Id
                     WHERE       member.IsDeleted = 0
                     ORDER BY    RoleName asc, member.FirstName asc
@@ -91,7 +91,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                                 [{nameof(MemberDetails.RowVersion)}]           = member.RowVersion 
 
                     FROM        MembershipUser member 
-                    JOIN        MembershipUserActivity memberactivity 
+                    LEFT JOIN   MembershipUserActivity memberactivity 
                     ON          memberactivity.MembershipUserId = member.Id
                     WHERE       member.Id = @UserId
                     AND         member.IsDeleted = 0";
