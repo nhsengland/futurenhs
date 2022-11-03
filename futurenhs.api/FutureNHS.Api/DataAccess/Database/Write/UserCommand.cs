@@ -76,9 +76,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
         public async Task<Guid> CreateInviteGroupUserAsync(GroupInviteDto groupInvites, CancellationToken cancellationToken)
         {
             const string query =
-
-                @"
-                    INSERT INTO  [dbo].[GroupInvites]
+                @"INSERT INTO  [dbo].[GroupInvites]
                                  ([MembershipUser_Id]
                                  ,[GroupId]
                                  ,[CreatedAtUTC]
@@ -86,13 +84,12 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                  ,[ExpiresAtUTC])
 	                OUTPUT       INSERTED.[Id]
                     VALUES
-                                 (@EmailAddress
+                                 (@MembershipUser_Id
                                  ,@GroupId
                                  ,@CreatedAtUTC
                                  ,@CreatedBy
                                  ,@ExpiresAtUTC)";
-
-
+            
             var queryDefinition = new CommandDefinition(query, new
             {
                 MembershipUser_Id = groupInvites.MembershipUser_Id,

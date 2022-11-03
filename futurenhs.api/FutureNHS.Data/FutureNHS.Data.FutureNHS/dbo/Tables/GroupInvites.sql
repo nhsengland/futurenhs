@@ -10,7 +10,6 @@
     CONSTRAINT [PK_dbo.GroupInvites] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.GroupInvites_dbo.Group_GroupId] FOREIGN KEY ([GroupId]) REFERENCES [dbo].[Group] ([Id]),
     CONSTRAINT [FK_dbo.GroupInvites_dbo.MembershipUser_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[MembershipUser] ([Id]),
-    CONSTRAINT [FK_dbo.GroupInvites_dbo.MembershipUser_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[PlatformInvite] ([CreatedBy]),
     CONSTRAINT [FK_dbo.GroupInvites_dbo.MembershipUser_Id] FOREIGN KEY ([MembershipUser_Id]) REFERENCES [dbo].[MembershipUser] ([Id])
 );
 
