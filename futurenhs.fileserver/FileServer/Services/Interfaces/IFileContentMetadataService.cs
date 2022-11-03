@@ -12,4 +12,6 @@ public interface IFileContentMetadataService
     /// <param name="cancellationToken"></param>
     /// <returns>Information on the content written to the stream</returns>
     Task<FileContentMetadata> GetDetailsAndPutContentIntoStreamAsync(UserFileMetadata fileMetadata, Stream streamToWriteTo, CancellationToken cancellationToken);
+
+    Task<string?> SaveFileAsync(Stream stream, string fileName, string contentType, CancellationToken cancellationToken);
 }

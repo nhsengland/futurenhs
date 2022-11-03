@@ -25,9 +25,6 @@ namespace FileServer.Wopi.Services
             if (fileMetadata is null) throw new FileNotFoundException("Could not find the file requested");
             if (!fileMetadata.UserHasViewPermission) throw new AuthenticationException("User does not have permission to view this file");
 
-            // This next bit is a little tricky because any validation we do after the call to write to the response stream still means 
-            // the client might have access to the full file already.  In other words, not much we can assure about what happens next!
-
             var fileContentMetadataRepository = _fileMetaDataProvider;
 
             var fileContentMetadata = await fileContentMetadataRepository.GetDetailsAndPutContentIntoStreamAsync(fileMetadata, responseStream, cancellationToken);
@@ -37,6 +34,12 @@ namespace FileServer.Wopi.Services
                 if (!string.Equals(fileContentMetadata.ContentVersion, file.Version, StringComparison.OrdinalIgnoreCase)) throw new ApplicationException("The blob store client returned a version of the blob that does not match the version requested");
             
             return fileContentMetadata;
+        }
+        
+        public async Task SaveFileAsync(Stream stream,string fileName,string contentType, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var result = await _fileMetaDataProvider.SaveFileAsync(stream, fileName, contentType, cancellationToken);
         }
     }
 }

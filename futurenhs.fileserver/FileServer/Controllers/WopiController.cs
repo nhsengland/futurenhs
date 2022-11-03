@@ -8,6 +8,7 @@ using FileServer.Services.Interfaces;
 using FileServer.Wopi.Factories;
 using FileServer.Wopi.Interfaces;
 using FutureNHS.WOPIHost.Configuration;
+using HeyRed.Mime;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
@@ -129,7 +130,7 @@ namespace FileServer.Controllers
             // file. All of these properties are optional and thus default to false; hosts should set them to true if their WOPI 
             // implementation meets the requirements for a particular property.
 
-            var supportsUpdate = false; // && fileMetadata.HasEditPermission;
+            var supportsUpdate = true; // && fileMetadata.HasEditPermission;
 
             responseBody.SupportedShareUrlType = new[] { "ReadOnly" };               // ReadOnly | ReadWrite - An array of strings containing the Share URL types supported by the host.  These types can be passed in the X-WOPI - UrlType request header to signify which Share URL type to return for the GetShareUrl (files) operation.
             responseBody.SupportsCobalt = false;                                     // A Boolean value that indicates that the host supports the ExecuteCellStorageRequest and ExecuteCellStorageRelativeRequest WOPI operations
@@ -253,10 +254,22 @@ namespace FileServer.Controllers
             //      x-ms-blob-content-disposition : https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
 
             // POST /wopi/files/(file_id)/content 
-            var stream = HttpContext.Request.BodyReader;
-            // TODO - This is where we would update the file in our storage repository
-            //        taking care of permissions, locking and versioning along the way 
-            throw new NotImplementedException();
+            
+            var authHeader = HttpContext.Request.Headers.Authorization.FirstOrDefault();
+            var accessPermission =  permission?.ToLower() == "view" ? FileAccessPermission.View : FileAccessPermission.Edit;
+            var authenticatedUser = await _userAuthenticationService.AuthenticateUser(fileId, authHeader, access_token, accessPermission, cancellationToken);
+            
+            var fileMetadata = await _fileMetaDataProvider.GetFileMetaDataForUserAsync(fileId, authenticatedUser.Id, cancellationToken);
+            
+            //convert to memoryStream.
+            MemoryStream stream = new MemoryStream();
+            await HttpContext.Request.Body.CopyToAsync(stream, cancellationToken);
+            stream.Position = 0;
+            var y = stream.CanSeek;
+            var contentType = MimeTypesMap.GetMimeType(fileMetadata.BlobName);
+            await _wopiFileContentService.SaveFileAsync(stream, fileMetadata.BlobName, contentType , cancellationToken);
+
+            return Ok();
         }
 
 

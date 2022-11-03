@@ -4,6 +4,7 @@ using Azure;
 using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
 using FileServer.PlatformHelpers.Interfaces;
 using FutureNHS.WOPIHost.Configuration;
@@ -41,7 +42,7 @@ namespace FileServer.PlatformHelpers
         private readonly ISystemClock _systemClock;
         private readonly ILogger<AzureBlobStoreClient>? _logger;
         private readonly BlobServiceClient _blobServiceClient;
-
+        private readonly AzureBlobStorageConfiguration _configuration;
         public AzureBlobStoreClient(IOptionsSnapshot<AzurePlatformConfiguration> configuration, IMemoryCache memoryCache, ISystemClock systemClock, ILogger<AzureBlobStoreClient>? logger)
         {
             _memoryCache = memoryCache                         ?? throw new ArgumentNullException(nameof(memoryCache));
@@ -51,10 +52,9 @@ namespace FileServer.PlatformHelpers
 
             if (configuration?.Value?.AzureBlobStorage is null) throw new ArgumentNullException(nameof(configuration));
 
-            var blobStorageConfiguration = configuration.Value.AzureBlobStorage;
+            _configuration = configuration.Value.AzureBlobStorage;
             
             _blobServiceClient = new BlobServiceClient(configuration.Value.AzureBlobStorage.ConnectionString);
-     
         }
 
         private static bool IsSuccessStatusCode(int statusCode) => statusCode >= 200 && statusCode <= 299;
@@ -78,6 +78,87 @@ namespace FileServer.PlatformHelpers
 
             return blobClientOptions;
         }
+        public async Task<string?> UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(blobName)) throw new ArgumentNullException(nameof(blobName));
+
+                cancellationToken.ThrowIfCancellationRequested();
+                
+                var blob = new BlockBlobClient(_configuration.ConnectionString,_configuration.ContainerName,blobName);
+
+                using var md5 = System.Security.Cryptography.MD5.Create();
+
+                var headers = new BlobHttpHeaders
+                {
+                    ContentType = contentType,
+                };
+
+                var response = await blob.UploadAsync(stream, headers,null,null,null,null,cancellationToken);
+                return Convert.ToBase64String(response.Value.ContentHash);
+            }
+            catch (AuthenticationFailedException ex)
+            {
+                _logger?.LogError(ex, "Unable to authenticate with the Azure Blob Storage service using the default credentials.  Please ensure the user account this application is running under has permissions to access the Blob Storage account we are targeting");
+
+                throw;
+            }
+            catch (RequestFailedException ex)
+            {
+                _logger?.LogError(ex, "Unable to access the storage endpoint as the download request failed: '{StatusCode} {StatusCodeName}'", ex.Status, Enum.Parse(typeof(HttpStatusCode), Convert.ToString(ex.Status, CultureInfo.InvariantCulture)));
+
+                throw;
+            }
+
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Unable to access the storage endpoint as the download request failed:'");
+
+                throw;
+            }
+        }
+        // public async Task<string?> UploadFileAsync(string containerName, Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
+        // {
+        //     stream.CanSeek = true;
+        //     try
+        //     {
+        //         if (string.IsNullOrWhiteSpace(blobName)) throw new ArgumentNullException(nameof(blobName));
+        //
+        //         cancellationToken.ThrowIfCancellationRequested();
+        //
+        //         if (_blobServiceClient is null)
+        //         {
+        //             throw new InvalidOperationException("A connection to blob storage was not opened");
+        //         }
+        //         var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+        //         var blobClient = containerClient.GetBlobClient(blobName);
+        //         var properties = blobClient.GetProperties();
+        //         var MetaData = new Dictionary<string, string> {{"ContentType", contentType}};
+        //         blobClient.(MetaData,null,cancellationToken);
+        //         var result = await blobClient.UploadAsync(stream, cancellationToken);
+        //        return Convert.ToBase64String(result.Value.ContentHash);
+        //     }
+        //     catch (AuthenticationFailedException ex)
+        //     {
+        //         _logger?.LogError(ex, "Unable to authenticate with the Azure Blob Storage service using the default credentials.  Please ensure the user account this application is running under has permissions to access the Blob Storage account we are targeting");
+        //
+        //         throw;
+        //     }
+        //     catch (RequestFailedException ex)
+        //     {
+        //         _logger?.LogError(ex, "Unable to access the storage endpoint as the download request failed: '{StatusCode} {StatusCodeName}'", ex.Status, Enum.Parse(typeof(HttpStatusCode), Convert.ToString(ex.Status, CultureInfo.InvariantCulture)));
+        //
+        //         throw;
+        //     }
+        //
+        //     catch (Exception ex)
+        //     {
+        //         _logger?.LogError(ex, "Unable to access the storage endpoint as the download request failed:'");
+        //
+        //         throw;
+        //     }
+        // }
 
         public async Task<BlobDownloadDetails> FetchBlobAndWriteToStream(string containerName, string blobName, string? blobVersion, Stream streamToWriteTo, byte[] contentHash, CancellationToken cancellationToken)
         {
@@ -88,9 +169,7 @@ namespace FileServer.PlatformHelpers
             cancellationToken.ThrowIfCancellationRequested();
 
             //var managedIdentityCredential = new DefaultAzureCredential();
-
-
-
+            
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             var blobRequestConditions = new BlobDownloadOptions() {  };
             var blobClient = containerClient.GetBlobClient(blobName);

@@ -6,4 +6,6 @@ public interface IWopiFileContentService
 {
     Task<FileContentMetadata> GetFileContentAsync(Models.File file, AuthenticatedUser authenticatedUser, Stream responseStream,
         CancellationToken cancellationToken);
+
+    Task SaveFileAsync(Stream stream, string fileName, string contentType, CancellationToken cancellationToken);
 }

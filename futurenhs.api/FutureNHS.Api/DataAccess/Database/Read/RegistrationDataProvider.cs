@@ -76,12 +76,15 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                               OwnerSurname = group.OwnerSurname,
                               Slug = group.Slug,
                               StraplineText = group.StraplineText,
-                              ThemeId = group.ThemeId,
+                              ThemeId = group.ThemeId
                           }
                       };
                       if (image is not null)
                       {
-                          group = @group with { Image = new ImageData(image, _options) };
+                          invite = @invite with
+                          {
+                              Group = @group with {Image = new ImageData(image, _options)}
+                          };
                       }
                   }
                   invite = @invite with { InvitedBy = invitedBy };

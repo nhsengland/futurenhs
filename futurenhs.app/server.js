@@ -37,7 +37,7 @@ const generateCSP = (nonce) => {
      * counter-intuitive sources list in connect-src (e.g. fonts) are required for the service worker which returns assets from a cache
      */
     const csp = {
-        'frame-src': `'self' https://collaborate.future.nhs.uk https://vars.hotjar.com`,
+        'frame-src': `'self' http://localhost:9980 http://host.docker.internal:44355 https://collaborate.future.nhs.uk https://vars.hotjar.com`,
         'img-src': `'self' data: *.google-analytics.com https://data.eu.pendo.io`,
         'style-src': `'self' 'unsafe-inline'`,
         'script-src': `'self' 'unsafe-inline' http://localhost:9999  https://js.monitor.azure.com/scripts/b/ai.2.min.js *.googletagmanager.com *.hotjar.com https://ws2.hotjar.com wss://*.hotjar.com/api/v2/client/ws *.google-analytics.com https://cdn.eu.pendo.io https://data.eu.pendo.io`,
