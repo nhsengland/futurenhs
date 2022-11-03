@@ -9,6 +9,7 @@ using FileServer.Wopi.Factories;
 using FileServer.Wopi.Interfaces;
 using FutureNHS.WOPIHost.Configuration;
 using HeyRed.Mime;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
@@ -27,8 +28,8 @@ namespace FileServer.Controllers
         private readonly IWopiDiscoveryDocumentFactory _wopiDiscoveryDocumentFactory;
         private readonly WopiConfiguration _wopiConfiguration;
         private readonly IWopiFileContentService _wopiFileContentService;
-        
-        public WopiController(ILogger<WopiController> logger, IUserAuthenticationService userAuthenticationService, IWopiDiscoveryDocumentFactory wopiDiscoveryDocumentFactory, IOptionsSnapshot<WopiConfiguration> wopiConfig, IWopiFileContentService wopiFileContentService,IFileMetaDataProvider fileMetaDataProvider)
+        private readonly ISystemClock _systemClock;
+        public WopiController(ILogger<WopiController> logger, IUserAuthenticationService userAuthenticationService, IWopiDiscoveryDocumentFactory wopiDiscoveryDocumentFactory, IOptionsSnapshot<WopiConfiguration> wopiConfig, IWopiFileContentService wopiFileContentService,IFileMetaDataProvider fileMetaDataProvider,ISystemClock systemClock)
         {
             _logger = logger;
             _userAuthenticationService = userAuthenticationService;
@@ -36,6 +37,7 @@ namespace FileServer.Controllers
             _wopiConfiguration = wopiConfig.Value;
             _wopiFileContentService = wopiFileContentService;
             _fileMetaDataProvider = fileMetaDataProvider;
+            _systemClock = systemClock;
         }
 
         [HttpPost]
@@ -267,8 +269,9 @@ namespace FileServer.Controllers
             stream.Position = 0;
             var y = stream.CanSeek;
             var contentType = MimeTypesMap.GetMimeType(fileMetadata.BlobName);
-            await _wopiFileContentService.SaveFileAsync(stream, fileMetadata.BlobName, contentType , cancellationToken);
+            var contentHash = await _wopiFileContentService.SaveFileAsync(stream, fileMetadata.BlobName, contentType , cancellationToken);
 
+            await _fileMetaDataProvider.UpdateFileMetaDataForUserAsync(fileId, authenticatedUser.Id, contentHash, _systemClock.UtcNow.UtcDateTime, cancellationToken);
             return Ok();
         }
 

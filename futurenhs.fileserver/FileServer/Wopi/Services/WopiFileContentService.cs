@@ -36,10 +36,10 @@ namespace FileServer.Wopi.Services
             return fileContentMetadata;
         }
         
-        public async Task SaveFileAsync(Stream stream,string fileName,string contentType, CancellationToken cancellationToken)
+        public async Task<byte[]> SaveFileAsync(Stream stream,string fileName,string contentType, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var result = await _fileMetaDataProvider.SaveFileAsync(stream, fileName, contentType, cancellationToken);
+            return await _fileMetaDataProvider.SaveFileAsync(stream, fileName, contentType, cancellationToken);
         }
     }
 }

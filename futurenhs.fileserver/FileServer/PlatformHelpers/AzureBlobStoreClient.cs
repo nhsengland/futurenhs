@@ -78,7 +78,7 @@ namespace FileServer.PlatformHelpers
 
             return blobClientOptions;
         }
-        public async Task<string?> UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
+        public async Task<byte[]> UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace FileServer.PlatformHelpers
                 };
 
                 var response = await blob.UploadAsync(stream, headers,null,null,null,null,cancellationToken);
-                return Convert.ToBase64String(response.Value.ContentHash);
+                return response.Value.ContentHash;
             }
             catch (AuthenticationFailedException ex)
             {

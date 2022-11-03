@@ -1,3 +1,4 @@
+using System.Data;
 using System.Diagnostics;
 using System.Text;
 using Dapper;
@@ -70,6 +71,42 @@ namespace FileServer.DataAccess.Sql.Read
             }
 
             return metaData;
+        }
+    
+    
+    public async Task UpdateFileMetaDataForUserAsync(Guid fileId, Guid userId,byte[] contentHash, DateTime modifiedAtutc, CancellationToken cancellationToken)
+        {   
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (fileId == Guid.Empty) throw new ArgumentNullException(nameof(fileId));
+            if (userId == Guid.Empty) throw new ArgumentNullException(nameof(userId));
+            
+            const string query =
+                $@" UPDATE      [dbo].[File]
+                    SET         [ModifiedBy] = @UserId,
+                                [ModifiedAtUtc] = @UpdatedDateUTC,
+                                [BlobHash] = @ContentHash
+                    WHERE       [Id] = @FileId ";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                FileId = fileId,
+                UserId = userId,
+                ContentHash = contentHash,
+                UpdatedDateUTC = modifiedAtutc
+
+            }, cancellationToken: cancellationToken);
+
+            var updated = await dbConnection.ExecuteAsync(commandDefinition);
+
+            if (updated != 0)
+            {
+                throw new DBConcurrencyException("Failed to update the file");
+            }
+
+;
         }
     }
 }
