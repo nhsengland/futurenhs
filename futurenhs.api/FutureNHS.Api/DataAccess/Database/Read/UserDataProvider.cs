@@ -109,12 +109,13 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
        
 
-        public async Task<Guid?> GetMemberInviteIdAsync(string emailAddress, CancellationToken cancellationToken = default)
+        public async Task<Guid?> GetMemberInviteIdAsync(string emailAddress, CancellationToken cancellationToken = default, Guid? groupId = null)
         {
             const string query =
                 @$"	    SELECT [Id]
 	                    FROM PlatformInvite
-	                    WHERE  LOWER(EmailAddress) = LOWER(@EmailAddress)	                    
+	                    WHERE  LOWER(EmailAddress) = LOWER(@EmailAddress)	
+	                    AND    GroupId = @GroupId
 	                    AND IsDeleted = 0
                 ";
 
@@ -122,7 +123,27 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             return await dbConnection.QueryFirstOrDefaultAsync<Guid?>(query, new
             {
-                EmailAddress = emailAddress
+                EmailAddress = emailAddress,
+                GroupId = groupId
+            });
+        }
+        
+        public async Task<Guid?> GetGroupInviteIdAsync(Guid targetUserId,  Guid groupId, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$"	    SELECT [Id]
+	                    FROM GroupInvites
+	                    WHERE  MembershipUser_Id = @MembershipUserId
+	                    AND    GroupId = @GroupId
+	                    AND IsDeleted = 0
+                ";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            return await dbConnection.QueryFirstOrDefaultAsync<Guid?>(query, new
+            {
+                MembershipUserId = targetUserId,
+                GroupId = groupId
             });
         }
 

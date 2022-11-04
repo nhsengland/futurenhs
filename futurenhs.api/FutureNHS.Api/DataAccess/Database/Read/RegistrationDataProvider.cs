@@ -31,7 +31,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             string query =
                 @$"SELECT 
-                    [{nameof(InviteDetails.Id)}]                        = groupInvite.Id,
+                    [{nameof(InviteDetails.Id)}]                        = platformInvite.Id,
                     [{nameof(GroupSummary.Id)}]                         = groups.Id,
                     [{nameof(GroupSummary.ThemeId)}]                    = groups.ThemeId,
                     [{nameof(GroupSummary.Slug)}]                       = groups.Slug,
@@ -48,11 +48,11 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     [{nameof(UserNavProperty.Id)}]	                    = invitedBy.Id,  
                     [{nameof(UserNavProperty.Name)}]	                = invitedBy.FirstName + ' ' + invitedBy.Surname,
                     [{nameof(UserNavProperty.Slug)}]	                = invitedBy.Slug
-				FROM [GroupInvite] groupInvite
-                LEFT JOIN [Group] groups ON groups.Id = groupInvite.GroupId
-                LEFT JOIN MembershipUser invitedBy ON invitedBy.Id = groupInvite.CreatedBy
+				FROM [PlatformInvite] platformInvite
+                LEFT JOIN [Group] groups ON groups.Id = platformInvite.GroupId
+                LEFT JOIN MembershipUser invitedBy ON invitedBy.Id = platformInvite.CreatedBy
                 LEFT JOIN Image image ON image.Id = groups.ImageId
-                WHERE groupInvite.Id = @Id";
+                WHERE platformInvite.Id = @Id";
 
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {

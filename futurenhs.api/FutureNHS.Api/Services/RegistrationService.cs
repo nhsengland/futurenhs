@@ -40,9 +40,12 @@ namespace FutureNHS.Api.Services
         private readonly IDomainDataProvider _domainDataProvider;
         private readonly IRegistrationDataProvider _registrationDataProvider;
         private readonly IUserService _userService;
+        private readonly IGroupService _groupService;
         // Notification template Ids
         private readonly string _registrationEmailId;
         private readonly string _defaultRole;
+        private readonly string _groupRegistrationEmailId;
+        private readonly string _groupInviteEmailId;
 
 
         public RegistrationService(ILogger<AdminUserService> logger,
@@ -52,6 +55,7 @@ namespace FutureNHS.Api.Services
             IEmailService emailService,
             IUserService userService,
             IGroupCommand groupCommand,
+            IGroupService groupService,
             IRegistrationDataProvider registrationDataProvider,
             IOptionsSnapshot<GovNotifyConfiguration> notifyConfig,
             IOptionsSnapshot<ApplicationGateway> gatewayConfig,
@@ -60,6 +64,7 @@ namespace FutureNHS.Api.Services
             IOptionsMonitor<DefaultSettings> defaultSettings)
         {
             _groupCommand = groupCommand;
+            _groupService = groupService;
             _permissionsService = permissionsService;
             _registrationDataProvider = registrationDataProvider;
             _systemClock = systemClock;
@@ -73,6 +78,8 @@ namespace FutureNHS.Api.Services
 
             // Notification template Ids
             _registrationEmailId = notifyConfig.Value.RegistrationEmailTemplateId;
+            _groupRegistrationEmailId = notifyConfig.Value.GroupRegistrationEmailTemplateId;
+            _groupInviteEmailId = notifyConfig.Value.GroupInviteEmailTemplateId;
             _defaultRole = defaultSettings.CurrentValue.DefaultRole ?? throw new ArgumentOutOfRangeException(nameof(defaultSettings.CurrentValue.DefaultRole));
 
         }
@@ -147,24 +154,33 @@ namespace FutureNHS.Api.Services
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
 
+            var groupId = await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
+            
             var userIsOnPlatform = await _userCommand.GetMemberByEmailAsync(email, cancellationToken);
             if (userIsOnPlatform is null)
             {
-                var groupId = await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
-                var userInviteId = await CreatePlatformInviteAsync(userId, emailAddress, groupId, cancellationToken);
+                var userInviteId = await _userService.GetInviteIdForEmailAsync(email, cancellationToken, groupId);
+            
+                if (userInviteId.HasValue is false)
+                {
+                    userInviteId = await CreatePlatformInviteAsync(userId, emailAddress, groupId, cancellationToken);
+                }
                 //TODO: Check user is on platform and add to group invites list
-                var registrationLink = CreateRegistrationLink(userInviteId);
+                var registrationLink = CreateRegistrationLink(userInviteId.Value);
+                var inviter = await _userService.GetMemberAsync(userId, targetUserId: userId, cancellationToken);
+                var groupName = await _groupService.GetGroupAsync(userId, groupSlug, cancellationToken);
                 var personalisation = new Dictionary<string, dynamic>
                 {
-                    { "registration_link", registrationLink }
+                    { "registration_link", registrationLink },
+                    { "inviter", inviter.FullName },
+                    { "group_name", groupName.Name }
                 };
 
-                await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
+                await _emailService.SendEmailAsync(emailAddress, _groupRegistrationEmailId, personalisation);
             }
 
             else
             {
-                var groupId = await _groupCommand.GetGroupIdForSlugAsync(groupSlug, cancellationToken);
                 if (groupId is null)
                 {
                     throw new NotFoundException($"Group Id was not found.");
@@ -174,16 +190,23 @@ namespace FutureNHS.Api.Services
                 {
                     throw new NotFoundException($"Group Id was not found.");
                 }
-                var userGroupInviteId = await CreateGroupInviteAsync(userId, memberDetails.Id, groupId.Value, cancellationToken);
-                var registrationLink = CreateRegistrationLink(userGroupInviteId);
+                var userGroupInviteId = await _userService.GetGroupInviteIdForMemberAsync(memberDetails.Id, groupId.Value, cancellationToken);
+            
+                if (userGroupInviteId.HasValue is false)
+                {
+                    userGroupInviteId = await CreateGroupInviteAsync(userId, memberDetails.Id, groupId.Value, cancellationToken);
+                }
+
+                var registrationLink = _fqdn;
+                var inviter = await _userService.GetMemberAsync(userId, targetUserId: userId, cancellationToken);
+                var groupName = await _groupService.GetGroupAsync(userId, groupSlug, cancellationToken);
                 var personalisation = new Dictionary<string, dynamic>
                 {
-                    { "registration_link", registrationLink }
+                    { "registration_link", registrationLink },
+                    { "inviter", inviter.FullName },
+                    { "group_name", groupName.Name }
                 };
-                await _emailService.SendEmailAsync(emailAddress, _registrationEmailId, personalisation);
-                //DONE: go update all SQL calls pointing to group invite to point to platform invite
-                //TODO: add a new entry to the group invites table
-                //TODO: Send an email
+                await _emailService.SendEmailAsync(emailAddress, _groupInviteEmailId, personalisation);
             }
         }
         public async Task InviteMemberToPlatformAsync(Guid userId, string email, CancellationToken cancellationToken)

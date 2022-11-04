@@ -131,11 +131,16 @@ namespace FutureNHS.Api.Services
             return inviteId.HasValue;
         }
         
-        public async Task<Guid?> GetInviteIdForEmailAsync(string emailAddress, CancellationToken cancellationToken)
+        public async Task<Guid?> GetInviteIdForEmailAsync(string emailAddress, CancellationToken cancellationToken, Guid? groupId = null)
         {
             if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
 
-            return await _userDataProvider.GetMemberInviteIdAsync(emailAddress, cancellationToken);
+            return await _userDataProvider.GetMemberInviteIdAsync(emailAddress, cancellationToken, groupId);
+        }
+        
+        public async Task<Guid?> GetGroupInviteIdForMemberAsync(Guid targetUserId, Guid groupId, CancellationToken cancellationToken)
+        {
+            return await _userDataProvider.GetGroupInviteIdAsync(targetUserId, groupId, cancellationToken);
         }
 
         public async Task UpdateMemberAsync(Guid userId, Guid targetUserId, Stream requestBody, string? contentType, byte[] rowVersion, CancellationToken cancellationToken)
