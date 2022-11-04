@@ -1,4 +1,5 @@
 using System.Dynamic;
+using System.IO.Pipelines;
 using System.Net;
 using System.Text;
 using FileServer.DataAccess.Interfaces;
@@ -262,12 +263,12 @@ namespace FileServer.Controllers
             var authenticatedUser = await _userAuthenticationService.AuthenticateUser(fileId, authHeader, access_token, accessPermission, cancellationToken);
             
             var fileMetadata = await _fileMetaDataProvider.GetFileMetaDataForUserAsync(fileId, authenticatedUser.Id, cancellationToken);
-            
             //convert to memoryStream.
-            MemoryStream stream = new MemoryStream();
+            
+            var stream = new MemoryStream();
             await HttpContext.Request.Body.CopyToAsync(stream, cancellationToken);
             stream.Position = 0;
-            var y = stream.CanSeek;
+            
             var contentType = MimeTypesMap.GetMimeType(fileMetadata.BlobName);
             var contentHash = await _wopiFileContentService.SaveFileAsync(stream, fileMetadata.BlobName, contentType , cancellationToken);
 

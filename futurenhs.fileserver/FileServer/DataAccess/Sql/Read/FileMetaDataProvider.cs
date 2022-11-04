@@ -101,7 +101,7 @@ namespace FileServer.DataAccess.Sql.Read
 
             var updated = await dbConnection.ExecuteAsync(commandDefinition);
 
-            if (updated != 0)
+            if (updated != 1)
             {
                 throw new DBConcurrencyException("Failed to update the file");
             }
