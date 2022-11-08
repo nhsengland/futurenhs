@@ -60,6 +60,30 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
+        [Route("groups/pending")]
+
+        public async Task<IActionResult> GetPendingGroupsForUserAsync([FromQuery] PaginationFilter filter, [FromQuery] bool isMember = true, CancellationToken cancellationToken = default)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+
+            var route = Request.Path.Value;
+            route = QueryHelpers.AddQueryString(route, "isMember", isMember.ToString());
+
+            uint total;
+            IEnumerable<GroupSummary> groups;
+
+            
+            var (totalGroups, groupSummaries) = await _groupService.GetPendingGroupsForUserAsync(identity.MembershipUserId, isMember, filter.Offset, filter.Limit, cancellationToken);
+
+            total = totalGroups;
+            groups = groupSummaries;
+
+            var pagedResponse = PaginationHelper.CreatePagedResponse(groups, filter, total, route);
+
+            return Ok(pagedResponse);
+        }
+
+        [HttpGet]
         [Route("admin/groups")]
 
         public async Task<IActionResult> AdminGetGroupsAsync(Guid userId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)

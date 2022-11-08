@@ -479,5 +479,20 @@ namespace FutureNHS.Api.Services
 
             return await _groupDataProvider.GetGroupsForUserAsync(userId, isMember, offset, limit, cancellationToken);
         }
+        
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetPendingGroupsForUserAsync(Guid userId, bool isMember, uint offset, uint limit, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, GroupViewRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetGroupsForUserAsync - User:{0} does not have permission to get groups for user", userId);
+                throw new ForbiddenException($"Error: User does not have access");
+            }
+
+            return await _groupDataProvider.GetPendingGroupsForUserAsync(userId, isMember, offset, limit, cancellationToken);
+        }
+
     }
 }

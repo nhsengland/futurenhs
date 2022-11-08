@@ -1,4 +1,5 @@
 import { Image } from '@appTypes/image'
+import { User } from '@appTypes/user'
 
 export interface Props {
     text: {
@@ -14,4 +15,6 @@ export interface Props {
     className?: string
     isPublic?: boolean
     isSignUp?: boolean
+    isPending?: boolean
+    user?: User
 }

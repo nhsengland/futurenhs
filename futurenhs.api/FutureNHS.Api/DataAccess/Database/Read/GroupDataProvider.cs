@@ -92,6 +92,80 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return (totalCount, groups);
         }
 
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetPendingGroupsForUserAsync(Guid id, bool isMember, uint offset, uint limit, CancellationToken cancellationToken = default)
+        {
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
+            {
+                throw new ArgumentOutOfRangeException(nameof(limit));
+            }
+
+            uint totalCount;
+
+            IEnumerable<GroupSummary> groups;
+            
+            
+            // var isPendingQuery = "WHERE groups.IsDeleted = 0 AND EXISTS (select gi.GroupId from GroupInvite gi where gi.Group_Id = '9b51e7af-db2b-4d8c-805c-55d292e183fd';)";
+
+            var isPendingQuery = "WHERE groups.IsDeleted = 0 AND EXISTS (select gu.GroupId from GroupInvite gu where gu.GroupId = groups.Id AND gu.EmailAddress = 'rio.knightley@madetech.com')";
+
+            // TODO: FIX THIS DBA METHOD
+            var isMemberQuery = isMember == true
+                ? "JOIN GroupUser groupUser ON groupUser.Group_Id = groups.Id WHERE groups.IsDeleted = 0 AND groupUser.MembershipUser_Id = @UserId AND groupUser.Approved = 1"
+                : "WHERE groups.IsDeleted = 0 AND NOT EXISTS (select gu.Group_Id from GroupUser gu where  gu.MembershipUser_Id = @UserId AND gu.Group_Id = groups.Id AND gu.Approved = 1)";
+            
+            string query =
+                @$"SELECT 
+                    [{nameof(GroupSummary.Id)}]                        = groups.Id,
+                    [{nameof(GroupSummary.ThemeId)}]                   = groups.ThemeId,
+                    [{nameof(GroupSummary.Slug)}]                      = groups.Slug,
+                    [{nameof(GroupSummary.NameText)}]                  = groups.Name,
+                    [{nameof(GroupSummary.StraplineText)}]             = groups.Subtitle,
+                    [{nameof(GroupSummary.IsPublic)}]                  = groups.IsPublic,
+                    [{nameof(GroupSummary.MemberCount)}]               = (SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = groups.Id AND groupUser.Approved = 1 ), 
+				    [{nameof(GroupSummary.DiscussionCount)}]           = (SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = groups.Id AND discussion.IsDeleted = 0),
+                    [{nameof(ImageData.Id)}]		                   = image.Id,
+                    [{nameof(ImageData.Height)}]	                   = image.Height,
+                    [{nameof(ImageData.Width)}]		                   = image.Width,
+                    [{nameof(ImageData.FileName)}]	                   = image.FileName,
+                    [{nameof(ImageData.MediaType)}]	                   = image.MediaType
+				FROM [Group] groups
+                LEFT JOIN Image image ON image.Id = groups.ImageId                         
+                {isPendingQuery}
+                ORDER BY groups.Name
+                OFFSET @Offset ROWS
+                FETCH NEXT @Limit ROWS ONLY;
+
+                SELECT COUNT(*) FROM [Group] groups
+                {isPendingQuery}";
+            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
+            {
+                using var reader = await dbConnection.QueryMultipleAsync(query, new
+                {
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
+                    UserId = id
+                });
+                groups = reader.Read<GroupSummary, ImageData, GroupSummary>(
+                    (group, image) =>
+                    {
+                        if (image is not null)
+                        {
+                            var groupWithImage = group with { Image = new ImageData(image, _options) };
+
+                            return groupWithImage;
+                        }
+
+                        return group;
+
+                    }, splitOn: "id");
+
+                totalCount = await reader.ReadFirstAsync<uint>();
+            }
+
+            return (totalCount, groups);
+        }
+
+        
         public async Task<(uint totalGroups, IEnumerable<AdminGroupSummary> groupSummaries)> AdminGetGroupsAsync(uint offset, uint limit, CancellationToken cancellationToken = default)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
