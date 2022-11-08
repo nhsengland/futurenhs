@@ -24,5 +24,6 @@ namespace FutureNHS.Api.DataAccess.Database.Write.Interfaces
         Task MapIdentityToExistingUserAsync(Guid membershipUserId, string subjectId, string issuer, CancellationToken cancellationToken);
         Task RecordUserActivityAsync(Guid userId, DateTime activityDate, CancellationToken cancellationToken);
         Task<Guid> CreateInviteGroupUserAsync(GroupInviteDto userInvite, CancellationToken cancellationToken);
+        Task RedeemPlatformInviteAsync(Guid userId, string email, CancellationToken cancellationToken);
     }
 }

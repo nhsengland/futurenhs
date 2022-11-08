@@ -192,7 +192,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 _logger.LogError("Error: User request to delete a comment was not successful", queryDefinition);
                 throw new DBConcurrencyException("Error: User request to delete a comment was not successful");
             }
-        }
+        }  
 
         public async Task<Guid?> GetThreadIdForComment(Guid commentId, CancellationToken cancellationToken)
         {

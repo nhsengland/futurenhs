@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[GroupInvites] (
     [Id]           UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(),
     [MembershipUser_Id]     UNIQUEIDENTIFIER NOT NULL,
-    [GroupId]      UNIQUEIDENTIFIER NULL,
+    [GroupId]      UNIQUEIDENTIFIER NOT NULL,
     [CreatedAtUTC] DATETIME2         NOT NULL,
     [CreatedBy]    UNIQUEIDENTIFIER  NULL,
     [ExpiresAtUTC] DATETIME2         NULL,

@@ -111,6 +111,84 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return result.Value;
         }
 
+        public async Task RedeemPlatformInviteAsync(Guid userId, string email, CancellationToken cancellationToken)
+        {
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            await using var connection = new SqlConnection(dbConnection.ConnectionString);
+            
+            const string getGroups = 
+                @$"SELECT 
+                    [{nameof(PlatformInvite.Id)}]                = platformInvite.Id,
+                    [{nameof(PlatformInvite.GroupId)}]           = platformInvite.GroupId,
+                    [{nameof(PlatformInvite.CreatedAtUTC)}]      = platformInvite.CreatedAtUTC,
+                    [{nameof(PlatformInvite.CreatedBy)}]         = platformInvite.CreatedBy,
+                    [{nameof(PlatformInvite.ExpiresAtUTC)}]      = platformInvite.ExpiresAtUTC
+				FROM [PlatformInvite] platformInvite
+                WHERE LOWER(platformInvite.EmailAddress) = LOWER(@email)
+				";
+
+
+            var invites = await connection.QueryAsync<PlatformInvite>(getGroups, new
+            {
+                email = email,
+            });
+
+            foreach (var invite in invites)
+            {
+                const string createGroupInvite =
+                    @$"INSERT INTO   [dbo].[GroupInvites]
+
+                                 ([MembershipUser_Id]
+                                 ,[GroupId]
+                                 ,[CreatedAtUTC]
+                                 ,[CreatedBy]
+                                 )
+                    OUTPUT       INSERTED.[Id]
+
+                    VALUES
+                                 (@userId
+                                  ,@groupId
+                                  ,@createdAt
+                                  ,@createdBy)
+				";
+
+                string deletePlatformInvite =
+                    @$"UPDATE           [dbo].[PlatformInvite]
+                    SET             IsDeleted = 1
+                    WHERE           LOWER(EmailAddress) = LOWER(@email)
+                    AND             GroupId {(invite.GroupId != null ? "= @GroupId" : "IS NULL")}
+				";
+
+                await connection.OpenAsync(cancellationToken);
+
+                await using var transaction = connection.BeginTransaction();
+
+                var createGroupInviteResult = await connection.ExecuteAsync(createGroupInvite, new
+                {
+                    userId = userId,
+                    groupId = invite.GroupId,
+                    createdAt = invite.CreatedAtUTC,
+                    createdBy = invite.CreatedBy,
+                }, transaction: transaction);
+
+                var deletePlatformInviteResult = await connection.ExecuteAsync(deletePlatformInvite, new
+                {
+                    GroupId = invite.GroupId,
+                    email = email,
+                }, transaction: transaction);
+
+                if (createGroupInviteResult != 1 || deletePlatformInviteResult != 1)
+                {
+                    _logger.LogError($"Error: Failed to redeem invite to group {invite.GroupId} for user: {email}.");
+                }
+                else
+                {
+                    await transaction.CommitAsync(cancellationToken);
+                }
+            }
+        }
+
         public async Task<MemberProfile> GetMemberAsync(Guid id, CancellationToken cancellationToken)
         {
             const string query =

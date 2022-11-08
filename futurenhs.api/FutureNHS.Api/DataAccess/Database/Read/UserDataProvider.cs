@@ -111,13 +111,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
         public async Task<Guid?> GetMemberInviteIdAsync(string emailAddress, CancellationToken cancellationToken = default, Guid? groupId = null)
         {
-            const string query =
-                @$"	    SELECT [Id]
-	                    FROM PlatformInvite
-	                    WHERE  LOWER(EmailAddress) = LOWER(@EmailAddress)	
-	                    AND    GroupId = @GroupId
-	                    AND IsDeleted = 0
-                ";
+            string query = @$"SELECT [Id]
+             FROM PlatformInvite
+             WHERE  LOWER(EmailAddress) = LOWER(@EmailAddress) 
+             AND   GroupId {(groupId != null ? "= @GroupId" : "IS NULL")}
+             AND IsDeleted = 0
+              ";
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 

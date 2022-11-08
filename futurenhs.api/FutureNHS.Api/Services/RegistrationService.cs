@@ -272,8 +272,6 @@ namespace FutureNHS.Api.Services
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
 
-
-            
             // if user is on an approved list of domains let them sign up
             var domain = emailAddress.Host;
             var domainIsAllowed = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
@@ -295,7 +293,9 @@ namespace FutureNHS.Api.Services
                 };
                 try
                 {
-                    return await _userCommand.RegisterUserAsync(member, registrationRequest.Subject, registrationRequest.Issuer, _defaultRole, cancellationToken);
+                    var user = await _userCommand.RegisterUserAsync(member, registrationRequest.Subject, registrationRequest.Issuer, _defaultRole, cancellationToken);
+                    await _userCommand.RedeemPlatformInviteAsync(user, registrationRequest.Email, cancellationToken);
+                    return user;
                 }
                 catch (DBConcurrencyException ex)
                 {
