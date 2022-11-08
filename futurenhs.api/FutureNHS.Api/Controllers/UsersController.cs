@@ -89,9 +89,12 @@ namespace FutureNHS.Api.Controllers
         [Route("users/info")]
         public async Task<IActionResult> MemberInfoAsync(CancellationToken cancellationToken)
         {
-            var identity = await GetUserIdentityAsync(cancellationToken);
+            var subjectId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(subjectId))
+                throw new UnauthorizedAccessException();
+            
             var emailAddress = User.FindFirst("emails")?.Value;       
-            var memberInfoResponse = await _userService.GetMemberInfoAsync(identity.SubjectId, emailAddress, cancellationToken);
+            var memberInfoResponse = await _userService.GetMemberInfoAsync(subjectId, emailAddress, cancellationToken);
 
             return Ok(memberInfoResponse);
         }
