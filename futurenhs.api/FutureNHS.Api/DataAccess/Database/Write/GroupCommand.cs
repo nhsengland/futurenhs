@@ -555,6 +555,26 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             await dbConnection.ExecuteAsync(commandDefinition);
         }
 
+        public async Task DeleteUserFromGroupAsync(Guid groupId, Guid userId, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @" DELETE       
+                   FROM         [dbo].[GroupInvites]
+                        
+                   WHERE        [GroupId]             = @GroupUserId
+                   AND          [MembershipUser_Id]   = @UserId";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                GroupUserId = groupId,
+                UserId = userId
+            }, cancellationToken: cancellationToken);
+
+            await dbConnection.ExecuteAsync(commandDefinition);
+        }
+
         public async Task ApproveGroupUserAsync(GroupUserDto groupUserDto, CancellationToken cancellationToken = default)
         {
             const string query =

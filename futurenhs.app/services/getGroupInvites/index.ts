@@ -29,7 +29,7 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const getGroupsPending: Service = async (
+export const getGroupInvites: Service = async (
     { user, pagination }: Options,
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<Group>>> => {
@@ -49,7 +49,7 @@ export const getGroupsPending: Service = async (
             pageSize: 10,
         },
     })
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/pending?${paginationQueryParams}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/invites?${paginationQueryParams}`
     const authHeader = jwtHeader(user.accessToken)
     const apiHeaders = setFetchOptions({
         method: requestMethods.GET,
@@ -71,7 +71,7 @@ export const getGroupsPending: Service = async (
         throw new ServiceError(
             'An unexpected error occurred when attempting to get the groups',
             {
-                serviceId: services.GET_GROUPS_PENDING,
+                serviceId: services.GET_GROUP_INVITES,
                 status: status,
                 statusText: statusText,
                 body: apiData,

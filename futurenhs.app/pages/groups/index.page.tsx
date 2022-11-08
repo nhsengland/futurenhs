@@ -26,7 +26,7 @@ import { PageBody } from '@components/layouts/PageBody'
 import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
 import { Page } from '@appTypes/page'
 import { Group } from '@appTypes/group'
-import { getGroupsPending } from '@services/getGroupsPending'
+import { getGroupInvites } from '@services/getGroupInvites'
 
 const isMember: boolean = true
 
@@ -69,7 +69,6 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
         secondaryHeading,
         navMenuTitle,
     } = contentText ?? {}
-
     /**
      * Handle client-side pagination
      */
@@ -86,7 +85,7 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
                     pageSize: requestedPageSize,
                 },
             }),
-            getGroupsPending({
+            getGroupInvites({
                 user: user,
                 pagination: {
                     pageNumber: requestedPageNumber,
@@ -141,40 +140,46 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
                     className="u-bg-theme-14"
                 />
                 <PageBody>
-                    <LayoutColumn desktop={8} className="u-mb-14">
+                    <LayoutColumn desktop={8}>
                         <h2 className="nhsuk-heading-l">All my groups</h2>
                         {intro && (
                             <p className="u-text-lead u-text-theme-7 u-mb-4">
                                 {intro}
                             </p>
                         )}
-                        <h2 className="nhsuk-heading-m">
-                            Groups you have been invited to
-                        </h2>
-                        <DynamicListContainer
-                            containerElementType="ul"
-                            shouldEnableLoadMore={shouldEnableLoadMore}
-                            className="u-list-none u-p-0"
-                        >
-                            {dynamicPendingList?.map?.((teaserData, index) => {
-                                return (
-                                    <li key={index}>
-                                        <GroupTeaser
-                                            {...teaserData}
-                                            user={user}
-                                            isPending
-                                        />
-                                    </li>
-                                )
-                            })}
-                        </DynamicListContainer>
-                        <PaginationWithStatus
-                            id="group-list-pagination"
-                            shouldEnableLoadMore={shouldEnableLoadMore}
-                            getPageAction={handleGetPage}
-                            {...dynamicPendingPagination}
-                        />
                     </LayoutColumn>
+                    {!!dynamicPendingList.length && (
+                        <LayoutColumn desktop={8} className="u-mb-14">
+                            <h2 className="nhsuk-heading-m">
+                                Groups you have been invited to
+                            </h2>
+                            <DynamicListContainer
+                                containerElementType="ul"
+                                shouldEnableLoadMore={shouldEnableLoadMore}
+                                className="u-list-none u-p-0"
+                            >
+                                {dynamicPendingList?.map?.(
+                                    (teaserData, index) => {
+                                        return (
+                                            <li key={index}>
+                                                <GroupTeaser
+                                                    {...teaserData}
+                                                    user={user}
+                                                    isPending
+                                                />
+                                            </li>
+                                        )
+                                    }
+                                )}
+                            </DynamicListContainer>
+                            <PaginationWithStatus
+                                id="group-list-pagination"
+                                shouldEnableLoadMore={shouldEnableLoadMore}
+                                getPageAction={handleGetPage}
+                                {...dynamicPendingPagination}
+                            />
+                        </LayoutColumn>
+                    )}
                     <LayoutColumn desktop={8}>
                         <h2 className="nhsuk-heading-m">
                             Groups you have joined
@@ -184,13 +189,15 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
                             shouldEnableLoadMore={shouldEnableLoadMore}
                             className="u-list-none u-p-0"
                         >
-                            {dynamicGroupsList?.map?.((teaserData, index) => {
-                                return (
-                                    <li key={index}>
-                                        <GroupTeaser {...teaserData} />
-                                    </li>
-                                )
-                            })}
+                            {dynamicGroupsList.length
+                                ? dynamicGroupsList.map((teaserData, index) => {
+                                      return (
+                                          <li key={index}>
+                                              <GroupTeaser {...teaserData} />
+                                          </li>
+                                      )
+                                  })
+                                : "You haven't joined any groups yet"}
                         </DynamicListContainer>
                         <PaginationWithStatus
                             id="group-list-pagination"
@@ -236,7 +243,7 @@ export const getServerSideProps: GetServerSideProps = async (
             try {
                 const [groupsRes, pendingRes] = await Promise.all([
                     getGroups({ user, isMember, pagination }),
-                    getGroupsPending({ user, pagination }),
+                    getGroupInvites({ user, pagination }),
                 ])
 
                 props.groupsList = groupsRes.data ?? []

@@ -19,4 +19,6 @@ public interface IGroupCommand
     Task DeleteUserFromGroupAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default);
     Task ApproveGroupUserAsync(GroupUserDto groupUserDto, CancellationToken cancellationToken = default);
     Task RejectGroupUserAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default);
+    Task DeleteGroupInviteAsync(Guid groupId, Guid userId, CancellationToken cancellationToken = default);
+
 }

@@ -59,7 +59,7 @@ export const deleteGroupInvite = async (
         throw new ServiceError(
             'An unexpected error occurred when attempting to delete domain',
             {
-                serviceId: services.DELETE_DOMAIN,
+                serviceId: services.DELETE_GROUP_INVITE,
                 status: status,
                 statusText: statusText,
                 body: apiData,

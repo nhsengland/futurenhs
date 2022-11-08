@@ -60,20 +60,35 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("groups/pending")]
+        [Route("groups/invites")]
 
-        public async Task<IActionResult> GetPendingGroupsForUserAsync([FromQuery] PaginationFilter filter, [FromQuery] bool isMember = true, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetGroupInvitesForUserAsync([FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
-
             var route = Request.Path.Value;
-            route = QueryHelpers.AddQueryString(route, "isMember", isMember.ToString());
 
             uint total;
             IEnumerable<GroupSummary> groups;
 
             
-            var (totalGroups, groupSummaries) = await _groupService.GetPendingGroupsForUserAsync(identity.MembershipUserId, isMember, filter.Offset, filter.Limit, cancellationToken);
+            var (totalGroups, groupSummaries) = await _groupService.GroupInvitesForUserAsync(identity.MembershipUserId, filter.Offset, filter.Limit, cancellationToken);
+
+            total = totalGroups;
+            groups = groupSummaries;
+
+            var pagedResponse = PaginationHelper.CreatePagedResponse(groups, filter, total, route);
+
+            return Ok(pagedResponse);
+        }
+    
+        [HttpGet]
+        [Route("groups/invites/{inviteId}")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetGroupInvitesForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            
+            var group = await _groupService.GroupInvitesForUserAsync(identity.MembershipUserId, filter.Offset, filter.Limit, cancellationToken);
 
             total = totalGroups;
             groups = groupSummaries;
