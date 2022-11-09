@@ -134,6 +134,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 email = email,
             });
 
+            await connection.OpenAsync(cancellationToken);
+            
             foreach (var invite in invites)
             {
                 const string createGroupInvite =
@@ -160,17 +162,22 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     AND             GroupId {(invite.GroupId != null ? "= @GroupId" : "IS NULL")}
 				";
 
-                await connection.OpenAsync(cancellationToken);
-
                 await using var transaction = connection.BeginTransaction();
-
-                var createGroupInviteResult = await connection.ExecuteAsync(createGroupInvite, new
+                var createGroupInviteResult = 0;
+                if (invite.GroupId is not null)
                 {
-                    userId = userId,
-                    groupId = invite.GroupId,
-                    createdAt = invite.CreatedAtUTC,
-                    createdBy = invite.CreatedBy,
-                }, transaction: transaction);
+                    createGroupInviteResult = await connection.ExecuteAsync(createGroupInvite, new
+                    {
+                        userId = userId,
+                        groupId = invite.GroupId,
+                        createdAt = invite.CreatedAtUTC,
+                        createdBy = invite.CreatedBy,
+                    }, transaction: transaction);
+                }
+                else
+                {
+                    createGroupInviteResult = 1;
+                }
 
                 var deletePlatformInviteResult = await connection.ExecuteAsync(deletePlatformInvite, new
                 {
