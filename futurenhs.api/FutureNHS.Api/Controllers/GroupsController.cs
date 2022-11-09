@@ -84,18 +84,29 @@ namespace FutureNHS.Api.Controllers
         [HttpGet]
         [Route("groups/invites/{inviteId}")]
         [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> GetGroupInvitesForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetGroupInviteForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
+            var group = await _groupService.GetGroupInviteAsync(inviteId, identity.MembershipUserId, cancellationToken);
             
-            var group = await _groupService.GroupInvitesForUserAsync(identity.MembershipUserId, filter.Offset, filter.Limit, cancellationToken);
+            if (group is null)
+            {
+                return NotFound();
+            }
 
-            total = totalGroups;
-            groups = groupSummaries;
+            return Ok(200);
+        }
+        
+        [HttpDelete]
+        [Route("groups/invites/{inviteId}")]
+        public async Task<IActionResult> DeleteGroupInviteForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
+        { 
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var rowVersion = _etagService.GetIfMatch();
 
-            var pagedResponse = PaginationHelper.CreatePagedResponse(groups, filter, total, route);
+            await _groupService.DeleteGroupInviteAsync(inviteId, identity.MembershipUserId, rowVersion, cancellationToken);
 
-            return Ok(pagedResponse);
+            return Ok();
         }
 
         [HttpGet]
