@@ -25,6 +25,8 @@ namespace FutureNHS.Api.Services
     public class GroupService : IGroupService
     {
         private const string GroupEditRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/edit";
+        private const string GroupInviteDeleteRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/view";
+        private const string GroupInviteViewRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/view";
         private const string GroupViewRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/view";
         private const string AdminViewRole = $"https://schema.collaborate.future.nhs.uk/admin/v1/view";
         private readonly ILogger<DiscussionService> _logger;
@@ -108,6 +110,38 @@ namespace FutureNHS.Api.Services
             var now = _systemClock.UtcNow.UtcDateTime;
 
             await _groupCommand.UpdateGroupAsync(groupDto, cancellationToken);
+        }
+        
+        public async Task DeleteGroupInviteAsync(Guid groupInviteId, Guid userId, byte[] rowVersion, CancellationToken cancellationToken)
+        {
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupInviteId, GroupInviteDeleteRole, cancellationToken);
+            if (userCanPerformAction is not true)
+            {
+                _logger.LogError($"Error: DeleteGroupInviteAsync - User:{0} does not have access to delete group invite:{1}", userId, groupInviteId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+            
+            var groupInvite = await _groupCommand.GetGroupInviteAsync(groupInviteId, userId, cancellationToken);
+            // if (!groupInvite.RowVersion.SequenceEqual(rowVersion))
+            // {
+            //     _logger.LogError($"Precondition Failed: DeleteGroupInviteAsync - GroupInvite:{0} has changed prior to submission ", groupInviteId);
+            //     throw new PreconditionFailedExeption("Precondition Failed: GroupUser has changed prior to submission");
+            // }
+
+        }
+
+        public async Task<GroupInvite> GetGroupInviteAsync(Guid groupInviteId, Guid userId, CancellationToken cancellationToken)
+        {
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupInviteId, GroupInviteViewRole, cancellationToken);
+            if (userCanPerformAction is not true)
+            {
+                _logger.LogError($"Error: GetGroupInviteAsync - User:{0} does not have access to view group invite:{1}", userId, groupInviteId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            return await _groupCommand.GetGroupInviteAsync(groupInviteId, userId, cancellationToken);
         }
 
 
@@ -479,5 +513,21 @@ namespace FutureNHS.Api.Services
 
             return await _groupDataProvider.GetGroupsForUserAsync(userId, isMember, offset, limit, cancellationToken);
         }
+        
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GroupInvitesForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, GroupViewRole, cancellationToken);
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetGroupsForUserAsync - User:{0} does not have permission to get groups for user", userId);
+                throw new ForbiddenException($"Error: User does not have access");
+            }
+
+            return await _groupDataProvider.GetGroupInvitesForUserAsync(userId, offset, limit, cancellationToken);
+            
+        }
+
     }
 }

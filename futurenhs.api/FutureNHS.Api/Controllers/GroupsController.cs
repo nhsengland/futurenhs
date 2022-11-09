@@ -60,6 +60,56 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
+        [Route("groups/invites")]
+
+        public async Task<IActionResult> GetGroupInvitesForUserAsync([FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var route = Request.Path.Value;
+
+            uint total;
+            IEnumerable<GroupSummary> groups;
+
+            
+            var (totalGroups, groupSummaries) = await _groupService.GroupInvitesForUserAsync(identity.MembershipUserId, filter.Offset, filter.Limit, cancellationToken);
+
+            total = totalGroups;
+            groups = groupSummaries;
+
+            var pagedResponse = PaginationHelper.CreatePagedResponse(groups, filter, total, route);
+
+            return Ok(pagedResponse);
+        }
+    
+        [HttpGet]
+        [Route("groups/invites/{inviteId}")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetGroupInviteForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var group = await _groupService.GetGroupInviteAsync(inviteId, identity.MembershipUserId, cancellationToken);
+            
+            if (group is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(200);
+        }
+        
+        [HttpDelete]
+        [Route("groups/invites/{inviteId}")]
+        public async Task<IActionResult> DeleteGroupInviteForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
+        { 
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var rowVersion = _etagService.GetIfMatch();
+
+            await _groupService.DeleteGroupInviteAsync(inviteId, identity.MembershipUserId, rowVersion, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpGet]
         [Route("admin/groups")]
 
         public async Task<IActionResult> AdminGetGroupsAsync(Guid userId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)

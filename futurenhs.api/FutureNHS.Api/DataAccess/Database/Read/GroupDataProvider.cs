@@ -25,7 +25,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid id, bool isMember, uint offset, uint limit, CancellationToken cancellationToken = default)
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid userId, bool isMember, uint offset, uint limit, CancellationToken cancellationToken = default)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
@@ -70,6 +70,71 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 {
                     Offset = Convert.ToInt32(offset),
                     Limit = Convert.ToInt32(limit),
+                    UserId = userId
+                });
+                groups = reader.Read<GroupSummary, ImageData, GroupSummary>(
+                    (group, image) =>
+                    {
+                        if (image is not null)
+                        {
+                            var groupWithImage = group with { Image = new ImageData(image, _options) };
+
+                            return groupWithImage;
+                        }
+
+                        return group;
+
+                    }, splitOn: "id");
+
+                totalCount = await reader.ReadFirstAsync<uint>();
+            }
+
+            return (totalCount, groups);
+        }
+
+        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupInvitesForUserAsync(Guid id, uint offset, uint limit, CancellationToken cancellationToken = default)
+        {
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
+            {
+                throw new ArgumentOutOfRangeException(nameof(limit));
+            }
+
+            uint totalCount;
+
+            IEnumerable<GroupSummary> groups;
+            
+            var invitesQuery = "WHERE groups.IsDeleted = 0 AND EXISTS (select gu.GroupId from GroupInvites gu where gu.GroupId = groups.Id AND MembershipUser_Id = @UserId)";
+
+            string query =
+                @$"SELECT 
+                    [{nameof(GroupSummary.Id)}]                        = groups.Id,
+                    [{nameof(GroupSummary.ThemeId)}]                   = groups.ThemeId,
+                    [{nameof(GroupSummary.Slug)}]                      = groups.Slug,
+                    [{nameof(GroupSummary.NameText)}]                  = groups.Name,
+                    [{nameof(GroupSummary.StraplineText)}]             = groups.Subtitle,
+                    [{nameof(GroupSummary.IsPublic)}]                  = groups.IsPublic,
+                    [{nameof(GroupSummary.MemberCount)}]               = (SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = groups.Id AND groupUser.Approved = 1 ), 
+				    [{nameof(GroupSummary.DiscussionCount)}]           = (SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = groups.Id AND discussion.IsDeleted = 0),
+                    [{nameof(ImageData.Id)}]		                   = image.Id,
+                    [{nameof(ImageData.Height)}]	                   = image.Height,
+                    [{nameof(ImageData.Width)}]		                   = image.Width,
+                    [{nameof(ImageData.FileName)}]	                   = image.FileName,
+                    [{nameof(ImageData.MediaType)}]	                   = image.MediaType
+				FROM [Group] groups
+                LEFT JOIN Image image ON image.Id = groups.ImageId                         
+                {invitesQuery}
+                ORDER BY groups.Name
+                OFFSET @Offset ROWS
+                FETCH NEXT @Limit ROWS ONLY;
+
+                SELECT COUNT(*) FROM [Group] groups
+                {invitesQuery}";
+            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
+            {
+                using var reader = await dbConnection.QueryMultipleAsync(query, new
+                {
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
                     UserId = id
                 });
                 groups = reader.Read<GroupSummary, ImageData, GroupSummary>(
@@ -92,6 +157,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return (totalCount, groups);
         }
 
+        
         public async Task<(uint totalGroups, IEnumerable<AdminGroupSummary> groupSummaries)> AdminGetGroupsAsync(uint offset, uint limit, CancellationToken cancellationToken = default)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)

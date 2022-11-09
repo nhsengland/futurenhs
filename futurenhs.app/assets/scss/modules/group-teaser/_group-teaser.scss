@@ -1,0 +1,16 @@
+.group-teaser {
+    position: relative;
+    &__button-decline {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        background: none;
+        border: none;
+        color: $dark-mid-grey;
+        z-index: 100;
+        cursor: pointer;
+        &:hover {
+            color: $mid-grey;
+        }
+    }
+}

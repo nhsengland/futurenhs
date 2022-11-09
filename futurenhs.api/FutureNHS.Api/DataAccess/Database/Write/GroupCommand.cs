@@ -555,6 +555,50 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             await dbConnection.ExecuteAsync(commandDefinition);
         }
 
+        public async Task DeleteGroupInviteAsync(Guid groupInviteId, byte[] rowVersion, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @" DELETE       
+                   FROM         [dbo].[GroupInvites]
+                        
+                   WHERE        [Id]             = @GroupInviteId
+                   AND          [RowVersion]     = @RowVersion";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                Id = groupInviteId,
+                RowVersion = rowVersion
+            }, cancellationToken: cancellationToken);
+
+            await dbConnection.ExecuteAsync(commandDefinition);
+        }
+
+        public async Task<GroupInvite> GetGroupInviteAsync(Guid groupInviteId, Guid userId, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(GroupInviteDto.Id)}]                            = Id,
+                                [{nameof(GroupInviteDto.MembershipUser_Id)}]             = MembershipUser_Id,
+                                [{nameof(GroupInviteDto.RowVersion)}]                    = RowVersion
+
+
+                    FROM        [GroupInvites] gi
+                    WHERE       gi.MembershipUser_Id = @MembershipUserId
+                    AND         gi.Id = @Id;";
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                Id = groupInviteId,
+                MembershipUserId = userId
+            }, cancellationToken: cancellationToken);
+
+            return await dbConnection.QuerySingleOrDefaultAsync<GroupInvite>(commandDefinition);
+        }
+
         public async Task ApproveGroupUserAsync(GroupUserDto groupUserDto, CancellationToken cancellationToken = default)
         {
             const string query =
