@@ -1,3 +1,4 @@
+import { NextApiRequest, NextApiResponse } from 'next'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c'
@@ -114,4 +115,43 @@ export const authOptions: NextAuthOptions = {
         },
     },
 }
-export default NextAuth(authOptions)
+
+export default (req: NextApiRequest, res: NextApiResponse) => {
+    const clientId = process.env.AZURE_AD_B2C_CLIENT_ID
+    const tenantName = process.env.AZURE_AD_B2C_TENANT_NAME
+
+    // #region Handle Azure B2C callbacks
+
+    // https://docs.microsoft.com/en-us/azure/active-directory-b2c/error-codes
+    const b2cPasswordResetErrorCode = 'AADB2C90118' // error_description: 'AADB2C90118: The user has forgotten their password.\r\n'
+    const b2cPasswordResetCancelErrorCode = 'AADB2C90091' // error_description: 'AADB2C90091: The user has cancelled entering self-asserted information.\r\n'
+
+    const isErrorCallback = req.url.indexOf('error=access_denied')
+    if (isErrorCallback) {
+        if (req.url.indexOf(b2cPasswordResetErrorCode) !== -1) {
+            const b2cPasswordResetFlow =
+                process.env.AZURE_AD_B2C_PASSWORD_RESET_USER_FLOW
+            const redirectUri = `${process.env.APP_URL}/api/auth/signin`
+            let b2cPasswordResetFlowUrl =
+                `https://${tenantName}.b2clogin.com/${tenantName}.onmicrosoft.com/${b2cPasswordResetFlow}/oauth2/v2.0/authorize?
+            response_type=code+id_token
+            &response_mode=form_post&
+            scope=offline_access%20openid
+            &redirect_uri=${encodeURIComponent(redirectUri)}
+            &client_id=${clientId}
+            `
+                    .replace(/ /g, '')
+                    .replace(/\n/g, '')
+                    .replace(/\r\n/g, '')
+            return res.redirect(b2cPasswordResetFlowUrl)
+        }
+        // handle cancel clicked during password reset
+        else if (req.url.indexOf(b2cPasswordResetCancelErrorCode) !== -1) {
+            return res.redirect(process.env.NEXTAUTH_URL)
+        } else {
+            console.error('Detected unknown Azure B2C error callback.')
+        }
+    }
+
+    return NextAuth(req, res, authOptions)
+}
