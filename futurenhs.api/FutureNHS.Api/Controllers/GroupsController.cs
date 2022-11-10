@@ -68,7 +68,7 @@ namespace FutureNHS.Api.Controllers
             var route = Request.Path.Value;
 
             uint total;
-            IEnumerable<GroupSummary> groups;
+            IEnumerable<GroupInviteSummary> groups;
 
             
             var (totalGroups, groupSummaries) = await _groupService.GroupInvitesForUserAsync(identity.MembershipUserId, filter.Offset, filter.Limit, cancellationToken);
@@ -81,22 +81,22 @@ namespace FutureNHS.Api.Controllers
             return Ok(pagedResponse);
         }
     
-        [HttpGet]
-        [Route("groups/invites/{inviteId}")]
-        [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> GetGroupInviteForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
-        {
-            var identity = await GetUserIdentityAsync(cancellationToken);
-            var group = await _groupService.GetGroupInviteAsync(inviteId, identity.MembershipUserId, cancellationToken);
-            
-            if (group is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(200);
-        }
-        
+        // [HttpGet]
+        // [Route("groups/invites/{inviteId}")]
+        // [TypeFilter(typeof(ETagFilter))]
+        // public async Task<IActionResult> GetGroupInviteForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
+        // {
+        //     var identity = await GetUserIdentityAsync(cancellationToken);
+        //     var group = await _groupService.GetGroupInviteAsync(inviteId, identity.MembershipUserId, cancellationToken);
+        //     
+        //     if (group is null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     return Ok(200);
+        // }
+        //
         [HttpDelete]
         [Route("groups/invites/{inviteId}")]
         public async Task<IActionResult> DeleteGroupInviteForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)

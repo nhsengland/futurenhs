@@ -2,6 +2,17 @@
 {
     public sealed record GroupInvite
     {
+        public GroupInvite() {}
+
+        public GroupInvite(GroupInvite invite)
+        {
+            Id = invite.Id;
+            MembershipUser_Id = invite.MembershipUser_Id;
+            GroupId = invite.GroupId;
+            RowVersion = invite.RowVersion;
+        }
+
+            
         public Guid Id { get; set; }
         public Guid MembershipUser_Id { get; set; }
         public Guid GroupId { get; set; }

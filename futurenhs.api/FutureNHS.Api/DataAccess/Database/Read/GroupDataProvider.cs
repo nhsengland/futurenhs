@@ -92,7 +92,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return (totalCount, groups);
         }
 
-        public async Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupInvitesForUserAsync(Guid id, uint offset, uint limit, CancellationToken cancellationToken = default)
+        public async Task<(uint totalGroups, IEnumerable<GroupInviteSummary> groupSummaries)> GetGroupInvitesForUserAsync(Guid id, uint offset, uint limit, CancellationToken cancellationToken = default)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
@@ -101,27 +101,32 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             uint totalCount;
 
-            IEnumerable<GroupSummary> groups;
+            IEnumerable<GroupInviteSummary> groups;
             
             var invitesQuery = "WHERE groups.IsDeleted = 0 AND EXISTS (select gu.GroupId from GroupInvites gu where gu.GroupId = groups.Id AND MembershipUser_Id = @UserId)";
 
             string query =
                 @$"SELECT 
-                    [{nameof(GroupSummary.Id)}]                        = groups.Id,
-                    [{nameof(GroupSummary.ThemeId)}]                   = groups.ThemeId,
-                    [{nameof(GroupSummary.Slug)}]                      = groups.Slug,
-                    [{nameof(GroupSummary.NameText)}]                  = groups.Name,
-                    [{nameof(GroupSummary.StraplineText)}]             = groups.Subtitle,
-                    [{nameof(GroupSummary.IsPublic)}]                  = groups.IsPublic,
-                    [{nameof(GroupSummary.MemberCount)}]               = (SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = groups.Id AND groupUser.Approved = 1 ), 
-				    [{nameof(GroupSummary.DiscussionCount)}]           = (SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = groups.Id AND discussion.IsDeleted = 0),
+                    [{nameof(GroupInviteSummary.Id)}]                        = groups.Id,
+                    [{nameof(GroupInviteSummary.ThemeId)}]                   = groups.ThemeId,
+                    [{nameof(GroupInviteSummary.Slug)}]                      = groups.Slug,
+                    [{nameof(GroupInviteSummary.NameText)}]                  = groups.Name,
+                    [{nameof(GroupInviteSummary.StraplineText)}]             = groups.Subtitle,
+                    [{nameof(GroupInviteSummary.IsPublic)}]                  = groups.IsPublic,
+                    [{nameof(GroupInviteSummary.MemberCount)}]               = (SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = groups.Id AND groupUser.Approved = 1 ), 
+				    [{nameof(GroupInviteSummary.DiscussionCount)}]           = (SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = groups.Id AND discussion.IsDeleted = 0),
+                    [{nameof(GroupInvite.Id)}]                               = gi.Id,
+                    [{nameof(GroupInvite.GroupId)}]                          = gi.GroupId,
+                    [{nameof(GroupInvite.RowVersion)}]                       = gi.RowVersion,
+                    [{nameof(GroupInvite.MembershipUser_Id)}]                = gi.MembershipUser_Id,                
                     [{nameof(ImageData.Id)}]		                   = image.Id,
                     [{nameof(ImageData.Height)}]	                   = image.Height,
                     [{nameof(ImageData.Width)}]		                   = image.Width,
                     [{nameof(ImageData.FileName)}]	                   = image.FileName,
                     [{nameof(ImageData.MediaType)}]	                   = image.MediaType
 				FROM [Group] groups
-                LEFT JOIN Image image ON image.Id = groups.ImageId                         
+                LEFT JOIN Image image ON image.Id = groups.ImageId
+                LEFT JOIN GroupInvites gi ON gi.GroupId = groups.Id
                 {invitesQuery}
                 ORDER BY groups.Name
                 OFFSET @Offset ROWS
@@ -137,12 +142,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     Limit = Convert.ToInt32(limit),
                     UserId = id
                 });
-                groups = reader.Read<GroupSummary, ImageData, GroupSummary>(
-                    (group, image) =>
+                groups = reader.Read<GroupInviteSummary, GroupInvite, ImageData, GroupInviteSummary>(
+                    (group, invite, image) =>
                     {
                         if (image is not null)
                         {
-                            var groupWithImage = group with { Image = new ImageData(image, _options) };
+                            var groupWithImage = group with { Image = new ImageData(image, _options), Invite = new GroupInvite(invite) };
 
                             return groupWithImage;
                         }
