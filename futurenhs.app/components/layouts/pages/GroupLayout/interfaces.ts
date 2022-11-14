@@ -4,7 +4,7 @@ import { Routes } from '@appTypes/routing'
 import { User } from '@appTypes/user'
 
 export interface Props {
-    tabId: 'index' | 'forum' | 'files' | 'members'
+    tabId: 'index' | 'forum' | 'whiteboard' | 'files' | 'members'
     routes: Routes
     shouldRenderSearch?: boolean
     shouldRenderUserNavigation?: boolean

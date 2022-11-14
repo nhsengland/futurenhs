@@ -24,6 +24,7 @@ export interface Routes {
     groupFolder: string
     groupFilesRoot: string
     groupMembersRoot: string
+    groupWhiteboardRoot: string
     groupAboutRoot: string
 }
 

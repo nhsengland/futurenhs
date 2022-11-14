@@ -38,10 +38,10 @@ const generateCSP = (nonce) => {
      */
     const csp = {
         'frame-src': `'self' http://localhost:9980 http://host.docker.internal:44355 https://collaborate.future.nhs.uk https://vars.hotjar.com`,
-        'img-src': `'self' data: *.google-analytics.com https://data.eu.pendo.io`,
+        'img-src': `'self' blob: data: *.google-analytics.com https://data.eu.pendo.io`,
         'style-src': `'self' 'unsafe-inline'`,
-        'script-src': `'self' 'unsafe-inline' http://localhost:9999  https://js.monitor.azure.com/scripts/b/ai.2.min.js *.googletagmanager.com *.hotjar.com https://ws2.hotjar.com wss://*.hotjar.com/api/v2/client/ws *.google-analytics.com https://cdn.eu.pendo.io https://data.eu.pendo.io`,
-        'font-src': `'unsafe-inline' https://assets.nhs.uk`,
+        'script-src': `'self' 'unsafe-inline' http://localhost:9999 https://js.monitor.azure.com/scripts/b/ai.2.min.js *.googletagmanager.com *.hotjar.com https://ws2.hotjar.com wss://*.hotjar.com/api/v2/client/ws *.google-analytics.com https://cdn.eu.pendo.io https://data.eu.pendo.io`,
+        'font-src': `'self' 'unsafe-inline' https://assets.nhs.uk `,
         'connect-src': `'self' http://localhost:9999 https://dc.services.visualstudio.com *.google-analytics.com *.hotjar.com https://ws2.hotjar.com wss://*.hotjar.com/api/v2/client/ws *.googletagmanager.com https://assets.nhs.uk https://cdn.eu.pendo.io https://data.eu.pendo.io`,
         'worker-src': `'self'`,
     }
@@ -49,7 +49,7 @@ const generateCSP = (nonce) => {
     if (isDevelopment) {
         csp[
             'script-src'
-        ] = `'self' 'unsafe-inline' 'unsafe-eval' https://js.monitor.azure.com/scripts/b/ai.2.min.js *.googletagmanager.com *.hotjar.com *.google-analytics.com https://cdn.eu.pendo.io https://data.eu.pendo.io`
+        ] = `'self' 'unsafe-inline' 'unsafe-eval'  https://js.monitor.azure.com/scripts/b/ai.2.min.js *.googletagmanager.com *.hotjar.com *.google-analytics.com https://cdn.eu.pendo.io https://data.eu.pendo.io`
     }
 
     return Object.entries(csp).reduce(

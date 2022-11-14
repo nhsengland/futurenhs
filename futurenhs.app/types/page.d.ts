@@ -33,12 +33,13 @@ export interface Page {
     className?: string
     pageTitle?: string
     notifications?: Array<Notification>
+    appElement?: HTMLElement
 }
 
 export interface GroupPage extends Page {
     groupId?: string
     isPublic?: boolean
-    tabId: 'index' | 'forum' | 'files' | 'members' | 'about'
+    tabId: 'index' | 'forum' | 'files' | 'whiteboard' | 'members' | 'about'
     imageId?: string
     image: Image
     contentText: GroupsPageTextContent

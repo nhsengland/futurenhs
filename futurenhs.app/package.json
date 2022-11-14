@@ -18,6 +18,7 @@
         "build-storybook": "node node_modules/cross-env/src/bin/cross-env.js STORYBOOK_PUBLIC_ASSET_PREFIX=/sharing-platform-docs build-storybook"
     },
     "dependencies": {
+        "@excalidraw/excalidraw": "next",
         "@mdi/js": "^7.0.96",
         "@mdi/react": "^1.6.1",
         "@next/bundle-analyzer": "^12.1.0",

@@ -24,6 +24,13 @@ const tinyMce = () => {
         .pipe(gulp.dest(`${getUiAssetsDistPath()}/js/tinymce`))
 }
 
+// Copy excalidraw files from node_modules to dist folder
+const excalidraw = () => {
+    return gulp
+        .src('./node_modules/@excalidraw/**/*')
+        .pipe(gulp.dest(`${getUiAssetsDistPath()}/js`))
+}
+
 // Copy favicons to dist folder
 const favicon = () => {
     return gulp
@@ -67,7 +74,7 @@ const icons = () => {
 }
 
 // Build task - runs all the web tasks
-const build = gulp.series(images, icons, tinyMce, favicon)
+const build = gulp.series(images, icons, tinyMce, excalidraw, favicon)
 
 const startSite = (done) => {
     const proc = childProcess.spawn(

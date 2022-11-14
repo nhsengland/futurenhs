@@ -1,6 +1,6 @@
 declare interface Config {
     groupRoute: string
-    activeId?: 'index' | 'forum' | 'files' | 'members' | 'about'
+    activeId?: 'index' | 'forum' | 'files' | 'whiteboard' | 'members' | 'about'
     isRestricted?: boolean
 }
 
@@ -40,6 +40,11 @@ export const getGroupNavMenuList = ({
                   id: 'files',
                   url: `${groupRoute}/folders`,
                   text: 'Files',
+              },
+              {
+                  id: 'whiteboard',
+                  url: `${groupRoute}/whiteboard`,
+                  text: 'Whiteboard',
               },
               {
                   id: 'members',
