@@ -36,7 +36,13 @@ export const GroupWhiteboardPage: (props: Props) => JSX.Element = ({
                     You need to enable JavaScript to run this app.
                 </noscript>
                 <div style={{ width: '100%', height: '800px' }}>
-                    {Comp && <Comp />}
+                    {Comp && (
+                        <Comp
+                            onCollabButtonClick={() =>
+                                window.alert('You clicked on collab button')
+                            }
+                        />
+                    )}
                 </div>
             </LayoutColumn>
         </>

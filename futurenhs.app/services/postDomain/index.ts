@@ -28,7 +28,7 @@ export const postDomain = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const domainPath = api.ALLOW_DOMAIN
+    const domainPath = api.SITE_DOMAINS
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
