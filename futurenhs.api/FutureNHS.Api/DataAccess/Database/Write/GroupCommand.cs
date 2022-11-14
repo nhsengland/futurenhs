@@ -179,7 +179,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             IEnumerable<GroupInvite> invites;
             
                         
-            var inviteQuery = "WHERE MembershipUser_Id = @UserId";
+            var inviteQuery = "WHERE MembershipUser_Id = @UserId AND IsDeleted = 0";
 
             string query =
                 @$"SELECT 
@@ -204,6 +204,37 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             }
 
             return invites;
+        }
+
+        public async Task DeleteGroupInviteAsync(Guid groupInviteId, byte[] rowVersion, CancellationToken cancellationToken = default)
+        {
+            {
+                const string query =
+                    @$"
+                    UPDATE          
+                                    [dbo].[GroupInvites]
+                    SET 
+                                    [IsDeleted]     = 1
+                    WHERE 
+                                    [Id]            = @GroupInviteId
+                    AND             [RowVersion]    = @RowVersion";
+
+                var queryDefinition = new CommandDefinition(query, new
+                {
+                    GroupInviteId = groupInviteId,
+                    RowVersion = rowVersion
+                }, cancellationToken: cancellationToken);
+
+                using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+                var result = await dbConnection.ExecuteAsync(queryDefinition);
+
+                if (result != 1)
+                {
+                    _logger.LogError($"Error: Unable to update group invite:{0} ", groupInviteId);
+                    throw new DBConcurrencyException("Error: Unable to update group invite");
+                }
+            }
         }
 
         public async Task<Guid> CreateGroupAsync(Guid userId, GroupDto groupDto, CancellationToken cancellationToken)
@@ -587,27 +618,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             await dbConnection.ExecuteAsync(commandDefinition);
         }
-
-        public async Task DeleteGroupInviteAsync(Guid groupInviteId, byte[] rowVersion, CancellationToken cancellationToken = default)
-        {
-            const string query =
-                @" DELETE       
-                   FROM         [dbo].[GroupInvites]
-                        
-                   WHERE        [Id]             = @GroupInviteId
-                   AND          [RowVersion]     = @RowVersion";
-
-            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
-
-            var commandDefinition = new CommandDefinition(query, new
-            {
-                Id = groupInviteId,
-                RowVersion = rowVersion
-            }, cancellationToken: cancellationToken);
-
-            await dbConnection.ExecuteAsync(commandDefinition);
-        }
-
+        
         public async Task<GroupInvite> GetGroupInviteAsync(Guid groupInviteId, Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =

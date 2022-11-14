@@ -26,7 +26,6 @@ namespace FutureNHS.Api.Services
     {
         private const string GroupEditRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/edit";
         private const string GroupInviteDeleteRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/view";
-        private const string GroupInviteViewRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/view";
         private const string GroupViewRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/view";
         private const string AdminViewRole = $"https://schema.collaborate.future.nhs.uk/admin/v1/view";
         private readonly ILogger<DiscussionService> _logger;
@@ -115,33 +114,29 @@ namespace FutureNHS.Api.Services
         public async Task DeleteGroupInviteAsync(Guid groupInviteId, Guid userId, byte[] rowVersion, CancellationToken cancellationToken)
         {
 
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupInviteId, GroupInviteDeleteRole, cancellationToken);
-            if (userCanPerformAction is not true)
-            {
-                _logger.LogError($"Error: DeleteGroupInviteAsync - User:{0} does not have access to delete group invite:{1}", userId, groupInviteId);
-                throw new SecurityException($"Error: User does not have access");
-            }
+            // var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupInviteId, GroupInviteDeleteRole, cancellationToken);
+            // if (userCanPerformAction is not true)
+            // {
+            //     _logger.LogError($"Error: DeleteGroupInviteAsync - User:{0} does not have access to update group invite:{1}", userId, groupInviteId);
+            //     throw new SecurityException($"Error: User does not have access");
+            // }
             
             var groupInvite = await _groupCommand.GetGroupInviteAsync(groupInviteId, userId, cancellationToken);
-            // if (!groupInvite.RowVersion.SequenceEqual(rowVersion))
-            // {
-            //     _logger.LogError($"Precondition Failed: DeleteGroupInviteAsync - GroupInvite:{0} has changed prior to submission ", groupInviteId);
-            //     throw new PreconditionFailedExeption("Precondition Failed: GroupUser has changed prior to submission");
-            // }
-
-        }
-
-        public async Task<GroupInvite> GetGroupInviteAsync(Guid groupInviteId, Guid userId, CancellationToken cancellationToken)
-        {
-
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupInviteId, GroupInviteViewRole, cancellationToken);
-            if (userCanPerformAction is not true)
+            if (!groupInvite.RowVersion.SequenceEqual(rowVersion))
             {
-                _logger.LogError($"Error: GetGroupInviteAsync - User:{0} does not have access to view group invite:{1}", userId, groupInviteId);
-                throw new SecurityException($"Error: User does not have access");
+                _logger.LogError($"Precondition Failed: DeleteGroupInviteAsync - GroupInvite:{0} has changed prior to submission ", groupInviteId);
+                throw new PreconditionFailedExeption("Precondition Failed: GroupInvite has changed prior to submission");
+            }
+            
+            try
+            {
+                await _groupCommand.DeleteGroupInviteAsync(groupInviteId, rowVersion, cancellationToken);
+            }
+            catch (DBConcurrencyException ex)
+            {
+                _logger.LogError(ex, $"Error: DeleteGroupInviteAsync - Error updating group invite {0}", groupInviteId);
             }
 
-            return await _groupCommand.GetGroupInviteAsync(groupInviteId, userId, cancellationToken);
         }
 
 

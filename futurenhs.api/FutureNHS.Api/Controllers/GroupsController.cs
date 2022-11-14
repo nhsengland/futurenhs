@@ -81,25 +81,10 @@ namespace FutureNHS.Api.Controllers
             return Ok(pagedResponse);
         }
     
-        // [HttpGet]
-        // [Route("groups/invites/{inviteId}")]
-        // [TypeFilter(typeof(ETagFilter))]
-        // public async Task<IActionResult> GetGroupInviteForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
-        // {
-        //     var identity = await GetUserIdentityAsync(cancellationToken);
-        //     var group = await _groupService.GetGroupInviteAsync(inviteId, identity.MembershipUserId, cancellationToken);
-        //     
-        //     if (group is null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     return Ok(200);
-        // }
-        //
-        [HttpDelete]
-        [Route("groups/invites/{inviteId}")]
-        public async Task<IActionResult> DeleteGroupInviteForUserAsync(Guid inviteId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
+
+        [HttpPut]
+        [Route("groups/invite/{inviteId}")]
+        public async Task<IActionResult> DeleteGroupInviteAsync(Guid inviteId, CancellationToken cancellationToken = default)
         { 
             var identity = await GetUserIdentityAsync(cancellationToken);
             var rowVersion = _etagService.GetIfMatch();

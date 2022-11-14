@@ -164,9 +164,11 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
                                             <li key={index}>
                                                 <GroupTeaser
                                                     {...teaserData}
-                                                    groupRowVersion={
+                                                    groupInvite={
                                                         teaserData.invite
-                                                            .rowVersion
+                                                    }
+                                                    refreshGroupInvites={
+                                                        refreshGroupInvites
                                                     }
                                                     user={user}
                                                     isPending

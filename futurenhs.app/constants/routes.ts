@@ -17,7 +17,8 @@ export const enum routes {
 
 export const enum api {
     SITE_INVITE = '/v1/registration/invite',
-    GROUP_INVITE = '/v1/groups/%GROUP_ID%/registration/invite',
+    GROUP_INVITES = '/v1/groups/invites',
+    GROUP_INVITE = '/v1/groups/invite/%INVITE_ID%',
     INVITE_DETAILS = '/v1/registration/invite/%INVITE_ID%',
     USER_REGISTER = '/v1/registration/register',
     MAP_IDENTITY = '/v1/registration/identity',

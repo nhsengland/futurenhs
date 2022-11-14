@@ -18,6 +18,7 @@ import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
 import { mapGroupData } from '@helpers/formatters/mapGroupData'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
+import { api } from '@constants/routes'
 
 declare type Options = {
     user: User
@@ -48,7 +49,7 @@ export const getGroupInvites: Service = async (
             pageSize: 10,
         },
     })
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/invites?${paginationQueryParams}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.GROUP_INVITES}?${paginationQueryParams}`
     const authHeader = jwtHeader(user.accessToken)
     const apiHeaders = setFetchOptions({
         method: requestMethods.GET,

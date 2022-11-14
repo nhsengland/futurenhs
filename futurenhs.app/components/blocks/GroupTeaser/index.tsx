@@ -18,7 +18,8 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
     image,
     text,
     groupId,
-    groupRowVersion,
+    groupInvite,
+    refreshGroupInvites,
     themeId,
     totalDiscussionCount,
     totalMemberCount,
@@ -49,29 +50,16 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
 
     const handleDeclineGroup = async (e) => {
         e.preventDefault()
+        const hasInviteData = groupId && groupInvite
+        if (!hasInviteData || !user) return
+        const { id: inviteId, rowVersion: etag } = groupInvite
         try {
-            if (!groupId || !user) return
             const headers = getStandardServiceHeaders({
                 csrfToken,
-                etag: groupRowVersion,
+                etag,
             })
-            await deleteGroupInvite({ headers, user, groupId })
-
-            // const joinRes = await postGroupMembership({
-            //     groupId,
-            //     csrfToken,
-            //     user,
-            // })
-            // console.log('JOIN TRIGGERED: ', joinRes)
-            // // const headers = getStandardServiceHeaders({
-            // //     csrfToken,
-            // // })
-            // // const leaveRes = await deleteGroupMembership({
-            // //     groupId,
-            // //     headers,
-            // //     user,
-            // // })
-            // // console.log('LEAVE TRIGGERED: ', leaveRes)
+            await deleteGroupInvite({ headers, user, inviteId })
+            await refreshGroupInvites()
         } catch (e) {}
     }
 
@@ -80,10 +68,7 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
             {isPending ? (
                 <span
                     className={generatedClasses.button}
-                    onClick={(e) => {
-                        console.log('CLICKING DECLINE')
-                        handleDeclineGroup(e)
-                    }}
+                    onClick={handleDeclineGroup}
                 >
                     X
                 </span>

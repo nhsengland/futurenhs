@@ -23,7 +23,7 @@ import jwtHeader from '@helpers/util/jwt/jwtHeader'
 declare type Options = {
     headers?: any
     user: User
-    groupId: string
+    inviteId: string
 }
 
 declare type Dependencies = {
@@ -32,13 +32,13 @@ declare type Dependencies = {
 }
 
 export const deleteGroupInvite = async (
-    { headers, user, groupId }: Options,
+    { headers, user, inviteId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const domainPath = api.GROUP_INVITE.replace('%GROUP_ID%', groupId)
+    const domainPath = api.GROUP_INVITE.replace('%INVITE_ID%', inviteId)
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
@@ -47,7 +47,8 @@ export const deleteGroupInvite = async (
                 ...headers,
                 ...jwtHeader(user.accessToken),
             },
-            method: requestMethods.DELETE,
+            method: requestMethods.PUT,
+            body: {},
         }),
         defaultTimeOutMillis
     )

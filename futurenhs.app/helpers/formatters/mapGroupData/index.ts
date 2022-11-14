@@ -8,6 +8,7 @@ export const mapGroupData = (apiData) => {
                   strapLine: apiData.straplineText ?? null,
               } as any,
               groupId: apiData.slug,
+              invite: apiData.invite,
               themeId: apiData.themeId,
               totalMemberCount: apiData.memberCount ?? 0,
               totalDiscussionCount: apiData.discussionCount ?? 0,

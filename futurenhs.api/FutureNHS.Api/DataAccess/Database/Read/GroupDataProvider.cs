@@ -103,9 +103,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             uint totalCount;
 
             IEnumerable<GroupInviteSummary> groups;
-            
+
             var invitesList = groupInvites.ToList();
-            var groupInviteIdArray = String.Join(",", invitesList.Select(invite => $"'{invite.GroupId}'"));
+            var groupInviteIdArray = invitesList.Any() ? String.Join(",", invitesList.Select(invite => $"'{invite.GroupId}'")) : $"'{default(Guid)}'";
             var summaryQuery = $"WHERE groups.IsDeleted = 0 AND groups.Id IN ({groupInviteIdArray})";
 
             string query =
@@ -143,18 +143,18 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     (group, image) =>
                     {
                         var invite = invitesList.Single(gi => gi.GroupId.Equals(group.Id));
-                        
-                        var groupWithInvite = group with { Invite = new GroupInvite(invite) };
-                        if (image is not null)
+                        if (invite is not null)
                         {
+                            var groupWithInvite = group with { Invite = new GroupInvite(invite) };
+                            if (image is not null)
+                            {
                             
-                            var groupWithImage = groupWithInvite with { Image = new ImageData(image, _options) };
-
-                            return groupWithImage;
+                                var groupWithImage = groupWithInvite with { Image = new ImageData(image, _options) };
+                                return groupWithImage;
+                            }
+                            return groupWithInvite;
                         }
-
-                        return groupWithInvite;
-
+                        return group;
                     }, splitOn: "id");
 
                 totalCount = await reader.ReadFirstAsync<uint>();
