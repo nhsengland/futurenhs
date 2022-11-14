@@ -224,6 +224,15 @@ namespace FutureNHS.Api.Services
                 ApprovedDateUTC = group.IsPublic ? now : null,
                 MembershipRole = defaultRole.Id,
             };
+            
+            var userIsInvited = await _groupCommand.GetInviteToGroupAsync(userId, group.Id, cancellationToken);
+            if (userIsInvited is not null)
+            {
+                await _groupCommand.RedeemGroupInviteAsync(userId, group.Id, cancellationToken);
+                return;
+            }
+            //TODO: Check if Invited
+            // if they have an invite, redeem the invite and stop
 
             await _groupCommand.UserJoinGroupAsync(groupUser, cancellationToken);
 

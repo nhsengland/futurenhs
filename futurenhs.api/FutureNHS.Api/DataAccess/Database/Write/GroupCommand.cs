@@ -598,6 +598,110 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             return await dbConnection.QuerySingleOrDefaultAsync<GroupInvite>(commandDefinition);
         }
+        
+        public async Task<GroupInvite> GetInviteToGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default)
+        {
+            const string query =
+                @$" SELECT
+                                [{nameof(GroupInviteDto.Id)}]                            = Id,
+                                [{nameof(GroupInviteDto.MembershipUser_Id)}]             = MembershipUser_Id,
+                                [{nameof(GroupInviteDto.GroupId)}]                       = GroupId,
+                                [{nameof(GroupInvite.CreatedAtUTC)}]                     = CreatedAtUTC,
+                                [{nameof(GroupInvite.CreatedBy)}]                        = CreatedBy,
+                                [{nameof(GroupInvite.ExpiresAtUTC)}]                     = ExpiresAtUTC,
+                                [{nameof(GroupInviteDto.RowVersion)}]                    = RowVersion
+                    FROM        [GroupInvites] gi
+                    WHERE       gi.MembershipUser_Id = @MembershipUserId
+                    AND         gi.groupId = @GroupId;";
+
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                GroupId = groupId,
+                MembershipUserId = userId
+            }, cancellationToken: cancellationToken);
+
+            return await dbConnection.QuerySingleOrDefaultAsync<GroupInvite>(commandDefinition);
+        }
+        
+        public async Task RedeemGroupInviteAsync(Guid userId, Guid groupId, CancellationToken cancellationToken)
+        {
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            await using var connection = new SqlConnection(dbConnection.ConnectionString);
+
+            var invite = await GetInviteToGroupAsync(userId, groupId, cancellationToken);
+            
+            await connection.OpenAsync(cancellationToken);
+           
+            const string insertGroupUser =
+                @$"INSERT INTO [dbo].[GroupUser]
+                    (
+                    [Approved],
+                    [Rejected],
+                    [Locked],
+                    [Banned],
+                    [RequestToJoinDateUTC],
+                    [ApprovedToJoinDateUTC],
+                    [ApprovingMembershipUser_Id],
+                    [MembershipRole_Id],
+                    [MembershipUser_Id],
+                    [Group_Id]
+                    )
+                    OUTPUT       INSERTED.[Id]
+                    VALUES
+                    (
+                        '1',
+                        '0',
+                        '0',
+                        '0',
+                        @CurrentDateUtc,
+                        @CurrentDateUtc,
+                        @ApprovingMemberId,
+                        (
+                        SELECT [Id]
+                        FROM   [dbo].[MembershipRole]
+                        WHERE  [RoleName] = 'Standard Members'
+                        ),
+                        @MembershipUserId,
+                        @GroupId
+                    )
+				        ";
+
+            string deleteGroupInvite =
+                @$"UPDATE   [dbo].[GroupInvites]
+                    SET             IsDeleted = 1
+                    WHERE           MembershipUser_Id = @MembershipUserId
+                    AND             GroupId = @GroupId
+				";
+
+            await using var transaction = connection.BeginTransaction();
+            
+            var insertGroupUserResult = await connection.ExecuteAsync(insertGroupUser, new
+            {
+                MembershipUserId = invite.MembershipUser_Id,
+                GroupId = groupId,
+                CurrentDateUtc = invite.CreatedAtUTC,
+                ApprovingMemberId = invite.CreatedBy,
+                
+            }, transaction: transaction);
+            
+            var deleteGroupInviteResult = await connection.ExecuteAsync(deleteGroupInvite, new
+            {
+                GroupId = groupId,
+                MembershipUserId = userId,
+            }, transaction: transaction);
+
+            if (insertGroupUserResult != 1 || deleteGroupInviteResult != 1)
+            {
+                _logger.LogError($"Error: Failed to redeem invite to group {groupId} for user: {userId}.");
+            }
+            else
+            {
+                await transaction.CommitAsync(cancellationToken);
+            }
+        }
 
         public async Task ApproveGroupUserAsync(GroupUserDto groupUserDto, CancellationToken cancellationToken = default)
         {
