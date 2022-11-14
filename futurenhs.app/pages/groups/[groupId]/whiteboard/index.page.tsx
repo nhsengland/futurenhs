@@ -11,6 +11,7 @@ import { GetServerSidePropsContext } from '@appTypes/next'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { GroupPage } from '@appTypes/page'
 import { useEffect, useState } from 'react'
+import { useAssetPath } from '@helpers/hooks/useAssetPath'
 
 export interface Props extends GroupPage {}
 
@@ -22,7 +23,7 @@ export const GroupWhiteboardPage: (props: Props) => JSX.Element = ({
     const { secondaryHeading } = contentText
     const [Comp, setComp] = useState(null)
     useEffect(() => {
-        window['EXCALIDRAW_ASSET_PATH'] = '/js/excalidraw/dist/'
+        window['EXCALIDRAW_ASSET_PATH'] = useAssetPath('/js/excalidraw/dist/')
         import('@excalidraw/excalidraw').then((comp) =>
             setComp(comp.Excalidraw)
         )
