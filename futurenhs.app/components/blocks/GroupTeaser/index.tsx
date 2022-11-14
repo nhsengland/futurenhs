@@ -18,6 +18,7 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
     image,
     text,
     groupId,
+    groupRowVersion,
     themeId,
     totalDiscussionCount,
     totalMemberCount,
@@ -52,6 +53,7 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
             if (!groupId || !user) return
             const headers = getStandardServiceHeaders({
                 csrfToken,
+                etag: groupRowVersion,
             })
             await deleteGroupInvite({ headers, user, groupId })
 

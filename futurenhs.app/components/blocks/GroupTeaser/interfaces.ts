@@ -7,6 +7,7 @@ export interface Props {
         strapLine?: string
     }
     groupId?: string
+    groupRowVersion?: string
     themeId?: string
     totalDiscussionCount?: number
     totalMemberCount?: number

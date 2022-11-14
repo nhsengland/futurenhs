@@ -41,7 +41,6 @@ export const getGroupInvites: Service = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const id: string = user.id
     const paginationQueryParams: string = getApiPaginationQueryParams({
         pagination,
         defaults: {
