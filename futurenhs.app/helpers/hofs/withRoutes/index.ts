@@ -55,6 +55,9 @@ export const withRoutes: Hof = (context) => {
                 groupMembersRoot: groupIndexRoute
                     ? `${groupIndexRoute}/members`
                     : null,
+                groupWhiteboardRoot: groupIndexRoute
+                    ? `${groupIndexRoute}/whiteboard`
+                    : null,
                 groupAboutRoot: groupIndexRoute
                     ? `${groupIndexRoute}/about`
                     : null,

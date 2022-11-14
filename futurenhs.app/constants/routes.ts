@@ -49,6 +49,7 @@ export const enum groupTabIds {
     INDEX = 'index',
     FORUM = 'forum',
     FILES = 'files',
+    WHITEBOARD = 'whiteboard',
     MEMBERS = 'members',
     ABOUT = 'about',
 }
