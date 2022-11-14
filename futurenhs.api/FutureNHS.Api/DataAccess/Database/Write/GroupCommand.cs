@@ -612,7 +612,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(GroupInviteDto.RowVersion)}]                    = RowVersion
                     FROM        [GroupInvites] gi
                     WHERE       gi.MembershipUser_Id = @MembershipUserId
-                    AND         gi.groupId = @GroupId;";
+                    AND         gi.groupId = @GroupId
+                    AND         gi.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
