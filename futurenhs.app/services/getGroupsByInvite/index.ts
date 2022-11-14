@@ -39,7 +39,7 @@ export const getGroupsByInvite = async (
 
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }${api.INVITE_DETAILS.replace('%INVITE_ID%', id)}`
+    }${api.SITE_INVITE_DETAILS.replace('%SITE_INVITE_ID%', id)}`
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
         setFetchOptions({ method: requestMethods.GET }),

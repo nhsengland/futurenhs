@@ -28,7 +28,7 @@ export const postMapIdentityToSiteUser = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const mapIdentity = api.MAP_IDENTITY
+    const mapIdentity = api.SITE_IDENTITY
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${mapIdentity}`
     const authHeader = jwtHeader(accessToken)
     const apiResponse: any = await fetchJSON(

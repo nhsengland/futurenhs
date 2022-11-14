@@ -28,7 +28,7 @@ export const postRegisterSiteUser = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const registerPath = api.USER_REGISTER
+    const registerPath = api.SITE_USER_REGISTER
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${registerPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,

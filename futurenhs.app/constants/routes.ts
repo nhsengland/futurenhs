@@ -16,14 +16,17 @@ export const enum routes {
 }
 
 export const enum api {
+    USER_GROUP_INVITES = '/v1/groups/invites',
+    USER_GROUP_INVITE = '/v1/groups/invite/%GROUP_INVITE_ID%',
+
+    GROUP_INVITE = '/v1/groups/%GROUP_ID%/registration/invite',
+
     SITE_INVITE = '/v1/registration/invite',
-    GROUP_INVITES = '/v1/groups/invites',
-    GROUP_INVITE = '/v1/groups/invite/%INVITE_ID%',
-    INVITE_DETAILS = '/v1/registration/invite/%INVITE_ID%',
-    USER_REGISTER = '/v1/registration/register',
-    MAP_IDENTITY = '/v1/registration/identity',
-    ALLOW_DOMAIN = '/v1/registration/domains',
-    GET_DOMAIN = '/v1/registration/domains/%DOMAIN%',
+    SITE_INVITE_DETAILS = '/v1/registration/invite/%SITE_INVITE_ID%',
+    SITE_USER_REGISTER = '/v1/registration/register',
+    SITE_IDENTITY = '/v1/registration/identity',
+    SITE_DOMAINS = '/v1/registration/domains',
+    SITE_DOMAIN = '/v1/registration/domains/%DOMAIN%',
 }
 
 export const enum queryParams {

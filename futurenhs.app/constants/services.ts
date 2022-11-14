@@ -21,7 +21,6 @@ export const enum services {
     GET_PENDING_GROUP_MEMBERS = 'getGroupPendingMembers',
     GET_GROUP_MEMBER = 'getGroupMember',
     GET_PAGE_TEXT_CONTENT = 'getPageTextContent',
-    GET_REGISTER_SITE_USER = 'getRegisterSiteUser',
     GET_SEARCH_RESULTS = 'getSearchResults',
     GET_SITE_ACTIONS = 'getSiteActions',
     GET_SITE_USER = 'getSiteUser',
