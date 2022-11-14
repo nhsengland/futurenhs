@@ -92,7 +92,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return (totalCount, groups);
         }
 
-        public async Task<(uint totalGroups, IEnumerable<GroupInviteSummary> groupSummaries)> GetGroupInvitesForUserAsync(Guid id, uint offset, uint limit, CancellationToken cancellationToken = default)
+        public async Task<(uint totalGroups, IEnumerable<GroupInviteSummary> groupSummaries)> GetGroupInvitesForUserAsync(Guid userId, IEnumerable<GroupInvite> groupInvites,
+            uint offset, uint limit, CancellationToken cancellationToken = default)
         {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
@@ -103,7 +104,9 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             IEnumerable<GroupInviteSummary> groups;
             
-            var invitesQuery = "WHERE groups.IsDeleted = 0 AND EXISTS (select gu.GroupId from GroupInvites gu where gu.GroupId = groups.Id AND MembershipUser_Id = @UserId)";
+            var invitesList = groupInvites.ToList();
+            var groupInviteIdArray = String.Join(",", invitesList.Select(invite => $"'{invite.GroupId}'"));
+            var summaryQuery = $"WHERE groups.IsDeleted = 0 AND groups.Id IN ({groupInviteIdArray})";
 
             string query =
                 @$"SELECT 
@@ -114,11 +117,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     [{nameof(GroupInviteSummary.StraplineText)}]             = groups.Subtitle,
                     [{nameof(GroupInviteSummary.IsPublic)}]                  = groups.IsPublic,
                     [{nameof(GroupInviteSummary.MemberCount)}]               = (SELECT COUNT(*) FROM GroupUser groupUser WHERE groupUser.Group_Id = groups.Id AND groupUser.Approved = 1 ), 
-				    [{nameof(GroupInviteSummary.DiscussionCount)}]           = (SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = groups.Id AND discussion.IsDeleted = 0),
-                    [{nameof(GroupInvite.Id)}]                               = gi.Id,
-                    [{nameof(GroupInvite.GroupId)}]                          = gi.GroupId,
-                    [{nameof(GroupInvite.RowVersion)}]                       = gi.RowVersion,
-                    [{nameof(GroupInvite.MembershipUser_Id)}]                = gi.MembershipUser_Id,                
+				    [{nameof(GroupInviteSummary.DiscussionCount)}]           = (SELECT COUNT(*) FROM Discussion discussion WHERE discussion.Group_Id = groups.Id AND discussion.IsDeleted = 0),            
                     [{nameof(ImageData.Id)}]		                   = image.Id,
                     [{nameof(ImageData.Height)}]	                   = image.Height,
                     [{nameof(ImageData.Width)}]		                   = image.Width,
@@ -126,33 +125,35 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     [{nameof(ImageData.MediaType)}]	                   = image.MediaType
 				FROM [Group] groups
                 LEFT JOIN Image image ON image.Id = groups.ImageId
-                LEFT JOIN GroupInvites gi ON gi.GroupId = groups.Id
-                {invitesQuery}
+                {summaryQuery}
                 ORDER BY groups.Name
                 OFFSET @Offset ROWS
                 FETCH NEXT @Limit ROWS ONLY;
 
                 SELECT COUNT(*) FROM [Group] groups
-                {invitesQuery}";
+                {summaryQuery}";
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
                 using var reader = await dbConnection.QueryMultipleAsync(query, new
                 {
                     Offset = Convert.ToInt32(offset),
                     Limit = Convert.ToInt32(limit),
-                    UserId = id
                 });
-                groups = reader.Read<GroupInviteSummary, GroupInvite, ImageData, GroupInviteSummary>(
-                    (group, invite, image) =>
+                groups = reader.Read<GroupInviteSummary, ImageData, GroupInviteSummary>(
+                    (group, image) =>
                     {
+                        var invite = invitesList.Single(gi => gi.GroupId.Equals(group.Id));
+                        
+                        var groupWithInvite = group with { Invite = new GroupInvite(invite) };
                         if (image is not null)
                         {
-                            var groupWithImage = group with { Image = new ImageData(image, _options), Invite = new GroupInvite(invite) };
+                            
+                            var groupWithImage = groupWithInvite with { Image = new ImageData(image, _options) };
 
                             return groupWithImage;
                         }
 
-                        return group;
+                        return groupWithInvite;
 
                     }, splitOn: "id");
 

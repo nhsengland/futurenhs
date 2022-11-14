@@ -7,7 +7,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces
     {
         Task<(uint totalGroups, IEnumerable<GroupSummary> groupSummaries)> GetGroupsForUserAsync(Guid userId, bool isMember, uint page = PaginationSettings.MinOffset, uint pageSize = PaginationSettings.DefaultPageSize, CancellationToken cancellationToken = default);
         
-        Task<(uint totalGroups, IEnumerable<GroupInviteSummary> groupSummaries)> GetGroupInvitesForUserAsync(Guid userId, uint page = PaginationSettings.MinOffset, uint pageSize = PaginationSettings.DefaultPageSize, CancellationToken cancellationToken = default);
+        Task<(uint totalGroups, IEnumerable<GroupInviteSummary> groupSummaries)> GetGroupInvitesForUserAsync(Guid userId, IEnumerable<GroupInvite> groupInvites,
+            uint page = PaginationSettings.MinOffset, uint pageSize = PaginationSettings.DefaultPageSize, CancellationToken cancellationToken = default);
 
         Task<(uint totalGroups, IEnumerable<AdminGroupSummary> groupSummaries)> AdminGetGroupsAsync(uint page = PaginationSettings.MinOffset, uint pageSize = PaginationSettings.DefaultPageSize, CancellationToken cancellationToken = default);
         Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken = default);

@@ -21,6 +21,10 @@ public interface IGroupCommand
     Task RejectGroupUserAsync(Guid groupUserId, byte[] rowVersion, CancellationToken cancellationToken = default);
     Task DeleteGroupInviteAsync(Guid groupInviteId, byte[] rowVersion, CancellationToken cancellationToken = default);
     Task<GroupInvite> GetGroupInviteAsync(Guid groupInviteId, Guid userId, CancellationToken cancellationToken = default);
+
     Task<GroupInvite> GetInviteToGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default);
     Task RedeemGroupInviteAsync(Guid userId, Guid groupId, CancellationToken cancellationToken);
+
+    Task<IEnumerable<GroupInvite>> GetInvitesAsync(Guid userId, CancellationToken cancellationToken = default);
+
 }

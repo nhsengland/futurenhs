@@ -514,7 +514,8 @@ namespace FutureNHS.Api.Services
             return await _groupDataProvider.GetGroupsForUserAsync(userId, isMember, offset, limit, cancellationToken);
         }
         
-        public async Task<(uint totalGroups, IEnumerable<GroupInviteSummary> groupSummaries)> GroupInvitesForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
+        public async Task<(uint totalGroups, IEnumerable<GroupInviteSummary> groupSummaries)> GroupInvitesForUserAsync(
+            Guid userId, uint offset, uint limit, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
 
@@ -525,7 +526,9 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            return await _groupDataProvider.GetGroupInvitesForUserAsync(userId, offset, limit, cancellationToken);
+            var invitesForUser = await _groupCommand.GetInvitesAsync(userId, cancellationToken);
+
+            return await _groupDataProvider.GetGroupInvitesForUserAsync(userId, invitesForUser, offset, limit, cancellationToken);
             
         }
 

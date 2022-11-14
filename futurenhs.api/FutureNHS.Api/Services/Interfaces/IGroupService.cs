@@ -25,7 +25,8 @@ namespace FutureNHS.Api.Services.Interfaces
         
         Task DeleteGroupInviteAsync(Guid groupInviteId, Guid userId, byte[] rowVersion, CancellationToken cancellationToken);
 
-        Task<(uint totalGroups, IEnumerable<GroupInviteSummary> groupSummaries)> GroupInvitesForUserAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken);
+        Task<(uint totalGroups, IEnumerable<GroupInviteSummary> groupSummaries)> GroupInvitesForUserAsync(Guid userId,
+            uint offset, uint limit, CancellationToken cancellationToken);
 
     }
 }
