@@ -106,6 +106,12 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
         setPendingPagination(pendingPagination)
     }
 
+    const refreshGroupInvites = async () => {
+        return new Promise((res) => {
+            res(true)
+        })
+    }
+
     /**
      * Render
      */
