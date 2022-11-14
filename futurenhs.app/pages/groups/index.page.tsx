@@ -107,9 +107,16 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
     }
 
     const refreshGroupInvites = async () => {
-        return new Promise((res) => {
-            res(true)
+        const { data, pagination } = await getGroupInvites({
+            user: user,
+            pagination: {
+                pageNumber: dynamicPendingPagination.pageNumber,
+                pageSize: dynamicPendingPagination.pageSize,
+            },
         })
+
+        setPendingList(data)
+        setPendingPagination(pagination)
     }
 
     /**

@@ -148,8 +148,6 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
         // handle cancel clicked during password reset
         else if (req.url.indexOf(b2cPasswordResetCancelErrorCode) !== -1) {
             return res.redirect(process.env.NEXTAUTH_URL)
-        } else {
-            console.error('Detected unknown Azure B2C error callback.')
         }
     }
 
