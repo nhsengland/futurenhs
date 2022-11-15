@@ -97,7 +97,7 @@ namespace FutureNHS.Api.Controllers
         [HttpGet]
         [Route("admin/groups")]
 
-        public async Task<IActionResult> AdminGetGroupsAsync(Guid userId, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> AdminGetGroupsAsync([FromQuery] PaginationFilter filter, CancellationToken cancellationToken = default)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var route = Request.Path.Value;
@@ -114,7 +114,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("groups/{slug}")]
-        public async Task<IActionResult> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetGroupAsync(string slug, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var group = await _groupService.GetGroupAsync(slug, identity.MembershipUserId, cancellationToken);
@@ -130,7 +130,7 @@ namespace FutureNHS.Api.Controllers
         [HttpGet]
         [Route("groups/{slug}/update")]
         [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> GetUpdateGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetUpdateGroupAsync(string slug, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var group = await _groupService.GetGroupAsync(identity.MembershipUserId, slug, cancellationToken);
@@ -146,7 +146,7 @@ namespace FutureNHS.Api.Controllers
         [HttpPut]
         [DisableFormValueModelBinding]
         [Route("groups/{slug}/update")]
-        public async Task<IActionResult> UpdateGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateGroupAsync(string slug, CancellationToken cancellationToken)
         {
             if (Request.ContentType != null && !MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
@@ -161,7 +161,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("groups/{slug}/actions")]
-        public async Task<IActionResult> GetActionsUserCanPerformInGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetActionsUserCanPerformInGroupAsync(string slug, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var group = await _groupService.GetGroupAsync(slug, identity.MembershipUserId, cancellationToken);
@@ -183,7 +183,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("groups/{slug}/members")]
-        public async Task<IActionResult> GetMembersInGroupAsync(Guid userId, string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMembersInGroupAsync(string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var route = Request.Path.Value;
@@ -197,7 +197,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("groups/{slug}/members/pending")]
-        public async Task<IActionResult> GetPendingMembersInGroupAsync(Guid userId, string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPendingMembersInGroupAsync(string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var route = Request.Path.Value;
@@ -211,7 +211,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPost]
         [Route("groups/{slug}/members/accept")]
-        public async Task<IActionResult> AcceptPendingGroupMemberAsync(Guid userId, string slug, [FromBody] MemberRequest memberRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> AcceptPendingGroupMemberAsync(string slug, [FromBody] MemberRequest memberRequest, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             await _groupMembershipService.ApproveGroupUserAsync(identity.MembershipUserId, slug, memberRequest.MembershipUserId, cancellationToken);
@@ -221,7 +221,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPost]
         [Route("groups/{slug}/members/reject")]
-        public async Task<IActionResult> RejectPendingGroupMemberAsync(Guid userId, string slug, [FromBody] MemberRequest memberRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> RejectPendingGroupMemberAsync(string slug, [FromBody] MemberRequest memberRequest, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             await _groupMembershipService.RejectGroupUserAsync(identity.MembershipUserId, slug, memberRequest.MembershipUserId, cancellationToken);
@@ -230,8 +230,8 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("groups/{slug}/members/{id:guid}")]
-        public async Task<IActionResult> GetMemberInGroupAsync(Guid userId, string slug, Guid Id, CancellationToken cancellationToken)
+        [Route("groups/{slug}/members")]
+        public async Task<IActionResult> GetMemberInGroupAsync(string slug, Guid Id, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var member = await _groupService.GetGroupMemberAsync(identity.MembershipUserId, slug, Id, cancellationToken);
@@ -245,7 +245,7 @@ namespace FutureNHS.Api.Controllers
         [HttpGet]
         [Route("groups/{slug}/members/{targetUserId:guid}/update")]
         [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> GetMemberInGroupForUpdateAsync(Guid userId, string slug, Guid targetUserId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMemberInGroupForUpdateAsync(string slug, Guid targetUserId, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var groupMember = await _groupMembershipService.GetGroupMembershipUserAsync(identity.MembershipUserId, targetUserId, slug, cancellationToken);
@@ -259,7 +259,7 @@ namespace FutureNHS.Api.Controllers
         [HttpPut]
         [Route("groups/{slug}/members/{targetUserId:guid}/roles/update")]
         [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> UpdateMemberInGroupAsync(Guid userId, string slug, Guid targetUserId, [FromBody] UpdateGroupUserRoleRequest updateGroupUserRoleRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateMemberInGroupAsync(string slug, Guid targetUserId, [FromBody] UpdateGroupUserRoleRequest updateGroupUserRoleRequest, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var rowVersion = _etagService.GetIfMatch();
@@ -271,7 +271,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("groups/{slug}/roles")]
-        public async Task<IActionResult> GetMembershipRolesForGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetMembershipRolesForGroupAsync(string slug, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var groupMember = await _groupMembershipService.GetMembershipRolesForGroupAsync(identity.MembershipUserId, slug, cancellationToken);
@@ -285,7 +285,7 @@ namespace FutureNHS.Api.Controllers
         [HttpDelete]
         [Route("groups/{slug}/members/{groupUserId:guid}/delete")]
         [TypeFilter(typeof(ETagFilter))]
-        public async Task<IActionResult> DeleteMembershipUserFromGroup(Guid userId, string slug, Guid groupUserId, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteMembershipUserFromGroup(string slug, Guid groupUserId, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var rowVersion = _etagService.GetIfMatch();
@@ -297,7 +297,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPost]
         [Route("groups/{slug}/members/join")]
-        public async Task<IActionResult> UserJoinGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        public async Task<IActionResult> UserJoinGroupAsync(string slug, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             await _groupMembershipService.UserJoinGroupAsync(identity.MembershipUserId, slug, cancellationToken);
@@ -307,7 +307,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpDelete]
         [Route("groups/{slug}/members/leave")]
-        public async Task<IActionResult> UserLeaveGroupAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        public async Task<IActionResult> UserLeaveGroupAsync(string slug, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             await _groupMembershipService.UserLeaveGroupAsync(identity.MembershipUserId, slug, cancellationToken);
@@ -317,7 +317,7 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("groups/{slug}/site")]
-        public async Task<IActionResult> GetGroupSiteAsync(Guid userId, string slug, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetGroupSiteAsync(string slug, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var groupSiteData = await _groupService.GetGroupSiteDataAsync(identity.MembershipUserId, slug, cancellationToken);
