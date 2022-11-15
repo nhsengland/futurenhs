@@ -146,7 +146,8 @@ if (useAppConfig)
 {
     builder.Services.AddAzureAppConfiguration();
 }
-
+// Add feature management to the container of services.
+builder.Services.AddFeatureManagement();
 builder.Services.AddMemoryCache();
 
 var policyName = "CorsPolicy";
@@ -172,7 +173,6 @@ builder.Services.Configure<IISServerOptions>(options =>
     options.AllowSynchronousIO = true;
 });
 builder.Services.AddHttpClient("fileserver-createurl");
-builder.Services.Configure<Features>(settings.GetSection("FeatureManagement"), binderOptions => binderOptions.BindNonPublicProperties = true);
 builder.Services.Configure<AzurePlatformConfiguration>(settings.GetSection("AzurePlatform"));
 builder.Services.Configure<SharedSecrets>(settings.GetSection("SharedSecrets"));
 builder.Services.Configure<AzureImageBlobStorageConfiguration>(settings.GetSection("AzurePlatform:AzureImageBlobStorage"));
@@ -183,7 +183,6 @@ builder.Services.Configure<ApplicationGateway>(settings.GetSection("AzurePlatfor
 builder.Services.Configure<GovNotifyConfiguration>(settings.GetSection("GovNotify"));
 builder.Services.Configure<AzureTableStorageConfiguration>(settings.GetSection("Logging:TableStorageConfiguration"));
 builder.Services.Configure<DefaultSettings>(settings.GetSection("DefaultSettings"));
-builder.Services.AddSingleton(settings.GetSection("FeatureManagement")).AddFeatureManagement();
 builder.Services.AddSingleton<ILoggerProvider>(
     sp =>
     {
