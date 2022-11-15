@@ -5,5 +5,8 @@ namespace FutureNHS.Api.DataAccess.Models.Domain
         public Guid Id { get; init; }
         
         public string EmailDomain { get; init; }
+        
+        public byte[] RowVersion { get; init; }
+
     }
 }

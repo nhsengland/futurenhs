@@ -367,19 +367,54 @@ namespace FutureNHS.Api.Services
                 throw new SecurityException($"Error: User does not have access");
             }
 
+            var wasDomainDeleted = false;
+
             try
             {
-                var domainDto = new DomainDto
-                {
-                    EmailDomain = domainRequest.EmailDomain
-                };
-                await _domainCommand.CreateApprovedDomainAsync(domainDto, cancellationToken);
+                wasDomainDeleted =
+                    await _domainDataProvider.IsDomainDeletedAsync(domainRequest.EmailDomain, cancellationToken);
             }
             catch (DBConcurrencyException ex)
             {
-                _logger.LogError(ex, $"Error: Error creating new domain");
+                _logger.LogError(ex, $"Error: Error checking delete status of new domain");
                 throw;
             }
+
+            if (wasDomainDeleted)
+            {
+                try
+                {
+                    var domain = await _domainCommand.GetDeletedDomainAsync(domainRequest.EmailDomain, cancellationToken);
+                    var domainDto = new DomainDto
+                    {
+                        Id = domain.Id,
+                        RowVersion = domain.RowVersion
+                    };
+                    await _domainCommand.RestoreApprovedDomainAsync(domainDto, cancellationToken);
+                }
+                catch (DBConcurrencyException ex)
+                {
+                    _logger.LogError(ex, $"Error: Error restoring deleted domain");
+                    throw;
+                }
+            }
+            else
+            {
+                try
+                {
+                    var domainDto = new DomainDto
+                    {
+                        EmailDomain = domainRequest.EmailDomain
+                    };
+                    await _domainCommand.CreateApprovedDomainAsync(domainDto, cancellationToken);
+                }
+                catch (DBConcurrencyException ex)
+                {
+                    _logger.LogError(ex, $"Error: Error creating new domain");
+                    throw;
+                }
+            }
+
         }
 
         public async Task<DomainDto> GetDomainAsync(Guid userId, Guid id, CancellationToken cancellationToken)
@@ -410,7 +445,7 @@ namespace FutureNHS.Api.Services
                 throw new SecurityException($"Error: User does not have access");
             }
 
-            return await _domainDataProvider.GetDomainsAsync(offset, limit, cancellationToken);
+            return await _domainCommand.GetDomainsAsync(offset, limit, cancellationToken);
         }
 
         private string CreateRegistrationLink(Guid userInviteId)

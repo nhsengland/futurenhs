@@ -48,41 +48,38 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             return domain;
         } 
-        public async Task<(uint, IEnumerable<ApprovedDomain>)> GetDomainsAsync(uint offset, uint limit, CancellationToken cancellationToken = default)
+        
+        public async Task<bool> IsDomainDeletedAsync(string emailDomain, CancellationToken cancellationToken = default)
         {
-            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
+            var domainToCheck = emailDomain;
+            var domainArr = domainToCheck.Split('.');
+            var domainHasPrefix = domainArr.Length >= 3;
+            if (domainHasPrefix)
             {
-                throw new ArgumentOutOfRangeException(nameof(limit));
+                domainToCheck = $"*.{domainArr[^2]}.{domainArr[^1]}";
             }
-
             const string query =
-                @$" SELECT
-                                [{nameof(ApprovedDomain.Id)}]                   = Id,
-                                [{nameof(ApprovedDomain.EmailDomain)}]          = EmailDomain
+                @"SELECT 
+                    CASE WHEN EXISTS 
+                        (SELECT * 
+                         FROM ApprovedDomain 
+                         WHERE EmailDomain = @EmailDomain AND IsDeleted = 1) 
+                    THEN CAST(1 AS BIT)
+                    ELSE CAST(0 AS BIT)
+                    END";
 
- 
-                    FROM        ApprovedDomain
-                    ORDER BY    EmailDomain asc
-                    OFFSET      @Offset ROWS
-                    FETCH NEXT  @Limit ROWS ONLY;
-
-                    SELECT      COUNT(*) 
-                    FROM        ApprovedDomain;";
-
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                EmailDomain = domainToCheck.ToLower()
+            }, cancellationToken: cancellationToken);
+            
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            var reader = await dbConnection.QueryMultipleAsync(query, new
-            {
-                Offset = Convert.ToInt32(offset),
-                Limit = Convert.ToInt32(limit)
-            });
+            var domain = await dbConnection.QuerySingleAsync<bool>(queryDefinition);
 
-            var domains = await reader.ReadAsync<ApprovedDomain>();
+            return domain;
+        } 
 
-            var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
-            
-            return (totalCount, domains);
-        }
   
     }
 }

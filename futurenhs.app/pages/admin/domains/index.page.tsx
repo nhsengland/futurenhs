@@ -75,14 +75,9 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
     const { secondaryHeading, noDomains, addDomain } = contentText ?? {}
     const handleDeleteDomain = async () => {
         if (!domainToDelete) return
-
-        const { id: domainId, domain } = domainToDelete
+        console.log(domainToDelete)
+        const { id: domainId, domain, rowVersion: etag } = domainToDelete
         try {
-            const res = await getDomain({
-                domainId,
-                user,
-            })
-            const etag = res.headers.get('etag')
             const headers = getStandardServiceHeaders({
                 csrfToken,
                 etag,
@@ -122,7 +117,7 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
         },
     ]
 
-    const rowList = dynamicDomainsList.map(({ id, domain }) => {
+    const rowList = dynamicDomainsList.map(({ id, domain, rowVersion }) => {
         const generatedCellClasses = {
             domain: classNames({
                 ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']:
@@ -149,6 +144,7 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
                             setDomainToDelete({
                                 domain,
                                 id,
+                                rowVersion,
                             })
                         }}
                         text={{

@@ -89,7 +89,7 @@ namespace FutureNHS.Api.Controllers
             return Ok(domain);
         }
 
-        [HttpDelete]
+        [HttpPut]
         [Route("registration/domains/{domainId}")]
         public async Task<IActionResult> DeleteDomainAsync(Guid userId, Guid domainId, CancellationToken cancellationToken)
         {

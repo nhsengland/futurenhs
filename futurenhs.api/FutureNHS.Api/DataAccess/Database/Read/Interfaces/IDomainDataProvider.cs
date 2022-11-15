@@ -7,7 +7,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces
     {
         Task<bool> IsDomainApprovedAsync(string emailDomain, CancellationToken cancellationToken = default);
         
-        Task<(uint, IEnumerable<ApprovedDomain>)> GetDomainsAsync(uint offset, uint limit, CancellationToken cancellationToken = default);
+        Task<bool> IsDomainDeletedAsync(string emailDomain, CancellationToken cancellationToken = default);
 
     }
 }

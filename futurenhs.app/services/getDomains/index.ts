@@ -79,6 +79,7 @@ export const getDomains = async (
         serviceResponse.data.push({
             id: datum.id,
             domain: datum.emailDomain,
+            rowVersion: datum.rowVersion,
         })
     })
 
