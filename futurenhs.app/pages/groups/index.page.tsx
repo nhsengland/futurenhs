@@ -184,7 +184,6 @@ export const GroupsPage: (props: Props) => JSX.Element = ({
                                                         refreshGroupInvites
                                                     }
                                                     user={user}
-                                                    isPending
                                                 />
                                             </li>
                                         )

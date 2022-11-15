@@ -10,6 +10,7 @@ import { Props } from './interfaces'
 import { useCsrf } from '@helpers/hooks/useCsrf'
 import { deleteGroupInvite } from '@services/deleteGroupInvite'
 import { getStandardServiceHeaders } from '@helpers/fetch'
+import { postGroupMembership } from '@services/postGroupMembership'
 
 /**
  * Group teaser link card for use in group listings
@@ -27,7 +28,6 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
     className,
     isPublic,
     isSignUp,
-    isPending,
     user,
 }) => {
     const { mainHeading, strapLine } = text ?? {}
@@ -38,9 +38,9 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
     const themeBorderId: number = useTheme(themeId).background
 
     const generatedClasses: any = {
-        box: classNames('group-teaser'),
+        box: classNames('group-teaser', 'u-mb-8'),
         wrapper: classNames(
-            'u-mb-4',
+            'u-mb-0',
             `u-border-b-theme-${themeBorderId}`,
             `hover:u-border-b-theme-${themeBorderId}-darker`,
             className
@@ -49,9 +49,6 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
     }
 
     const handleDeclineGroup = async (e) => {
-        e.preventDefault()
-        const hasInviteData = groupId && groupInvite
-        if (!hasInviteData || !user) return
         const { id: inviteId, rowVersion: etag } = groupInvite
         try {
             const headers = getStandardServiceHeaders({
@@ -63,16 +60,19 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
         } catch (e) {}
     }
 
+    const handleJoinGroup = async (e) => {
+        try {
+            await postGroupMembership({
+                groupId,
+                csrfToken,
+                user,
+            })
+            await refreshGroupInvites()
+        } catch (e) {}
+    }
+
     return (
         <div className={generatedClasses.box}>
-            {isPending ? (
-                <span
-                    className={generatedClasses.button}
-                    onClick={handleDeclineGroup}
-                >
-                    X
-                </span>
-            ) : null}
             <Card
                 id={`group-${groupId}`}
                 image={imageToUse}
@@ -114,6 +114,22 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
                     </div>
                 </div>
             </Card>
+            {!!groupInvite && (
+                <div className={`group-teaser_footer u-py-4 u-px-5`}>
+                    <button
+                        className="c-button u-border-2 u-border-theme-1"
+                        onClick={handleJoinGroup}
+                    >
+                        Join group
+                    </button>
+                    <button
+                        className="c-button c-button--reverse u-border-2 u-border-theme-1 u-ml-3"
+                        onClick={handleDeclineGroup}
+                    >
+                        Decline invitation
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

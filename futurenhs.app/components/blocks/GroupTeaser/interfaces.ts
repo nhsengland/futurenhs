@@ -18,6 +18,5 @@ export interface Props {
     className?: string
     isPublic?: boolean
     isSignUp?: boolean
-    isPending?: boolean
     user?: User
 }
