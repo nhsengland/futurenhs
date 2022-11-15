@@ -32,66 +32,6 @@ namespace FutureNHS.Api.Services
             _logger = logger;
         }
 
-        //public async Task<FileServerCollaboraResponse> GetCollaboraFileUrl(Guid userId,string slug, Guid file, CookieContainer cookies, string permission, CancellationToken cancellationToken)
-        //{
-        //    cancellationToken.ThrowIfCancellationRequested();
-
-        //    if (string.IsNullOrWhiteSpace(permission))
-        //        throw new ArgumentNullException(nameof(permission));
-
-        //    var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, ViewFileRole, cancellationToken);
-        //    if (userCanPerformAction is false)
-        //    {
-        //        _logger.LogError($"Error: ViewFileAsync - User:{0} does not have access to group:{1}", userId, slug);
-        //        throw new SecurityException($"Error: User does not have access");
-        //    }
-
-        //    var fileRequestUrl = _fileServerPrimaryConnectionString.Replace(_fileServerFilePlaceHolderId, file.ToString());
-
-        //    // Have to use Webrequest as we need to send the cookies in the cookie container,
-        //    // will be retired the moment MVCForum is gone.
-        //    var request = (HttpWebRequest)WebRequest.Create($"{fileRequestUrl}");
-        //    var postData = "";
-
-        //    var data = Encoding.ASCII.GetBytes(postData);
-
-        //    request.ContentType = "application/x-www-form-urlencoded";
-        //    request.ContentLength = data.Length;
-        //    request.Timeout = 3000;
-        //    request.Method = "POST";
-        //    request.CookieContainer = cookies;
-
-        //    // If required by the server, set the credentials.
-        //    request.Credentials = CredentialCache.DefaultCredentials;
-
-
-        //    await using (var stream = request.GetRequestStream())
-        //    {
-        //        await stream.WriteAsync(data, 0, data.Length, cancellationToken);
-        //    }
-
-        //    try
-        //    {
-        //        using var response = (HttpWebResponse)request.GetResponse();
-
-        //        if (response.StatusCode != HttpStatusCode.OK)
-        //            throw new HttpRequestException("Error generating url", null, response.StatusCode);
-
-        //        await using var dataStream = response.GetResponseStream();
-        //        // Open the stream using a StreamReader for easy access.
-        //        using var reader = new StreamReader(dataStream ?? throw new InvalidOperationException());
-        //        // Read the content.
-        //        var responseFromServer = await reader.ReadToEndAsync();
-        //        //var fileServerResponse = JsonConvert.DeserializeObject<FileServerCollaboraResponse>(responseFromServer);
-        //        //return fileServerResponse;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error generating Collabora url for file {0}", file);
-        //        throw;
-        //    }
-        //}
-
         public async Task<FileServerCollaboraResponse?> GetCollaboraFileUrl(Guid userId, string slug, string permission, Guid file, string authHeader, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();

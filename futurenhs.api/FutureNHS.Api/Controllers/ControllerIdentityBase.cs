@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FutureNHS.Api.Controllers
 {
+
     public class ControllerIdentityBase : Controller
     {
         private readonly ILogger<ControllerIdentityBase> _logger;
@@ -16,7 +17,7 @@ namespace FutureNHS.Api.Controllers
             _userService = userService;
       
         }
-
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<Identity> GetUserIdentityAsync(CancellationToken cancellationToken)
         {
             var userSub = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
