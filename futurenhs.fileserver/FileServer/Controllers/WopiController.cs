@@ -133,7 +133,7 @@ namespace FileServer.Controllers
             // file. All of these properties are optional and thus default to false; hosts should set them to true if their WOPI 
             // implementation meets the requirements for a particular property.
 
-            var supportsUpdate = true; // && fileMetadata.HasEditPermission;
+            var supportsUpdate = true && fileMetadata.UserHasEditPermission;
 
             responseBody.SupportedShareUrlType = new[] { "ReadOnly" };               // ReadOnly | ReadWrite - An array of strings containing the Share URL types supported by the host.  These types can be passed in the X-WOPI - UrlType request header to signify which Share URL type to return for the GetShareUrl (files) operation.
             responseBody.SupportsCobalt = false;                                     // A Boolean value that indicates that the host supports the ExecuteCellStorageRequest and ExecuteCellStorageRelativeRequest WOPI operations

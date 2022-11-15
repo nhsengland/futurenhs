@@ -16,8 +16,10 @@ using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Services.Admin;
 using FutureNHS.Api.Services.Interfaces;
+using FutureNHS.Application.Application;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 
 namespace FutureNHS.Api.Services
 {
@@ -41,6 +43,7 @@ namespace FutureNHS.Api.Services
         private readonly IRegistrationDataProvider _registrationDataProvider;
         private readonly IUserService _userService;
         private readonly IGroupService _groupService;
+        private readonly IFeatureManager _featureManager;
         // Notification template Ids
         private readonly string _registrationEmailId;
         private readonly string _defaultRole;
@@ -61,7 +64,8 @@ namespace FutureNHS.Api.Services
             IOptionsSnapshot<ApplicationGateway> gatewayConfig,
             IDomainCommand domainCommand,
             IDomainDataProvider domainDataProvider,
-            IOptionsMonitor<DefaultSettings> defaultSettings)
+            IOptionsMonitor<DefaultSettings> defaultSettings, 
+            IFeatureManager featureManager)
         {
             _groupCommand = groupCommand;
             _groupService = groupService;
@@ -81,7 +85,7 @@ namespace FutureNHS.Api.Services
             _groupRegistrationEmailId = notifyConfig.Value.GroupRegistrationEmailTemplateId;
             _groupInviteEmailId = notifyConfig.Value.GroupInviteEmailTemplateId;
             _defaultRole = defaultSettings.CurrentValue.DefaultRole ?? throw new ArgumentOutOfRangeException(nameof(defaultSettings.CurrentValue.DefaultRole));
-
+            _featureManager = featureManager;
         }
 
         private async Task<Guid> CreatePlatformInviteAsync(Guid userId, MailAddress emailAddress, Guid? groupId, CancellationToken cancellationToken)
@@ -273,12 +277,11 @@ namespace FutureNHS.Api.Services
             }
             
             var domain = emailAddress.Host;
-            var memberCanRegisterConditions = await Task.WhenAll(new[]
-            {
-                _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken),
-                _userService.IsMemberInvitedAsync(registrationRequest.Email, cancellationToken)
-            });
-            var memberCanRegister = memberCanRegisterConditions.All(x => x);
+            var domainApproved = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+            var memberInvited = await _userService.IsMemberInvitedAsync(registrationRequest.Email, cancellationToken);
+            var selfRegistrationOn = await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration);
+
+            var memberCanRegister = domainApproved && (memberInvited || selfRegistrationOn);
             if (memberCanRegister)
             {
                 var member = new MemberDto
