@@ -193,7 +193,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
             }),
             30000
         )
-        router.reload()
+        router.push(routes.groupRoot)
     }
 
     useEffect(() => {
