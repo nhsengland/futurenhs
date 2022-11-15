@@ -230,11 +230,11 @@ namespace FutureNHS.Api.Controllers
         }
 
         [HttpGet]
-        [Route("groups/{slug}/members")]
-        public async Task<IActionResult> GetMemberInGroupAsync(string slug, Guid Id, CancellationToken cancellationToken)
+        [Route("groups/{slug}/members/{targetUserId:guid}")]
+        public async Task<IActionResult> GetMemberInGroupAsync(string slug, Guid targetUserId, CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
-            var member = await _groupService.GetGroupMemberAsync(identity.MembershipUserId, slug, Id, cancellationToken);
+            var member = await _groupService.GetGroupMemberAsync(identity.MembershipUserId, slug, targetUserId, cancellationToken);
 
             if (member is null)
                 return NotFound();

@@ -717,8 +717,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             string deleteGroupInvite =
                 @$"UPDATE   [dbo].[GroupInvites]
                     SET             IsDeleted = 1
-                    WHERE           MembershipUser_Id = @MembershipUserId
-                    AND             GroupId = @GroupId
+                    WHERE           Id = @InviteId
 				";
 
             await using var transaction = connection.BeginTransaction();
@@ -734,13 +733,13 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             
             var deleteGroupInviteResult = await connection.ExecuteAsync(deleteGroupInvite, new
             {
-                GroupId = groupId,
-                MembershipUserId = userId,
+                InviteId = invite.Id
             }, transaction: transaction);
 
             if (insertGroupUserResult != 1 || deleteGroupInviteResult != 1)
             {
                 _logger.LogError($"Error: Failed to redeem invite to group {groupId} for user: {userId}.");
+                throw new ApplicationException("Failed to redeem the invite");
             }
             else
             {
