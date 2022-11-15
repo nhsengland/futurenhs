@@ -9,7 +9,6 @@ import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
 import { Group } from '@appTypes/group'
 import { User } from '@appTypes/user'
-import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     headers?: any

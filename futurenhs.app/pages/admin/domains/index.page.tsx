@@ -17,7 +17,6 @@ import {
 import { GetServerSidePropsContext } from '@appTypes/next'
 import { User } from '@appTypes/user'
 import { Pagination } from '@appTypes/pagination'
-import { dateTime } from '@helpers/formatters/dateTime'
 import { actions as actionConstants } from '@constants/actions'
 import { Link } from '@components/generic/Link'
 import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
@@ -34,13 +33,7 @@ import { deleteDomain } from '@services/deleteDomain'
 import { useNotification } from '@helpers/hooks/useNotification'
 import { notifications } from '@constants/notifications'
 import { NotificationsContext } from '@helpers/contexts'
-import { routes } from '@constants/routes'
-import { ActionLink } from '@components/generic/ActionLink'
-import { getDomain } from '@services/getDomain'
 import { getStandardServiceHeaders } from '@helpers/fetch'
-import { getServiceErrorDataValidationErrors } from '@services/index'
-import { FormErrors } from '@appTypes/form'
-import { getGenericFormError } from '@helpers/util/form'
 import { Dialog } from '@components/generic/Dialog'
 
 declare interface ContentText extends GenericPageTextContent {
@@ -75,7 +68,6 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
     const { secondaryHeading, noDomains, addDomain } = contentText ?? {}
     const handleDeleteDomain = async () => {
         if (!domainToDelete) return
-        console.log(domainToDelete)
         const { id: domainId, domain, rowVersion: etag } = domainToDelete
         try {
             const headers = getStandardServiceHeaders({
