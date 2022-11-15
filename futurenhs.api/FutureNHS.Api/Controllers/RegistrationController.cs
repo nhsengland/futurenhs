@@ -146,7 +146,7 @@ namespace FutureNHS.Api.Controllers
                 return Ok(memberDetailsResponse);
             }
 
-            var isMemberInvited = await _userService.IsMemberInvitedAsync(emailAddress, cancellationToken);
+            var isMemberInvited = await _userService.CheckMemberCanRegisterAsync(emailAddress, cancellationToken);
             if (isMemberInvited)
             {
                 return Ok();

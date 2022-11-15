@@ -14,7 +14,7 @@ namespace FutureNHS.Api.Services.Interfaces
         Task<(uint, IEnumerable<Member>)> GetMembersAsync(Guid userId, uint offset, uint limit, string sort,
             CancellationToken cancellationToken);
         Task UpdateMemberAsync(Guid userId, Guid targetUserId, Stream requestBody, string? contentType, byte[] rowVersion, CancellationToken cancellationToken);
-        Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken);
+        Task<bool> CheckMemberCanRegisterAsync(string emailAddress, CancellationToken cancellationToken);
         Task<Guid?> GetInviteIdForEmailAsync(string emailAddress, CancellationToken cancellationToken, Guid? groupId = null);
         Task<Guid?> GetGroupInviteIdForMemberAsync(Guid targetUserId, Guid groupId, CancellationToken cancellationToken);
         Task<Identity> GetMemberIdentityAsync(string subjectId, CancellationToken cancellationToken);

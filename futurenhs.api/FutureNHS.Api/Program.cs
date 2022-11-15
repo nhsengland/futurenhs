@@ -26,6 +26,7 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
 
@@ -182,7 +183,7 @@ builder.Services.Configure<ApplicationGateway>(settings.GetSection("AzurePlatfor
 builder.Services.Configure<GovNotifyConfiguration>(settings.GetSection("GovNotify"));
 builder.Services.Configure<AzureTableStorageConfiguration>(settings.GetSection("Logging:TableStorageConfiguration"));
 builder.Services.Configure<DefaultSettings>(settings.GetSection("DefaultSettings"));
-
+builder.Services.AddSingleton(settings.GetSection("FeatureManagement")).AddFeatureManagement();
 builder.Services.AddSingleton<ILoggerProvider>(
     sp =>
     {

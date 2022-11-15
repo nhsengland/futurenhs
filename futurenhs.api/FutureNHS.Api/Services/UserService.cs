@@ -11,7 +11,6 @@ using FutureNHS.Api.Models.Identity.Enums;
 using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member;
-using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Services.Interfaces;
 using FutureNHS.Api.Services.Validation;
 using HeyRed.Mime;
@@ -25,6 +24,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Security;
 using System.Text;
+using FutureNHS.Application.Application;
+using Microsoft.FeatureManagement;
 
 namespace FutureNHS.Api.Services
 {
@@ -45,10 +46,10 @@ namespace FutureNHS.Api.Services
         private readonly IUserImageService _imageService;
         private readonly IImageBlobStorageProvider _blobStorageProvider;
         private readonly string _defaultRole;
-
+        private readonly IFeatureManager _featureManager;
         private readonly string[] _acceptedFileTypes = new[] { ".png", ".jpg", ".jpeg" };
         private const long MaxFileSizeBytes = 5242880; // 5MB
-
+        private readonly IDomainDataProvider _domainDataProvider;
         public UserService(ILogger<UserService> logger,
             ISystemClock systemClock,
             IPermissionsService permissionsService,
@@ -60,7 +61,9 @@ namespace FutureNHS.Api.Services
             IOptionsSnapshot<ApplicationGateway> gatewayConfig,
             IUserImageService imageService,
             IImageBlobStorageProvider blobStorageProvider,
-            IOptionsMonitor<DefaultSettings> defaultSettings)
+            IOptionsMonitor<DefaultSettings> defaultSettings,
+            IFeatureManager featureManager,
+            IDomainDataProvider domainDataProvider)
         {
             _permissionsService = permissionsService;
             _userAdminDataProvider = userAdminDataProvider;
@@ -71,7 +74,8 @@ namespace FutureNHS.Api.Services
             _fqdn = gatewayConfig.Value.FQDN;
             _imageService = imageService;
             _blobStorageProvider = blobStorageProvider;
-
+            _featureManager = featureManager;
+            _domainDataProvider = domainDataProvider;
             _defaultRole = defaultSettings.CurrentValue.DefaultRole ?? throw new ArgumentOutOfRangeException(nameof(defaultSettings.CurrentValue.DefaultRole));
         }
 
@@ -123,12 +127,21 @@ namespace FutureNHS.Api.Services
             return await _userAdminDataProvider.GetMembersAsync(offset, limit, sort, cancellationToken);
         }
 
-        public async Task<bool> IsMemberInvitedAsync(string emailAddress, CancellationToken cancellationToken)
+        public async Task<bool> CheckMemberCanRegisterAsync(string emailAddress, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentNullException(nameof(emailAddress));
 
             var inviteId =  await _userDataProvider.GetMemberInviteIdAsync(emailAddress, cancellationToken);
-            return inviteId.HasValue;
+            var userCanRegister = inviteId.HasValue;
+            
+            if (userCanRegister == false && await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration))
+            {   
+                var email = new MailAddress(emailAddress);
+                var domain = email.Host;
+                userCanRegister = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
+            }
+            
+            return userCanRegister;
         }
         
         public async Task<Guid?> GetInviteIdForEmailAsync(string emailAddress, CancellationToken cancellationToken, Guid? groupId = null)
@@ -194,41 +207,6 @@ namespace FutureNHS.Api.Services
             {
                 _logger.LogError(ex, $"Error: UpdateUserAsync - Error updating user {0}");
             }
-        }
-
-        public async Task<Guid?> RegisterMemberAsync(MemberRegistrationRequest registrationRequest, CancellationToken cancellationToken)
-        {
-            if (string.IsNullOrEmpty(registrationRequest.Subject)) throw new ArgumentNullException(nameof(registrationRequest.Subject));
-            if (string.IsNullOrEmpty(registrationRequest.Email)) throw new ArgumentNullException(nameof(registrationRequest.Email));
-            if (string.IsNullOrEmpty(registrationRequest.Issuer)) throw new ArgumentNullException(nameof(registrationRequest.Issuer));
-
-            // TODO Work for determining if domain is on auto approve list
-            var emailAddress = new MailAddress(registrationRequest.Email);
-            var domain = emailAddress.Host;
-
-            if (await IsMemberInvitedAsync(registrationRequest.Email, cancellationToken))
-            {
-                // todo validate user
-
-                var member = new MemberDto
-                {
-                    FirstName = registrationRequest.FirstName,
-                    Surname = registrationRequest.LastName,
-                    Email = registrationRequest.Email,
-                    CreatedAtUTC = _systemClock.UtcNow.UtcDateTime,
-                    AgreedToTerms = registrationRequest.Agreed
-                };
-                try
-                {
-                    return await _userCommand.RegisterUserAsync(member, registrationRequest.Subject, registrationRequest.Issuer, _defaultRole, cancellationToken);
-                }
-                catch (DBConcurrencyException ex)
-                {
-                    _logger.LogError(ex, $"Error: Error registering new user");
-                    throw;
-                }
-            }
-            return null;
         }
 
         private async Task<(MemberDto, ImageDto?)> UploadUserImageMultipartContent(Guid targetUserId, Stream requestBody, byte[] rowVersion, string? contentType, CancellationToken cancellationToken)
@@ -442,7 +420,7 @@ namespace FutureNHS.Api.Services
                     };
                 }
 
-                var isMemberInvited = await IsMemberInvitedAsync(emailAddress, cancellationToken);
+                var isMemberInvited = await CheckMemberCanRegisterAsync(emailAddress, cancellationToken);
                 if (isMemberInvited)
                 {
                     return new MemberInfoResponse

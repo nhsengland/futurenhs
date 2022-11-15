@@ -276,12 +276,8 @@ namespace FutureNHS.Api.Services
                 throw new ArgumentOutOfRangeException($"Email is not in a valid format");
             }
             
-            var domain = emailAddress.Host;
-            var domainApproved = await _domainDataProvider.IsDomainApprovedAsync(domain, cancellationToken);
-            var memberInvited = await _userService.IsMemberInvitedAsync(registrationRequest.Email, cancellationToken);
-            var selfRegistrationOn = await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration);
+            var memberCanRegister = await _userService.CheckMemberCanRegisterAsync(registrationRequest.Email, cancellationToken);
 
-            var memberCanRegister = domainApproved && (memberInvited || selfRegistrationOn);
             if (memberCanRegister)
             {
                 var member = new MemberDto
