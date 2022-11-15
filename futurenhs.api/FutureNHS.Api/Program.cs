@@ -292,7 +292,11 @@ builder.Services.AddAzureClients(clientBuilder =>
 });
 
 var app = builder.Build();
-app.UseAzureAppConfiguration();
+if (useAppConfig)
+{
+    app.UseAzureAppConfiguration();
+}
+
 app.UseRouting();
 app.UseCors(policyName);
 
