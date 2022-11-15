@@ -367,7 +367,7 @@ namespace FutureNHS.Api.Services
                 throw new SecurityException($"Error: User does not have access");
             }
 
-            var wasDomainDeleted = false;
+            bool wasDomainDeleted;
 
             try
             {
