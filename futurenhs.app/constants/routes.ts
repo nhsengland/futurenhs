@@ -4,6 +4,7 @@ export const enum routes {
     ADMIN_USERS = '/admin/users',
     ADMIN_GROUPS = '/admin/groups',
     ADMIN_DOMAINS = '/admin/domains',
+    ADMIN_FEATURES = '/admin/features',
     USERS = '/users',
     SIGN_IN = '/auth/signin',
     SIGN_OUT = '/auth/signout',

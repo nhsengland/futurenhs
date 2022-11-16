@@ -9,6 +9,7 @@ export const enum actions {
     SITE_ADMIN_GROUPS_DELETE = 'https://schema.collaborate.future.nhs.uk/groups/v1/delete',
     SITE_ADMIN_DOMAINS_ADD = 'https://schema.collaborate.future.nhs.uk/domain/v1/add',
     SITE_ADMIN_DOMAINS_DELETE = 'https://schema.collaborate.future.nhs.uk/domain/v1/delete',
+    SITE_ADMIN_FEATURES_EDIT = 'https://schema.collaborate.future.nhs.uk/features/v1/edit',
     GROUPS_VIEW = 'https://schema.collaborate.future.nhs.uk/groups/v1/view',
     GROUPS_JOIN = 'https://schema.collaborate.future.nhs.uk/groups/v1/join',
     GROUPS_LEAVE = 'https://schema.collaborate.future.nhs.uk/groups/v1/leave',

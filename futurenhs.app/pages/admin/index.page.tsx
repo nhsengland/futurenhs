@@ -43,6 +43,10 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
         actions.includes(actionConstants.SITE_ADMIN_DOMAINS_ADD) ||
         actions.includes(actionConstants.SITE_ADMIN_DOMAINS_DELETE)
 
+    const shouldRenderFeatures: boolean = actions.includes(
+        actionConstants.SITE_ADMIN_FEATURES_EDIT
+    )
+
     return (
         <>
             <LayoutColumnContainer className="c-page-body">
@@ -68,7 +72,7 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
                         </Card>
                     </LayoutColumn>
                 )}
-                {shouldRenderGroupsLink && (
+                {shouldRenderDomains && (
                     <LayoutColumn tablet={4}>
                         <Card clickableHref={routes.ADMIN_DOMAINS}>
                             <h2 className="nhsuk-card__heading nhsuk-heading-m">
@@ -79,6 +83,15 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
                         </Card>
                     </LayoutColumn>
                 )}
+                <LayoutColumn tablet={4}>
+                    <Card clickableHref={routes.ADMIN_FEATURES}>
+                        <h2 className="nhsuk-card__heading nhsuk-heading-m">
+                            <Link href={routes.ADMIN_FEATURES}>
+                                Manage features
+                            </Link>
+                        </h2>
+                    </Card>
+                </LayoutColumn>
             </LayoutColumnContainer>
         </>
     )
