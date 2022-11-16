@@ -47,6 +47,7 @@ export interface FormField {
     className?: string
     optionClassName?: string
     autoComplete?: string
+    disabled?: boolean
 }
 
 export interface FormStep {

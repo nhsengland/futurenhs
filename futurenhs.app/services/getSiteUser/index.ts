@@ -52,6 +52,7 @@ export const getSiteUser = async (
     )
 
     const apiData: ApiResponse<any> = apiResponse.json
+    console.log(apiData)
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText, headers } = apiMeta
