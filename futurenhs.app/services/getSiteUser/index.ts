@@ -36,7 +36,7 @@ export const getSiteUser = async (
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
     const { id } = user
-   
+
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
     }/v1/users/${targetUserId}${isForUpdate ? '/update' : ''}`
@@ -52,7 +52,6 @@ export const getSiteUser = async (
     )
 
     const apiData: ApiResponse<any> = apiResponse.json
-    console.log(apiData)
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText, headers } = apiMeta

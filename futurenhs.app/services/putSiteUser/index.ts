@@ -38,8 +38,6 @@ export const putSiteUser = async (
         isMultiPartForm: true,
         body: body,
     })
-    console.log('test')
-    for (const key in headers) { console.log('key2: ' + key + ' , value2: ' + headers[key]) }
     const apiResponse: any = await fetchJSON(
         apiUrl,
         apiHeaders,

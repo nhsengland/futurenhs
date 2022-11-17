@@ -81,7 +81,6 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
             return Promise.resolve(errors)
         }
     }
-    console.log(formConfig)
     /**
      * Render
      */
