@@ -14,6 +14,7 @@ import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
+import { FeatureFlags, getFeatureFlags } from '@services/getFeatureFlags'
 
 declare interface ContentText extends GenericPageTextContent {
     mainHeading: string
@@ -21,12 +22,13 @@ declare interface ContentText extends GenericPageTextContent {
 
 export interface Props extends Page {
     contentText: ContentText
+    featureFlags: FeatureFlags
 }
 
 /**
  * Admin users dashboard template
  */
-export const AdminDomainsPage: (props: Props) => JSX.Element = ({
+export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
     contentText,
     actions,
     routes,
@@ -77,6 +79,8 @@ export const getServerSideProps: GetServerSideProps = async (
              * Get data from services
              */
             try {
+                const { data } = await getFeatureFlags({ user })
+                props.featureFlags = data
             } catch (error) {
                 return handleSSRErrorProps({ props, error })
             }
@@ -91,4 +95,4 @@ export const getServerSideProps: GetServerSideProps = async (
 /**
  * Export page template
  */
-export default AdminDomainsPage
+export default AdminFeaturesPage

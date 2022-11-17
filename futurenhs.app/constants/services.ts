@@ -31,6 +31,7 @@ export const enum services {
     GET_SITE_USER_ROLE = 'getSiteUserRole',
     GET_SITE_USER_ROLES = 'getSiteUserRoles',
     GET_USER_INFO = 'getUserInfo',
+    GET_FEATURE_FLAGS = 'getFeatureFlags',
     POST_CMS_BLOCK = 'postCmsBlock',
     POST_SITE_INVITE = 'postSiteUserInvite',
     POST_GROUP_INVITE = 'postGroup',

@@ -28,6 +28,7 @@ export const enum api {
     SITE_IDENTITY = '/v1/registration/identity',
     SITE_DOMAINS = '/v1/registration/domains',
     SITE_DOMAIN = '/v1/registration/domains/%DOMAIN%',
+    FEATURE_FLAGS = '/v1/admin/features',
 }
 
 export const enum queryParams {
