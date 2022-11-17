@@ -82,7 +82,7 @@ export const updateSiteMemberForm: FormConfig = {
                     disabled: true,
                     text: {
                         label: 'Email address',
-                        hint: 'To change your email address please contact <a href="https://support-futurenhs.zendesk.com/hc/en-gb/articles/7615088162973">Zendesk</a>',
+                        hint: 'To change your email address please visit the <a href="https://support-futurenhs.zendesk.com/hc/en-gb/articles/7615088162973">support centre.</a>',
                     },
                     component: 'input',
                 },
