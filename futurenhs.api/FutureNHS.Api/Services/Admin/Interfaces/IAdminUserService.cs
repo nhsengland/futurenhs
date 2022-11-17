@@ -1,6 +1,7 @@
 ﻿using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.User;
 using FutureNHS.Api.Models.Member;
+using FutureNHS.Application.Application;
 
 namespace FutureNHS.Api.Services.Admin.Interfaces
 {
@@ -14,5 +15,8 @@ namespace FutureNHS.Api.Services.Admin.Interfaces
         Task UpdateMemberRoleAsync(Guid adminUserId, MemberRoleUpdate memberRoleUpdate, byte[] rowVersion, CancellationToken cancellationToken);
         Task<(uint totalCount, IEnumerable<MemberSearchDetails>)> SearchMembersAsync(Guid adminUserId, string term, uint offset,
             uint limit, string sort, CancellationToken cancellationToken);
+        
+        Task<FeatureFlagsDto> GetFeatureFlagsStatusAsync(Guid adminUserId, CancellationToken cancellationToken);
+
     }
 }

@@ -13,13 +13,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;
 using System.Security;
+using FutureNHS.Application.Application;
+using Microsoft.FeatureManagement;
 
 namespace FutureNHS.Api.Services.Admin
 {
     public sealed class AdminUserService : IAdminUserService
     {
         private const string ListMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/list";
-        private const string AddMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/add";
+        private const string AdminViewRole = $"https://schema.collaborate.future.nhs.uk/admin/v1/view";
         private const string EditMembersRole = $"https://schema.collaborate.future.nhs.uk/members/v1/edit";
 
         private readonly string _fqdn;
@@ -28,6 +30,7 @@ namespace FutureNHS.Api.Services.Admin
         private readonly IRolesDataProvider _rolesDataProvider;
         private readonly IPermissionsService _permissionsService;
         private readonly ISystemClock _systemClock;
+        private readonly IFeatureManager _featureManager;
         private readonly IUserCommand _userCommand;
         private readonly IEmailService _emailService;
 
@@ -36,6 +39,7 @@ namespace FutureNHS.Api.Services.Admin
 
         public AdminUserService(ILogger<AdminUserService> logger,
             ISystemClock systemClock,
+            IFeatureManager featureManager,
             IPermissionsService permissionsService, 
             IUserAdminDataProvider userAdminDataProvider,
             IRolesDataProvider rolesDataProvider,
@@ -51,6 +55,7 @@ namespace FutureNHS.Api.Services.Admin
             _logger = logger;
             _userCommand = userCommand;
             _emailService = emailService;
+            _featureManager = featureManager;
             _fqdn = gatewayConfig.Value.FQDN;
 
             // Notification template Ids
@@ -178,6 +183,29 @@ namespace FutureNHS.Api.Services.Admin
         {
             var registrationLink = $"{_fqdn}/auth/invited?id={userInviteId}";
             return registrationLink;
+        }
+        
+        public async Task<FeatureFlagsDto> GetFeatureFlagsStatusAsync(Guid adminUserId, CancellationToken cancellationToken)
+        {
+            if (Guid.Empty == adminUserId) throw new ArgumentOutOfRangeException(nameof(adminUserId));
+
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(adminUserId, AdminViewRole, cancellationToken);
+            
+            if (!userCanPerformAction)
+            {
+                _logger.LogError($"Error: GetFeatureStatusSelfRegisterAsync - User:{0} does not have access to view admin", adminUserId);
+                throw new SecurityException($"Error: User does not have access");
+            }
+
+            var canSelfRegister = await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration);
+
+            var featureFlags = new FeatureFlagsDto()
+            {
+                SelfRegister = canSelfRegister
+            };
+
+            return featureFlags;
+
         }
     }
 }
