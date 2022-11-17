@@ -4,7 +4,7 @@
     {
         public string TemplateUrl { get; init; }
         public string TemplateUrlFileIdPlaceholder { get; init; }
-
+        public string TemplateUrlPermissionPlaceholder { get; init; }
         public string TemplateUrlUserIdPlaceholder { get; init; }
     }
 }

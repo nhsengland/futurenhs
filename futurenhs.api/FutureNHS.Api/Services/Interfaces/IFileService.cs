@@ -10,6 +10,6 @@ namespace FutureNHS.Api.Services.Interfaces
 
         Task<string> GetFileDownloadUrl(Guid userId, string slug, Guid fileId, CancellationToken cancellationToken);
 
-        Task<AuthUser> CheckUserAccess(Guid userId, Guid fileId, CancellationToken cancellationToken);
+        Task<AuthUser> CheckUserAccess(Guid userId, Guid fileId, string permission, CancellationToken cancellationToken);
     }
 }

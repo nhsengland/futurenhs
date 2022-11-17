@@ -39,10 +39,10 @@ namespace FileServer.Services
         {
             AuthenticatedUser? authenticatedUser = null;
             if (accessToken.HasValue)
-                authenticatedUser = await AuthenticateAccessTokenAsync(accessToken.Value, fileId,cancellationToken);
+                authenticatedUser = await AuthenticateAccessTokenAsync(accessToken.Value, fileId,accessPermission, cancellationToken);
             else if(!string.IsNullOrEmpty(authHeader))
             {
-                authenticatedUser = await AuthenticateAuthHeaderAsync(authHeader, fileId, cancellationToken);
+                authenticatedUser = await AuthenticateAuthHeaderAsync(authHeader, fileId, accessPermission, cancellationToken);
                 var userFileMetadata = await _userFileMetadataService.GetForFileAsync(fileId, authenticatedUser, cancellationToken);
                 authenticatedUser =  authenticatedUser with { FileMetadata = userFileMetadata };
                 if (authenticatedUser != null)
@@ -73,7 +73,7 @@ namespace FileServer.Services
         }
         
 
-        private async Task<AuthenticatedUser?> AuthenticateAccessTokenAsync(Guid accessToken, Guid file, CancellationToken cancellationToken)
+        private async Task<AuthenticatedUser?> AuthenticateAccessTokenAsync(Guid accessToken, Guid file, FileAccessPermission accessPermission, CancellationToken cancellationToken)
         {
             var userFileAccessToken = await _userFileAccessTokenRepository.GetAsync(accessToken, file, cancellationToken);
 
@@ -82,21 +82,25 @@ namespace FileServer.Services
             if (file != userFileAccessToken.User.FileMetadata.FileId) return Forbidden("The file requested does not match to the scope of that bound to the access token");
 
             var authenticatedUser = userFileAccessToken.User;
+            authenticatedUser = authenticatedUser with {UserAccess = userFileAccessToken.FileAccessPermission};
             return authenticatedUser;
         }
 
-        private async Task<AuthenticatedUser?> AuthenticateAuthHeaderAsync(string authHeader, Guid file, CancellationToken cancellationToken)
+        private async Task<AuthenticatedUser?> AuthenticateAuthHeaderAsync(string authHeader, Guid file, FileAccessPermission accessPermission, CancellationToken cancellationToken)
         {
             try
             { 
                 var userInfoUrl = _appConfiguration.UserInfoUrl;
                 var fileIdPlaceHolder = _appConfiguration.TemplateUrlFileIdPlaceholder;
+                var permissionPlaceHolder = _appConfiguration.TemplateUrlPermissionPlaceholder;
 
                 if (string.IsNullOrEmpty(authHeader)) return Forbidden("There is no Auth header attached to the request");
 
                 var httpClient = _httpClientFactory.CreateClient("api-userinfo");
 
-                var fileRequestUrl = userInfoUrl.Replace(fileIdPlaceHolder, file.ToString());
+                var fileRequestUrl = userInfoUrl
+                    .Replace(fileIdPlaceHolder, file.ToString())
+                    .Replace(permissionPlaceHolder, accessPermission == FileAccessPermission.View? "view": "edit");
                 
                 httpClient.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json"));
                 httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(authHeader);

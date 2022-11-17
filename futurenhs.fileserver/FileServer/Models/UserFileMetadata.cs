@@ -19,10 +19,6 @@
 
         public ulong? SizeInBytes { get; init; }
         public DateTimeOffset? LastWriteTimeUtc { get; init; }
-
-        public bool UserHasViewPermission { get; init; }
-        public bool UserHasEditPermission { get; init;}
-
         public FileServer.Models.File AsFile() => FileServer.Models.File.FromId(FileId, FileVersion);
     }
 }

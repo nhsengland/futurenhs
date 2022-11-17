@@ -31,6 +31,8 @@ namespace FutureNHS.Api.Services
     {
         private const string AddFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/add";
         private const string DownloadFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/download";
+        private const string ViewFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/view";
+        private const string EditFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/edit";
         private const string VerifiedFileStatus = "Verified";
         private readonly ILogger<DiscussionService> _logger;
         private readonly IFileCommand _fileCommand;
@@ -77,11 +79,21 @@ namespace FutureNHS.Api.Services
             return downloadUri;
         }
 
-        public async Task<AuthUser> CheckUserAccess(Guid userId, Guid fileId, CancellationToken cancellationToken)
+        public async Task<AuthUser> CheckUserAccess(Guid userId, Guid fileId, string permission, CancellationToken cancellationToken)
         {
             var userAccess = await _fileCommand.GetFileAccess(userId, fileId, cancellationToken);
 
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userAccess.Id, userAccess.GroupSlug, DownloadFileRole, cancellationToken);
+            var userCanPerformAction = false;
+
+            if (permission == "view")
+            {
+                userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userAccess.Id, userAccess.GroupSlug, ViewFileRole, cancellationToken);
+            }
+            else if (permission == "edit")
+            {
+                userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userAccess.Id, userAccess.GroupSlug, EditFileRole, cancellationToken);
+            }
+
             if (userCanPerformAction is false)
             {
                 _logger.LogError($"Error: CheckUserAccess - User:{0} does not have access to group:{1}", userId, userAccess.GroupSlug);

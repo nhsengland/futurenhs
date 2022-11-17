@@ -80,11 +80,11 @@ namespace FutureNHS.Api.Controllers
 
         [HttpGet]
         [Route("files/{id:guid}/auth")]
-        public async Task<IActionResult> CheckUserAccessForFile(Guid id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IActionResult> CheckUserAccessForFile(Guid id, [FromQuery] string permission, CancellationToken cancellationToken = default(CancellationToken))
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
 
-            var userAccess = await _fileService.CheckUserAccess(identity.MembershipUserId, id, cancellationToken);
+            var userAccess = await _fileService.CheckUserAccess(identity.MembershipUserId, id, permission, cancellationToken);
             return Ok(userAccess);
         }
 
