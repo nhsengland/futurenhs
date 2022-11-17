@@ -63,7 +63,8 @@ namespace FutureNHS.Api.Services
             IImageBlobStorageProvider blobStorageProvider,
             IOptionsMonitor<DefaultSettings> defaultSettings,
             IFeatureManager featureManager,
-            IDomainDataProvider domainDataProvider)
+            IDomainDataProvider domainDataProvider
+            )
         {
             _permissionsService = permissionsService;
             _userAdminDataProvider = userAdminDataProvider;
@@ -76,6 +77,7 @@ namespace FutureNHS.Api.Services
             _blobStorageProvider = blobStorageProvider;
             _featureManager = featureManager;
             _domainDataProvider = domainDataProvider;
+            
             _defaultRole = defaultSettings.CurrentValue.DefaultRole ?? throw new ArgumentOutOfRangeException(nameof(defaultSettings.CurrentValue.DefaultRole));
         }
 

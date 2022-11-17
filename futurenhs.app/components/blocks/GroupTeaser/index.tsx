@@ -24,6 +24,7 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
     themeId,
     totalDiscussionCount,
     totalMemberCount,
+    totalFileCount,
     headingLevel = 3,
     className,
     isPublic,
@@ -110,6 +111,13 @@ export const GroupTeaser: (props: Props) => JSX.Element = ({
                                 className="c-card_footer-icon u-fill-theme-0"
                             />
                             <span>{`Discussions: ${totalDiscussionCount}`}</span>
+                        </p>
+                        <p className="c-card_footer-item">
+                            <SVGIcon
+                                name="icon-document"
+                                className="c-card_footer-icon u-fill-theme-0"
+                            />
+                            <span>{`Files: ${totalFileCount}`}</span>
                         </p>
                     </div>
                 </div>
