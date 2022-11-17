@@ -325,7 +325,7 @@ namespace FutureNHS.Api.Controllers
             if (groupSiteData is null)
             {
                 var createdGroupSiteData = await _groupService.CreateGroupSiteDataAsync(identity.MembershipUserId, slug, cancellationToken);
-                if (createdGroupSiteData is null) return NotFound();
+    
                 return Ok(createdGroupSiteData);
             }
 
