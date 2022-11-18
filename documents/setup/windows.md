@@ -47,8 +47,8 @@ In addition to this also add it to your path in the windows environment variable
 9. C:\Program Files\Microsoft SQL Server\160\DAC\bin
 10. "Ok"
 
-## Install .Net 6.0 sdk
-[.Net 6 setup instructions](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+## Install .Net 7.0 sdk
+[.Net 6 setup instructions](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
 
 ## Install gulp
 

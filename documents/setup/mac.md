@@ -76,8 +76,8 @@ source ~/.bash_profile
 sqlpackage
 ```
 
-## Install .net 6
-[.net 6 instructions](https://docs.microsoft.com/en-us/dotnet/core/install/macos)
+## Install .net 7
+[.net 7 instructions](https://docs.microsoft.com/en-us/dotnet/core/install/macos)
 
 For M1 chips select Arm64 version otherwise pick x64
 
