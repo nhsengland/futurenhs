@@ -182,6 +182,16 @@ namespace FutureNHS.Api.Controllers
             return Ok(response);
 
         }
+        
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("registration/public/exists")]
+        public async Task<IActionResult> GetSelfRegistrationEnabledAsync(CancellationToken cancellationToken)
+        {
+
+            var isEnabled = await _registrationService.GetSelfRegistrationEnabledAsync();
+            return Ok(isEnabled);
+        }
 
         
     }

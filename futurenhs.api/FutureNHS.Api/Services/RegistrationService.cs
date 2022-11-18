@@ -452,5 +452,13 @@ namespace FutureNHS.Api.Services
             var registrationLink = $"{_fqdn}/auth/invited?id={userInviteId}";
             return registrationLink;
         }
+        
+        public async Task<bool> GetSelfRegistrationEnabledAsync()
+        {
+            var canSelfRegister = await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration);
+
+            return canSelfRegister;
+        }
+
     }
 }
