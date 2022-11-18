@@ -28,31 +28,24 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export type FeatureFlags = {
-    selfRegister: boolean
+export type FeatureFlag = {
+    id: string
+    name: string
+    enabled: boolean
 }
 
 export const getFeatureFlags = async (
     { user, pagination }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<FeatureFlags>> => {
-    const serviceResponse: ServiceResponse<FeatureFlags> = {
-        data: {
-            selfRegister: false,
-        },
+): Promise<ServiceResponse<Array<FeatureFlag>>> => {
+    const serviceResponse: ServiceResponse<Array<FeatureFlag>> = {
+        data: [],
     }
 
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const paginationQueryParams: string = getApiPaginationQueryParams({
-        pagination,
-        defaults: {
-            pageNumber: 1,
-            pageSize: 10,
-        },
-    })
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.FEATURE_FLAGS}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
@@ -64,7 +57,7 @@ export const getFeatureFlags = async (
         }),
         defaultTimeOutMillis
     )
-    const apiData: FeatureFlags = apiResponse.json
+    const apiData: any = apiResponse.json
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText } = apiMeta
@@ -80,13 +73,7 @@ export const getFeatureFlags = async (
         )
     }
 
-    serviceResponse.data = Object.entries(serviceResponse.data).reduce(
-        (acc, [k, v]) => ({
-            ...acc,
-            [k]: v,
-        }),
-        serviceResponse.data
-    )
+    serviceResponse.data = apiData
 
     return serviceResponse
 }

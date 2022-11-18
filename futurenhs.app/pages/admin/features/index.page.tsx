@@ -14,7 +14,11 @@ import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
-import { FeatureFlags, getFeatureFlags } from '@services/getFeatureFlags'
+import { FeatureFlag, getFeatureFlags } from '@services/getFeatureFlags'
+import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
+import { DataGrid } from '@components/layouts/DataGrid'
+import Switch from 'react-switch'
+import classNames from 'classnames'
 
 declare interface ContentText extends GenericPageTextContent {
     mainHeading: string
@@ -22,7 +26,7 @@ declare interface ContentText extends GenericPageTextContent {
 
 export interface Props extends Page {
     contentText: ContentText
-    featureFlags: FeatureFlags
+    featureFlags: Array<FeatureFlag>
 }
 
 /**
@@ -30,18 +34,82 @@ export interface Props extends Page {
  */
 export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
     contentText,
+    featureFlags,
     actions,
     routes,
     user,
     csrfToken,
 }) => {
     const { secondaryHeading } = contentText ?? {}
+    const handleFeatureToggle = (id, enabled) => {
+        return
+    }
+    const columnList = [
+        {
+            children: 'Feature',
+            className: '',
+        },
+        {
+            children: `Enable`,
+            className: 'tablet:u-text-right',
+        },
+    ]
+    const rowList = featureFlags.map(({ id, name, enabled }) => {
+        const generatedCellClasses = {
+            domain: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']:
+                    true,
+            }),
+        }
+
+        const generatedHeaderCellClasses = {
+            domain: classNames({
+                ['u-text-bold']: true,
+            }),
+        }
+
+        const rows = [
+            {
+                children: <span>{name}</span>,
+                className: generatedCellClasses.domain,
+                headerClassName: generatedHeaderCellClasses.domain,
+            },
+            {
+                children: (
+                    <Switch
+                        onChange={() => {
+                            handleFeatureToggle(id, enabled)
+                        }}
+                        checked={enabled}
+                    />
+                ),
+                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
+                headerClassName: 'u-hidden',
+            },
+        ]
+
+        return rows
+    })
 
     return (
         <>
             <LayoutColumnContainer className="u-w-full u-flex u-flex-col tablet:u-flex-row">
                 <LayoutColumn tablet={9} className="c-page-body">
                     <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
+                    <DynamicListContainer
+                        containerElementType="div"
+                        shouldEnableLoadMore={false}
+                        className="u-list-none u-p-0"
+                    >
+                        <DataGrid
+                            id="admin-table-domains"
+                            columnList={columnList}
+                            rowList={rowList}
+                            text={{
+                                caption: 'Allowed domains',
+                            }}
+                        />
+                    </DynamicListContainer>
                 </LayoutColumn>
             </LayoutColumnContainer>
         </>
