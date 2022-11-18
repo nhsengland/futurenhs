@@ -26,10 +26,10 @@ jobs:
 
   steps:
    - task: UseDotNet@2
-     displayName: 'Set dotnet SDK to v6.0'
+     displayName: 'Set dotnet SDK to v7.0'
      inputs:
       packageType: 'sdk'
-      version: '6.x'
+      version: '7.x'
       
    - task: NuGetToolInstaller@1
      inputs:
@@ -88,7 +88,7 @@ jobs:
    - task: CopyFiles@2
      displayName: 'Copy files for artifact'
      inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api/bin/Debug/net6.0/publish'
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/FutureNHS.Api/bin/Debug/net7.0/publish'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 

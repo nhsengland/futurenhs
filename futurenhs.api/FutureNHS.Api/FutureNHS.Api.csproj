@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationInsightsResourceId>/subscriptions/df0a13b4-87ea-4247-ba55-2e808c3ad3b9/resourceGroups/AppInsights/providers/microsoft.insights/components/AppInsights</ApplicationInsightsResourceId>
     <UserSecretsId>c07f6337-2f60-44c2-a531-eb92a5517bc7</UserSecretsId>
+    <LangVersion>latestmajor</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

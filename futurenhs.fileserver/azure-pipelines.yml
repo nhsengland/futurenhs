@@ -86,7 +86,7 @@ jobs:
    - task: CopyFiles@2
      displayName: 'Copy files for artifact'
      inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/bin/Debug/net6.0/publish'
+      SourceFolder: '$(Build.SourcesDirectory)/$(working-dir)/bin/Debug/net7.0/publish'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
