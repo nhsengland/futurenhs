@@ -16,7 +16,7 @@ namespace FutureNHS.Api.Services.Admin.Interfaces
         Task<(uint totalCount, IEnumerable<MemberSearchDetails>)> SearchMembersAsync(Guid adminUserId, string term, uint offset,
             uint limit, string sort, CancellationToken cancellationToken);
         
-        Task<FeatureFlagsDto> GetFeatureFlagsStatusAsync(Guid adminUserId, CancellationToken cancellationToken);
+        Task<IEnumerable<FeatureFlag>> GetFeatureFlagsAsync(Guid adminUserId, CancellationToken cancellationToken);
 
     }
 }

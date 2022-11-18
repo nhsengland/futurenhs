@@ -185,7 +185,7 @@ namespace FutureNHS.Api.Services.Admin
             return registrationLink;
         }
         
-        public async Task<FeatureFlagsDto> GetFeatureFlagsStatusAsync(Guid adminUserId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<FeatureFlag>> GetFeatureFlagsAsync(Guid adminUserId, CancellationToken cancellationToken)
         {
             if (Guid.Empty == adminUserId) throw new ArgumentOutOfRangeException(nameof(adminUserId));
 
@@ -199,10 +199,14 @@ namespace FutureNHS.Api.Services.Admin
 
             var canSelfRegister = await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration);
 
-            var featureFlags = new FeatureFlagsDto()
+            var selfRegister = new FeatureFlag()
             {
-                SelfRegister = canSelfRegister
+                Id = FeatureFlags.SelfRegistration,
+                Name = "Self Registration",
+                Enabled = canSelfRegister
             };
+
+            var featureFlags = new List<FeatureFlag>{selfRegister};
 
             return featureFlags;
 
