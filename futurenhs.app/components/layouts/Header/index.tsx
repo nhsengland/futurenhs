@@ -172,7 +172,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                         >
                                             <ul
                                                 className="c-site-header-nav_root-nav c-site-header-nav_root-nav--mobile-full-height"
-                                                role="menubar"
+                                                role="none"
                                             >
                                                 <li role="none">
                                                     <Accordion
@@ -247,7 +247,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                         <div className="c-site-header-nav_sub-nav-content">
                                                             <ul
                                                                 className={`u-list-none u-p-0 u-m-0`}
-                                                                role="menu"
+                                                                role="none"
                                                                 aria-label="Account navigation"
                                                             >
                                                                 {shouldRenderUserLink && (
@@ -259,7 +259,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                             href={`${routes.USERS}/${user.id}`}
                                                                         >
                                                                             <a
-                                                                                role="menuitem"
+                                                                                role="none"
                                                                                 className="c-site-header-nav_sub-nav-child"
                                                                             >
                                                                                 {
@@ -280,7 +280,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                             }
                                                                         >
                                                                             <a
-                                                                                role="menuitem"
+                                                                                role="none"
                                                                                 className="c-site-header-nav_sub-nav-child"
                                                                             >
                                                                                 {
@@ -388,7 +388,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                                     href={url}
                                                                 >
                                                                     <a
-                                                                        role="menuitem"
+                                                                        role="none"
                                                                         aria-current={
                                                                             isActive
                                                                         }
