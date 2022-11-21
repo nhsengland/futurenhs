@@ -425,6 +425,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
                         className={generatedClasses.navContent}
                     >
                         <TabbedNav
+                            shouldNoneRole={true}
                             text={{
                                 ariaLabel: navMenuTitle,
                             }}

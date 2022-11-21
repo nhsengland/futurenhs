@@ -1,4 +1,5 @@
 export interface Props {
+    shouldNoneRole?: boolean
     text: {
         ariaLabel: string
     }
