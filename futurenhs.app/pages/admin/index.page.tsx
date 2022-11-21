@@ -92,6 +92,15 @@ export const AdminHomePage: (props: Props) => JSX.Element = ({
                         </h2>
                     </Card>
                 </LayoutColumn>
+                <LayoutColumn tablet={4}>
+                    <Card clickableHref={routes.ADMIN_ANALYTICS}>
+                        <h2 className="nhsuk-card__heading nhsuk-heading-m">
+                            <Link href={routes.ADMIN_ANALYTICS}>
+                                Manage analytics
+                            </Link>
+                        </h2>
+                    </Card>
+                </LayoutColumn>
             </LayoutColumnContainer>
         </>
     )

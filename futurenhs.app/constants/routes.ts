@@ -5,6 +5,7 @@ export const enum routes {
     ADMIN_GROUPS = '/admin/groups',
     ADMIN_DOMAINS = '/admin/domains',
     ADMIN_FEATURES = '/admin/features',
+    ADMIN_ANALYTICS = '/admin/analytics',
     USERS = '/users',
     SIGN_IN = '/auth/signin',
     SIGN_OUT = '/auth/signout',
@@ -31,6 +32,7 @@ export const enum api {
     SITE_PUBLIC_REGISTRATION_EXISTS = '/v1/registration/public/exists',
 
     FEATURE_FLAGS = '/v1/admin/features',
+    ANALYTICS = '/v1/admin/analytics'
 }
 
 export const enum queryParams {
