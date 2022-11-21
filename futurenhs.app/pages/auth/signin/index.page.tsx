@@ -1,5 +1,4 @@
 import { GetServerSideProps } from 'next'
-import { getSession } from 'next-auth/react'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { getAuthCsrfData } from '@services/getAuthCsrfData'
 import { selectQuery } from '@helpers/selectors/context'
@@ -19,13 +18,17 @@ import { getToken } from 'next-auth/jwt'
 import { authOptions } from '@pages/api/auth/[...nextauth].page'
 import { unstable_getServerSession } from 'next-auth'
 import SignInSubmitButton from '@components/forms/SignInSubmitButton'
+import { getPublicRegistrationExists } from '@services/getPublicRegistrationExists'
 
 interface ContentText extends GenericPageTextContent {
-    signIn: string
+    signUpHtml: string
+    signUpHeading: string
 }
 
 export interface Props extends Page {
     contentText: ContentText
+    canPublicRegister: boolean
+    b2cSignUpUrl: string
 }
 
 /**
@@ -35,10 +38,18 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
     csrfToken,
     routes,
     contentText,
+    canPublicRegister,
+    b2cSignUpUrl,
 }) => {
     const { authApiSignInAzureB2C } = routes ?? {}
-    const { mainHeading, secondaryHeading, intro, bodyHtml, signIn } =
-        contentText ?? {}
+    const {
+        mainHeading,
+        secondaryHeading,
+        intro,
+        bodyHtml,
+        signUpHtml,
+        signUpHeading,
+    } = contentText ?? {}
 
     return (
         <PageBody className="tablet:u-px-0">
@@ -59,16 +70,35 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
                         csrfToken={csrfToken}
                         action={authApiSignInAzureB2C}
                     />
-                    {secondaryHeading && (
-                        <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
-                    )}
-                    {bodyHtml && (
-                        <RichText
-                            wrapperElementType="div"
-                            className="u-mb-10"
-                            bodyHtml={bodyHtml}
-                        />
-                    )}
+                    {!canPublicRegister
+                        ? secondaryHeading && (
+                              <h2 className="nhsuk-heading-l">
+                                  {secondaryHeading}
+                              </h2>
+                          )
+                        : signUpHeading && (
+                              <h2 className="nhsuk-heading-l">
+                                  {secondaryHeading}
+                              </h2>
+                          )}
+                    {!canPublicRegister
+                        ? bodyHtml && (
+                              <RichText
+                                  wrapperElementType="div"
+                                  className="u-mb-10"
+                                  bodyHtml={bodyHtml}
+                              />
+                          )
+                        : signUpHtml && (
+                              <RichText
+                                  wrapperElementType="div"
+                                  className="u-mb-10"
+                                  bodyHtml={signUpHtml.replace(
+                                      '%SIGNUP_URL%',
+                                      b2cSignUpUrl
+                                  )}
+                              />
+                          )}
                 </LayoutColumn>
             </LayoutColumnContainer>
         </PageBody>
@@ -136,7 +166,12 @@ export const getServerSideProps: GetServerSideProps = async (
                 const [csrfData] = await Promise.all([
                     getAuthCsrfData({ query }),
                 ])
+                const { data: canPublicRegister } =
+                    await getPublicRegistrationExists()
                 props.csrfToken = csrfData.data
+                props.canPublicRegister = canPublicRegister
+                const callbackUrl: string = `${process.env.APP_URL}/api/auth/signin`
+                props.b2cSignUpUrl = `https://${process.env.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_SIGNUP_USER_FLOW}/oauth2/v2.0/authorize?client_id=${process.env.AZURE_AD_B2C_CLIENT_ID}&scope=offline_access%20openid&response_type=code&redirect_uri=${callbackUrl}&prompt=login`
 
                 /**
                  * next-auth assumes a browser -> server request, so the returned set-cookie header needs

@@ -18,41 +18,28 @@ import { Domain } from '@appTypes/domain'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
 import { api } from '@constants/routes'
 
-declare type Options = {
-    user: User
-}
-
 declare type Dependencies = {
     setFetchOptions: any
     fetchJSON: any
 }
 
-export type FeatureFlag = {
-    id: string
-    name: string
-    enabled: boolean
-}
-
-export const getFeatureFlags = async (
-    { user }: Options,
+export const getPublicRegistrationExists = async (
     dependencies?: Dependencies
-): Promise<ServiceResponse<Array<FeatureFlag>>> => {
-    const serviceResponse: ServiceResponse<Array<FeatureFlag>> = {
-        data: [],
+): Promise<ServiceResponse<boolean>> => {
+    const serviceResponse: ServiceResponse<boolean> = {
+        data: false,
     }
 
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.FEATURE_FLAGS}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.SITE_PUBLIC_REGISTRATION_EXISTS}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.GET,
-            headers: {
-                ...jwtHeader(user.accessToken),
-            },
+            headers: {},
         }),
         defaultTimeOutMillis
     )
@@ -62,9 +49,9 @@ export const getFeatureFlags = async (
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the feature flags',
+            'An unexpected error occurred when attempting to get the public registration status',
             {
-                serviceId: services.GET_FEATURE_FLAGS,
+                serviceId: services.GET_PUBLIC_REGISTRATION_EXISTS,
                 status: status,
                 statusText: statusText,
                 body: apiData,

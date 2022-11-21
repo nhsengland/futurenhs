@@ -23,6 +23,7 @@ export const enum services {
     GET_DOMAINS = 'getDomains',
     GET_DOMAIN = 'getDomain',
     GET_PENDING_GROUP_MEMBERS = 'getGroupPendingMembers',
+    GET_PUBLIC_REGISTRATION_EXISTS = 'getPublicRegistrationExists',
     GET_GROUP_MEMBER = 'getGroupMember',
     GET_PAGE_TEXT_CONTENT = 'getPageTextContent',
     GET_SEARCH_RESULTS = 'getSearchResults',

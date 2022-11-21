@@ -28,6 +28,8 @@ export const enum api {
     SITE_IDENTITY = '/v1/registration/identity',
     SITE_DOMAINS = '/v1/registration/domains',
     SITE_DOMAIN = '/v1/registration/domains/%DOMAIN%',
+    SITE_PUBLIC_REGISTRATION_EXISTS = '/v1/registration/public/exists',
+
     FEATURE_FLAGS = '/v1/admin/features',
 }
 
