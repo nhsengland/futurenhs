@@ -6,7 +6,8 @@ import { Props } from './interfaces'
 import { useEffect, useRef } from 'react'
 
 export const TabbedNav: (props: Props) => JSX.Element = ({
-    text,
+    text, 
+    shouldNoneRole,
     navMenuList,
     shouldFocusActiveLink,
 }) => {
@@ -32,7 +33,7 @@ export const TabbedNav: (props: Props) => JSX.Element = ({
 
     return (
         <nav className="c-tabbed-nav_nav" aria-label={ariaLabel}>
-            <ul role="menu" className="u-list-plain c-tabbed-nav_list">
+            <ul role={shouldNoneRole ? "none" : "menu"} className="u-list-plain c-tabbed-nav_list">
                 {navMenuList.map(({ url, text, isActive }, index) => {
                     generatedClasses.link = classNames('c-tabbed-nav_link', {
                         ['c-tabbed-nav_link--active u-hidden tablet:u-block']:
@@ -48,7 +49,7 @@ export const TabbedNav: (props: Props) => JSX.Element = ({
                         >
                             <Link href={url}>
                                 <a
-                                    role="menuitem"
+                                    role={shouldNoneRole ? "none" : "menuitem"}
                                     aria-current={isActive ? "page" : true}
                                     className={generatedClasses.link}
                                 >
