@@ -121,11 +121,15 @@ export const Accordion: (props: Props) => JSX.Element = ({
             onToggle={onToggle}
             onClick={handleClick}
         >
-            <summary className={generatedClasses.toggle}>
+            <summary 
+                className={generatedClasses.toggle}               
+                aria-expanded={internalIsOpen}
+                aria-controls="accordion-section" 
+            >
                 {internalIsOpen ? toggleOpenChildren : toggleClosedChildren}
             </summary>
             <div
-                id={id}
+                id={`${id} accordion-section`}
                 className={generatedClasses.content}
                 onClick={handleContentClick}
             >
