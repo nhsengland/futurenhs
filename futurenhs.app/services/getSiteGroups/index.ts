@@ -90,6 +90,7 @@ export const getSiteGroups: Service = async (
             isDeleted: datum.isDeleted,
             totalMemberCount: datum.memberCount ?? 0,
             totalDiscussionCount: datum.discussionCount ?? 0,
+            totalFileCount: datum.fileCount ?? 0,
             image: datum.image
                 ? {
                       src: `${datum.image?.source}`,

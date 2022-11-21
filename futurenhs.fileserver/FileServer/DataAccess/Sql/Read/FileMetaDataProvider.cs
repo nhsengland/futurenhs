@@ -37,9 +37,7 @@ namespace FileServer.DataAccess.Sql.Read
                                 [{nameof(UserFileMetadata.BlobName)}]              = files.[BlobName],     
                                 [{nameof(UserFileMetadata.ContentHash)}]           = files.[BlobHash], 
                                 [{nameof(UserFileMetadata.LastWriteTimeUtc)}]      = CONVERT(DATETIMEOFFSET, ISNULL(files.[ModifiedAtUtc], files.[CreatedAtUtc])),
-                                [{nameof(UserFileMetadata.OwnerUserName)}]         = owner.[UserName],
-                                [{nameof(UserFileMetadata.UserHasViewPermission)}] = IIF(membershipUser.[Id] IS NOT NULL, 1,0),
-                                [{nameof(UserFileMetadata.UserHasEditPermission)}] = 0
+                                [{nameof(UserFileMetadata.OwnerUserName)}]         = owner.[UserName]
 
                     FROM      dbo.[File]           files
                     JOIN      dbo.[MembershipUser] owner ON owner.[Id] = files.[CreatedBy]

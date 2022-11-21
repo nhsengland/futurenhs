@@ -12,6 +12,7 @@ export const mapGroupData = (apiData) => {
               themeId: apiData.themeId,
               totalMemberCount: apiData.memberCount ?? 0,
               totalDiscussionCount: apiData.discussionCount ?? 0,
+              totalFileCount: apiData.fileCount ?? 0,
               isPublic: apiData.isPublic,
               image: apiData.image
                   ? {

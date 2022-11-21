@@ -21,9 +21,6 @@ export const getServerSideProps: GetServerSideProps = async (
         [[withUser, { isRequired: false }], withRoutes],
         async (context: GetServerSidePropsContext) => {
             const props: Partial<Props> = selectPageProps(context)
-            const providers: any = await getProviders()
-
-            console.log(providers)
             //const authorizationUrl: any = await getAuthorizationUrl();
             return {
                 redirect: {

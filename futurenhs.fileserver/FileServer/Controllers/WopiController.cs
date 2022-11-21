@@ -52,7 +52,7 @@ namespace FileServer.Controllers
             var userFileMetadata = authenticatedUser.FileMetadata;
             
             if (userFileMetadata is null) return NotFound();
-            if (!userFileMetadata.UserHasViewPermission) return Forbid();
+            if (authenticatedUser.UserAccess is not (FileAccessPermission.Edit or FileAccessPermission.View)) return Forbid();
             
             var wopiDiscoveryDocument = await _wopiDiscoveryDocumentFactory.CreateDocumentAsync(cancellationToken);
             var fileExtension = userFileMetadata.Extension;
@@ -110,7 +110,7 @@ namespace FileServer.Controllers
             var fileMetadata = await _fileMetaDataProvider.GetFileMetaDataForUserAsync(fileId, authenticatedUser.Id, cancellationToken);
             
             if (fileMetadata is null) return NotFound();
-            if (!fileMetadata.UserHasViewPermission) return Forbid();
+            if (authenticatedUser.UserAccess is not (FileAccessPermission.Edit or FileAccessPermission.View)) return Forbid();
 
             // TODO - userMetadata = Get user context from the authenticated user
             // Note that there is no property that indicates the user has permission to read/view a file. This is because WOPI requires 
@@ -133,7 +133,7 @@ namespace FileServer.Controllers
             // file. All of these properties are optional and thus default to false; hosts should set them to true if their WOPI 
             // implementation meets the requirements for a particular property.
 
-            var supportsUpdate = true && fileMetadata.UserHasEditPermission;
+            var supportsUpdate = authenticatedUser.UserAccess == FileAccessPermission.Edit;
 
             responseBody.SupportedShareUrlType = new[] { "ReadOnly" };               // ReadOnly | ReadWrite - An array of strings containing the Share URL types supported by the host.  These types can be passed in the X-WOPI - UrlType request header to signify which Share URL type to return for the GetShareUrl (files) operation.
             responseBody.SupportsCobalt = false;                                     // A Boolean value that indicates that the host supports the ExecuteCellStorageRequest and ExecuteCellStorageRelativeRequest WOPI operations

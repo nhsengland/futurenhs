@@ -29,6 +29,9 @@ namespace FutureNHS.Api.Services.Interfaces
         Task<(uint, IEnumerable<ApprovedDomain>)> GetDomainsAsync(Guid userId, uint offset, uint limit, CancellationToken cancellationToken);
 
         Task<DomainDto> GetDomainAsync(Guid userId, Guid id, CancellationToken cancellationToken);
+        
+        Task<bool> GetSelfRegistrationEnabledAsync();
+
 
     }
 }

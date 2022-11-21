@@ -20,6 +20,7 @@ export const Input: (props: Props) => JSX.Element = ({
     validators,
     className,
     autoComplete,
+    disabled,
 }) => {
     const { label, hint } = text ?? {}
     const id: string = input.name
@@ -90,6 +91,7 @@ export const Input: (props: Props) => JSX.Element = ({
                 type={inputType}
                 className={generatedClasses.input}
                 autoComplete={autoComplete ? autoComplete : 'off'}
+                disabled={disabled}
             />
             {shouldRenderRemainingCharacterCount && maxLength && (
                 <RemainingCharacterCount

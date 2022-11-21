@@ -10,6 +10,7 @@ import { getClientPaginationFromApi } from '@helpers/routing/getClientPagination
 import {
     ApiPaginatedResponse,
     ServicePaginatedResponse,
+    ServiceResponse,
 } from '@appTypes/service'
 import { Pagination } from '@appTypes/pagination'
 import { User } from '@appTypes/user'
@@ -19,7 +20,6 @@ import { api } from '@constants/routes'
 
 declare type Options = {
     user: User
-    pagination?: Pagination
 }
 
 declare type Dependencies = {
@@ -27,11 +27,17 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const getDomains = async (
-    { user, pagination }: Options,
+export type FeatureFlag = {
+    id: string
+    name: string
+    enabled: boolean
+}
+
+export const getFeatureFlags = async (
+    { user }: Options,
     dependencies?: Dependencies
-): Promise<ServicePaginatedResponse<Array<Domain>>> => {
-    const serviceResponse: ServicePaginatedResponse<Array<Domain>> = {
+): Promise<ServiceResponse<Array<FeatureFlag>>> => {
+    const serviceResponse: ServiceResponse<Array<FeatureFlag>> = {
         data: [],
     }
 
@@ -39,15 +45,7 @@ export const getDomains = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const id: string = user.id
-    const paginationQueryParams: string = getApiPaginationQueryParams({
-        pagination,
-        defaults: {
-            pageNumber: 1,
-            pageSize: 10,
-        },
-    })
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.SITE_DOMAINS}?${paginationQueryParams}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.FEATURE_FLAGS}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
@@ -58,15 +56,15 @@ export const getDomains = async (
         }),
         defaultTimeOutMillis
     )
-    const apiData: ApiPaginatedResponse<any> = apiResponse.json
+    const apiData: any = apiResponse.json
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the approved domains',
+            'An unexpected error occurred when attempting to get the feature flags',
             {
-                serviceId: services.GET_DOMAINS,
+                serviceId: services.GET_FEATURE_FLAGS,
                 status: status,
                 statusText: statusText,
                 body: apiData,
@@ -74,17 +72,7 @@ export const getDomains = async (
         )
     }
 
-    apiData.data?.forEach((datum) => {
-        serviceResponse.data.push({
-            id: datum.id,
-            domain: datum.emailDomain,
-            rowVersion: datum.rowVersion,
-        })
-    })
-
-    serviceResponse.pagination = getClientPaginationFromApi({
-        apiPaginatedResponse: apiData,
-    })
+    serviceResponse.data = apiData
 
     return serviceResponse
 }

@@ -119,6 +119,7 @@ export const Form: (props: Props) => JSX.Element = ({
                     fields,
                     className,
                     shouldRender = true,
+                    disabled,
                     ...rest
                 }) => {
                     if (shouldRender) {
@@ -134,6 +135,7 @@ export const Form: (props: Props) => JSX.Element = ({
                                 context={context}
                                 className={className}
                                 {...rest}
+                                disabled={disabled}
                             >
                                 {renderFields(fields)}
                             </Field>

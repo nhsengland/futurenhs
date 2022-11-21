@@ -13,10 +13,12 @@ namespace FutureNHS.Api.Services
     public sealed class FileServerService : IFileServerService
     {
         private const string ViewFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/view";
+        private const string EditFileRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/folders/files/edit";
 
         private readonly ILogger<FileServerService> _logger;
         private readonly string _fileServerPrimaryConnectionString;
         private readonly string _fileServerFilePlaceHolderId;
+        private readonly string _fileServerPermissionPlaceHolderId;
         private readonly IPermissionsService _permissionsService;
         private readonly IHttpClientFactory _httpClientFactory;
 
@@ -27,6 +29,7 @@ namespace FutureNHS.Api.Services
 
             _fileServerPrimaryConnectionString = fileServerTemplateUrlStrings.Value.TemplateUrl;
             _fileServerFilePlaceHolderId = fileServerTemplateUrlStrings.Value.TemplateUrlFileIdPlaceholder;
+            _fileServerPermissionPlaceHolderId = fileServerTemplateUrlStrings.Value.TemplateUrlPermissionPlaceholder;
             _permissionsService = permissionsService;
             _httpClientFactory = httpClientFactory;
             _logger = logger;
@@ -38,16 +41,29 @@ namespace FutureNHS.Api.Services
 
             if (string.IsNullOrWhiteSpace(permission)) throw new ArgumentNullException(nameof(permission));
             if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentNullException(nameof(slug));
-
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, ViewFileRole, cancellationToken);
-            if (userCanPerformAction is false)
+            string fileAccess;
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, EditFileRole, cancellationToken);
+            if (userCanPerformAction)
             {
-                _logger.LogError($"Error: ViewFileAsync - User:{userId} does not have access to group:{slug}");
-                throw new SecurityException($"Error: User does not have access");
+                fileAccess = "edit";
+            }
+            else
+            {
+                userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, slug, ViewFileRole, cancellationToken);
+                if (userCanPerformAction is false)
+                {
+                    _logger.LogError($"Error: ViewFileAsync - User:{userId} does not have access to group:{slug}");
+                    throw new SecurityException($"Error: User does not have access");
+                }
+
+                fileAccess = "view";
             }
 
-            var fileRequestUrl = _fileServerPrimaryConnectionString.Replace(_fileServerFilePlaceHolderId, file.ToString());
-
+            var fileRequestUrl = _fileServerPrimaryConnectionString
+                .Replace(_fileServerFilePlaceHolderId, file.ToString())
+                .Replace(_fileServerPermissionPlaceHolderId, fileAccess);
+    
+            
             var httpClient = _httpClientFactory.CreateClient("fileserver-createurl");
 
             using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, fileRequestUrl);

@@ -425,7 +425,7 @@ export const Header: (props: Props) => JSX.Element = ({
                                                         rel="noopener"
                                                         href="http://support.future.nhs.uk"
                                                     >
-                                                        Visit our support site
+                                                        Visit our support centre
                                                     </a>
                                                 </li>
                                             </ul>

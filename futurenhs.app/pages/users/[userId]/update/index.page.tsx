@@ -51,6 +51,7 @@ declare interface ContentText extends GenericPageTextContent {
     firstNameLabel: string
     lastNameLabel: string
     pronounsLabel: string
+    email: string
     emailLabel: string
     editHeading?: string
     editButtonLabel?: string
@@ -95,7 +96,7 @@ export const UserUpdatePage: (props: Props) => JSX.Element = ({
     )
 
     const siteUserInitials: string = initials({
-        value: `${siteUser.firstName} ${siteUser.lastName}`,
+        value: `${siteUser.firstName} ${siteUser.lastName} ${siteUser.email}`,
     })
 
     const { editHeading, editRoleHeading } = contentText ?? {}
@@ -313,10 +314,10 @@ export const getServerSideProps: GetServerSideProps = async (
                     firstName: props.siteUser.firstName,
                     lastName: props.siteUser.lastName,
                     pronouns: props.siteUser.pronouns,
+                    email: props.siteUser.email,
                     id: props.siteUser.id,
                     imageId: props.siteUser.imageId,
                 }
-
                 if (isAdmin) {
                     /**
                      * Get role data from services if user is a platform admin

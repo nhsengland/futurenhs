@@ -94,6 +94,7 @@ export const AdminGroupsPage: (props: Props) => JSX.Element = ({
                     owner,
                     totalDiscussionCount,
                     totalMemberCount,
+                    totalFileCount,
                 }) => {
                     const { mainHeading } = text ?? {}
                     const { id: ownerId, fullName } = owner ?? {}

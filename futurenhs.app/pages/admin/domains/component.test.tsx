@@ -2,7 +2,7 @@ import * as React from 'react'
 import { cleanup, render, screen } from '@jestMocks/index'
 import mockRouter from 'next-router-mock'
 import { actions as actionConstants } from '@constants/actions'
-import AdminUsersPage, { Props } from '@pages/admin/users/index.page'
+import AdminDomainsPage, { Props } from '@pages/admin/domains/index.page'
 import { routes } from '@jestMocks/generic-props'
 
 jest.mock('next/router', () => require('next-router-mock'))
@@ -15,74 +15,46 @@ describe('Admin users template', () => {
     const props: Props = {
         id: 'mockId',
         routes: routes,
+        domainsList: [
+            {
+                id: '00000000-0000-0000-0000-000000000000',
+                domain: 'madetech.com',
+                rowVersion: '0x00000000000036F5',
+            },
+        ],
         contentText: {
             mainHeading: 'Mock main heading',
             secondaryHeading: 'Mock secondary heading',
-            noUsers: 'No users',
-            inviteUser: 'Invite user',
+            noDomains: 'There are currently no accepted domains',
+            addDomain: 'Add domain',
         },
-        usersList: [],
-        actions: [],
     }
 
     it('renders correctly', () => {
-        render(<AdminUsersPage {...props} />)
+        render(<AdminDomainsPage {...props} />)
 
         expect(screen.getAllByText('Mock secondary heading').length).toBe(1)
     })
 
-    it('renders list of users if there are platform users', () => {
-        const propsCopy: Props = Object.assign({}, props, {
-            usersList: [
-                {
-                    id: '123',
-                    fullName: 'Test User',
-                    role: 'Admin role',
-                },
-            ],
-        })
+    it('renders list of accepted domains if they have been added', () => {
+        render(<AdminDomainsPage {...props} />)
 
-        render(<AdminUsersPage {...propsCopy} />)
-
-        expect(screen.getAllByText('Test User').length).toBe(1)
+        expect(screen.getAllByText('madetech.com').length).toBe(1)
     })
 
-    it('conditionally renders create user link', () => {
-        render(<AdminUsersPage {...props} />)
+    it('conditionally renders add domain link', () => {
+        render(<AdminDomainsPage {...props} />)
 
         expect(screen.queryByText('Invite user')).toBeNull()
 
         cleanup()
 
         const propsCopy: Props = Object.assign({}, props, {
-            actions: [actionConstants.SITE_ADMIN_MEMBERS_ADD],
+            actions: [actionConstants.SITE_ADMIN_DOMAINS_ADD],
         })
 
-        render(<AdminUsersPage {...propsCopy} />)
+        render(<AdminDomainsPage {...propsCopy} />)
 
-        expect(screen.getAllByText('Invite user').length).toBe(1)
+        expect(screen.getAllByText('Add domain').length).toBe(1)
     })
-
-    // it('renders users role if no full name', () => {
-
-    //     render(<AdminUsersTemplate {...props}/>);
-
-    //     expect(screen.queryByText('Admin role')).toBeNull();
-
-    //     cleanup();
-
-    //     const propsCopy: Props = Object.assign({}, props, {
-    //         usersList: [
-    //             {
-    //                 id: '123',
-    //                 role: 'Admin role'
-    //             }
-    //         ]
-    //     })
-
-    //     render(<AdminUsersTemplate {...propsCopy}/>);
-
-    //     expect(screen.getAllByText('Admin role').length).toBeGreaterThan(0);
-
-    // })
 })

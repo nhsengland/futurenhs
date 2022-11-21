@@ -459,7 +459,7 @@ namespace FutureNHS.Api.Services
             if (!userCanPerformAction)
             {
                 _logger.LogError("Error: CreateGroupSiteDataAsync - User: {User} does not have permission to create missing group site for group: {GroupSlug}", userId, slug);
-                throw new NotFoundException($"Site data for group slug: {slug} is missing");
+                return new GroupSite();
             }
 
             var now = _systemClock.UtcNow.UtcDateTime;

@@ -1,6 +1,7 @@
 ﻿using FutureNHS.WOPIHost;
 using System;
 using System.Text.Json.Serialization;
+using FileServer.Enums;
 
 namespace FileServer.Models
 {
@@ -10,6 +11,8 @@ namespace FileServer.Models
         public string? FullName { get; init; }
         public string? EmailAddress { get; init; }
         public Guid? AccessToken{ get; init; }
+        
+        public FileAccessPermission UserAccess{ get; init; }
         public UserFileMetadata? FileMetadata { get; init; }
     }
 

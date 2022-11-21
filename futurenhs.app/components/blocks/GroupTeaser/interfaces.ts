@@ -13,6 +13,7 @@ export interface Props {
     themeId?: string
     totalDiscussionCount?: number
     totalMemberCount?: number
+    totalFileCount?: number
     image?: Image
     headingLevel?: number
     className?: string

@@ -52,7 +52,7 @@ export const postDomain = async (
         throw new ServiceError(
             'An unexpected error occurred when attempting to add the domain',
             {
-                serviceId: services.ADD_DOMAIN,
+                serviceId: services.POST_DOMAIN,
                 status: status,
                 statusText: statusText,
                 body: apiData,

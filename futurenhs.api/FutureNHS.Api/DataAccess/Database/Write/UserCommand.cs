@@ -204,6 +204,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(MemberProfile.FirstName)}]         = member.FirstName,
                                 [{nameof(MemberProfile.LastName)}]          = member.Surname,
                                 [{nameof(MemberProfile.Pronouns)}]          = member.Pronouns,
+                                [{nameof(MemberProfile.Email)}]             = member.Email,
                                 [{nameof(MemberProfile.ImageId)}]           = member.ImageId,
                                 [{nameof(MemberProfile.RoleId)}]            = memberInRole.RoleIdentifier,
                                 [{nameof(MemberProfile.RowVersion)}]        = member.RowVersion,

@@ -73,7 +73,7 @@ const StandardLayout: (props: Props) => JSX.Element = ({
     const currentPathName: string = router?.pathname
     const assetPath: string = process.env.NEXT_PUBLIC_ASSET_PREFIX || ''
     const breadCrumbDescriptionHtml: string =
-        '<span class="u-text-bold">Need help?</span> <a target="_blank" rel="noopener" href="http://support.future.nhs.uk">Visit our support site</a>'
+        '<span class="u-text-bold">Need help?</span> <a target="_blank" rel="noopener" href="http://support.future.nhs.uk">Visit our support centre</a>'
 
     footerNavMenuList.forEach(
         (menuItem) => (menuItem.isActive = menuItem.url === currentPathName)

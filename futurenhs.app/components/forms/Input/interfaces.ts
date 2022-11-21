@@ -20,4 +20,5 @@ export interface Props {
     validators?: Array<any>
     className?: string
     autoComplete?: string
+    disabled?: boolean
 }

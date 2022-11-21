@@ -10,6 +10,8 @@ namespace FutureNHS.Api.DataAccess.Models.Group
         public string StraplineText { get; init; }
         public int MemberCount { get; init; }
         public int DiscussionCount { get; init; }
+        
+        public int FileCount { get; init; }
         public string Slug { get; init; }
         public bool IsPublic { get; init; }
         public ImageData Image { get; init; }

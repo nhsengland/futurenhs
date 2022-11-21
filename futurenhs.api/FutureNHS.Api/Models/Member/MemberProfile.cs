@@ -9,6 +9,7 @@ namespace FutureNHS.Api.Models.Member
         public string LastName { get; init; }
         public string FullName => $"{FirstName} {LastName}";
         public string Pronouns { get; init; }
+        public string Email { get; init; }
         public ImageData Image { get; init; }
         public Guid RoleId { get; init; }
         public Guid? ImageId { get; init; }

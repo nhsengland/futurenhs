@@ -10,6 +10,7 @@ export interface Group {
     image?: Image
     totalDiscussionCount?: number
     totalMemberCount?: number
+    totalFileCount?: number
     owner?: Partial<User>
     isDeleted?: boolean
     isPublic?: boolean

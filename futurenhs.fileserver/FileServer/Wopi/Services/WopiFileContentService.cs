@@ -1,5 +1,6 @@
 ﻿using System.Security.Authentication;
 using FileServer.DataAccess.Interfaces;
+using FileServer.Enums;
 using FileServer.Models;
 using FileServer.Services.Interfaces;
 using FileServer.Wopi.Interfaces;
@@ -23,8 +24,7 @@ namespace FileServer.Wopi.Services
             var fileMetadata = await _userFileMetadataService.GetForFileAsync(file, authenticatedUser, cancellationToken);
 
             if (fileMetadata is null) throw new FileNotFoundException("Could not find the file requested");
-            if (!fileMetadata.UserHasViewPermission) throw new AuthenticationException("User does not have permission to view this file");
-
+            if (authenticatedUser.UserAccess is not (FileAccessPermission.Edit or FileAccessPermission.View)) throw new AuthenticationException("User does not have permission to view this file");
             var fileContentMetadataRepository = _fileMetaDataProvider;
 
             var fileContentMetadata = await fileContentMetadataRepository.GetDetailsAndPutContentIntoStreamAsync(fileMetadata, responseStream, cancellationToken);
