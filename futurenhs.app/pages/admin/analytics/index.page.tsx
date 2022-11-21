@@ -27,15 +27,15 @@ declare interface ContentText extends GenericPageTextContent {
 
 export interface Props extends Page {
     contentText: ContentText
-    featureFlags: Array<ActiveUsers>
+    activeUsers: ActiveUsers
 }
 
 /**
  * Admin users dashboard template
  */
-export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
+export const AdminAnalyticsPage: (props: Props) => JSX.Element = ({
     contentText,
-    featureFlags,
+    activeUsers,
     actions,
     routes,
     user,
@@ -55,7 +55,7 @@ export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
             className: 'tablet:u-text-right',
         },
     ]
-    const rowList = featureFlags.map(({ id, name, enabled }) => {
+    const rowList = Object.entries(activeUsers).map(([key, value]) => {
         const generatedCellClasses = {
             analytics: classNames({
                 ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']:
@@ -71,18 +71,13 @@ export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
 
         const rows = [
             {
-                children: <span>{name}</span>,
+                children: <span>{key}</span>,
                 className: generatedCellClasses.analytics,
                 headerClassName: generatedHeaderCellClasses.analytics,
             },
             {
                 children: (
-                    <Switch
-                        onChange={() => {
-                            handleFeatureToggle(id, enabled)
-                        }}
-                        checked={enabled}
-                    />
+                    <span>{value}</span>
                 ),
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                 headerClassName: 'u-hidden',
@@ -148,8 +143,8 @@ export const getServerSideProps: GetServerSideProps = async (
              * Get data from services
              */
             try {
-                const { data } = await getFeatureFlags({ user })
-                props.featureFlags = data
+                const { data } = await getActiveUsers({ user })
+                props.activeUsers = data
             } catch (error) {
                 return handleSSRErrorProps({ props, error })
             }
@@ -164,4 +159,4 @@ export const getServerSideProps: GetServerSideProps = async (
 /**
  * Export page template
  */
-export default AdminFeaturesPage
+export default AdminAnalyticsPage

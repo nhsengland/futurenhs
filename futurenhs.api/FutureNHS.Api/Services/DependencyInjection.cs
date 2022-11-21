@@ -31,6 +31,7 @@ namespace FutureNHS.Api.Services
 
             services.AddScoped<IAdminGroupService, AdminGroupService>();
             services.AddScoped<IAdminUserService, AdminUserService>(); 
+            services.AddScoped<IAdminAnalyticsService, AdminAnalyticsService>();
 
             return services;
         }

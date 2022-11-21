@@ -21,39 +21,23 @@ namespace FutureNHS.Api.Services.Admin
     public sealed class AdminAnalyticsService : IAdminAnalyticsService
     {
         private const string AdminViewRole = $"https://schema.collaborate.future.nhs.uk/admin/v1/view";
-
-        private readonly string _fqdn;
+        
         private readonly ILogger<AdminAnalyticsService> _logger;
         private readonly IAnalyticsDataProvider _analyticsDataProvider;
-        private readonly IRolesDataProvider _rolesDataProvider;
         private readonly IPermissionsService _permissionsService;
         private readonly ISystemClock _systemClock;
-        private readonly IFeatureManager _featureManager;
-        private readonly IUserCommand _userCommand;
-
-        // Notification template Ids
-        private readonly string _registrationEmailId;
 
         public AdminAnalyticsService(ILogger<AdminAnalyticsService> logger,
             ISystemClock systemClock,
-            IFeatureManager featureManager,
             IPermissionsService permissionsService, 
-            IAnalyticsDataProvider analyticsDataProvider,
-            IRolesDataProvider rolesDataProvider,
-            IUserCommand userCommand,
-            IOptionsSnapshot<GovNotifyConfiguration> notifyConfig,
-            IOptionsSnapshot<ApplicationGateway> gatewayConfig)
+            IAnalyticsDataProvider analyticsDataProvider)
         {
             _permissionsService = permissionsService;
             _analyticsDataProvider = analyticsDataProvider;
-            _rolesDataProvider = rolesDataProvider;
             _systemClock = systemClock;
             _logger = logger;
-            _userCommand = userCommand;
-            _featureManager = featureManager;
-            _fqdn = gatewayConfig.Value.FQDN;
         }
-        public async Task<int> GetActiveUsersAsync(Guid adminUserId, DateTime startTime, DateTime endTime,
+        public async Task<ActiveUsers> GetActiveUsersAsync(Guid adminUserId, DateTime startTime, DateTime endTime,
             CancellationToken cancellationToken)
         {
             if (Guid.Empty == adminUserId) throw new ArgumentOutOfRangeException(nameof(adminUserId));
@@ -65,10 +49,12 @@ namespace FutureNHS.Api.Services.Admin
                 _logger.LogError($"Error: GetFeatureStatusSelfRegisterAsync - User:{0} does not have access to view admin", adminUserId);
                 throw new SecurityException($"Error: User does not have access");
             }
+            
+            startTime = _systemClock.UtcNow.UtcDateTime.AddDays(-1);
+            endTime = _systemClock.UtcNow.UtcDateTime;
+            var activeUsers = await _analyticsDataProvider.GetActiveUserCountAsync(startTime, endTime, cancellationToken);
 
-            var numberActiveUsers = await _analyticsDataProvider.GetActiveUserCountAsync(startTime, endTime, cancellationToken);
-
-            return numberActiveUsers;
+            return activeUsers;
         }
     }
 }

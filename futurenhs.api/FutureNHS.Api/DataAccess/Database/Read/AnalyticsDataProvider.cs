@@ -10,6 +10,7 @@ using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Member;
 using Microsoft.Extensions.Options;
 using FutureNHS.Api.DataAccess.Models.Identity;
+using MimeDetective.Storage.Xml.v2;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
 {
@@ -17,28 +18,25 @@ namespace FutureNHS.Api.DataAccess.Database.Read
     {
         private readonly IAzureSqlDbConnectionFactory _connectionFactory;
         private readonly ILogger<AnalyticsDataProvider> _logger;
-        private readonly IOptions<AzureImageBlobStorageConfiguration> _options;
 
-        public AnalyticsDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<AnalyticsDataProvider> logger,
-            IOptions<AzureImageBlobStorageConfiguration> options)
+        public AnalyticsDataProvider(IAzureSqlDbConnectionFactory connectionFactory, ILogger<AnalyticsDataProvider> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
-            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        public async Task<int> GetActiveUserCountAsync(DateTime startTime, DateTime endTime,
+        public async Task<ActiveUsers> GetActiveUserCountAsync(DateTime startTime, DateTime endTime,
             CancellationToken cancellationToken = default)
         {
             const string query =
-                @"  
+                @"
                    SELECT
                    COUNT(DISTINCT MembershipUserId) AS 'activeUserCount'
                    FROM [FutureNHS].[dbo].[MembershipUserActivity]
                    WHERE LastActivityDateUTC BETWEEN @startTime AND @endTime
                    ";
-
-            var queryDefinition = new CommandDefinition(query, new
+            
+            var dailyQueryDefinition = new CommandDefinition(query, new
             {
                 startTime = startTime,
                 endTime = endTime,
@@ -46,16 +44,20 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
-            var result = await dbConnection.ExecuteAsync(queryDefinition);
+            var dailyResult = await dbConnection.ExecuteAsync(dailyQueryDefinition);
 
-            if (result != 1)
+            if (dailyResult != 1)
             {
                 _logger.LogError("Error: User request to get active user count for timeframe was not successful.",
-                    queryDefinition);
+                    dailyQueryDefinition);
                 throw new ApplicationException("Error: User request to get active user count for timeframe was not successful.");
             }
-            
-            return result;
+
+            var activeUsers = new ActiveUsers()
+            {
+                Daily = dailyResult,
+            };
+            return activeUsers;
         }
     }
 }

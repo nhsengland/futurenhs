@@ -8,6 +8,7 @@ using FutureNHS.Api.Services.Admin.Interfaces;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using FutureNHS.Api.DataAccess.Models.User;
 
 namespace FutureNHS.Api.Controllers
 {
@@ -36,7 +37,7 @@ namespace FutureNHS.Api.Controllers
         
         [HttpGet]
         [Route("admin/analytics")]
-        public async Task<int> GetActiveUserCountAsync(DateTime startTime, DateTime endTime,
+        public async Task<ActiveUsers> GetActiveUserCountAsync(DateTime startTime, DateTime endTime,
             CancellationToken cancellationToken = default)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);

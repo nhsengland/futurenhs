@@ -8,6 +8,8 @@ using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProvider;
 using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Write;
 using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
+using FutureNHS.Api.Services.Admin;
+using FutureNHS.Api.Services.Admin.Interfaces;
 
 namespace FutureNHS.Api.DataAccess
 {
@@ -35,6 +37,7 @@ namespace FutureNHS.Api.DataAccess
             services.AddScoped<ILikeDataProvider, LikeDataProvider>();
             services.AddScoped<IRegistrationDataProvider, RegistrationDataProvider>();
             services.AddScoped<IDomainDataProvider, DomainDataProvider>();
+            services.AddScoped<IAnalyticsDataProvider, AnalyticsDataProvider>();
 
             // Write
             services.AddScoped<ICommentCommand, CommentCommand>();

@@ -45,7 +45,7 @@ export const getFeatureFlags = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.FEATURE_FLAGS}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.ADMIN_FEATURE_FLAGS}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({

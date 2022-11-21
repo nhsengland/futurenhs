@@ -31,8 +31,8 @@ export const enum api {
     SITE_DOMAIN = '/v1/registration/domains/%DOMAIN%',
     SITE_PUBLIC_REGISTRATION_EXISTS = '/v1/registration/public/exists',
 
-    FEATURE_FLAGS = '/v1/admin/features',
-    ANALYTICS = '/v1/admin/analytics'
+    ADMIN_FEATURE_FLAGS = '/v1/admin/features',
+    ADMIN_ANALYTICS = '/v1/admin/analytics'
 }
 
 export const enum queryParams {

@@ -29,24 +29,24 @@ declare type Dependencies = {
 }
 
 export type ActiveUsers = {
-    id: string
-    name: string
-    enabled: boolean
+    daily?: string
+    // weekly: string
+    // monthly: string
 }
 
 export const getActiveUsers = async (
     { user, pagination }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<Array<ActiveUsers>>> => {
-    const serviceResponse: ServiceResponse<Array<ActiveUsers>> = {
-        data: [],
+): Promise<ServiceResponse<ActiveUsers>> => {
+    const serviceResponse: ServiceResponse<ActiveUsers> = {
+        data: {daily:undefined},
     }
 
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.ANALYTICS}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.ADMIN_ANALYTICS}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
