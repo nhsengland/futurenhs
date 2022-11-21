@@ -123,15 +123,18 @@ export const Accordion: (props: Props) => JSX.Element = ({
         >
             <summary 
                 className={generatedClasses.toggle}               
-                aria-expanded={internalIsOpen}
-                aria-controls="accordion-content" 
+                aria-expanded={internalIsOpen ? "true" : "false"}
+                aria-controls={id}
+                id={"summary"}
             >
                 {internalIsOpen ? toggleOpenChildren : toggleClosedChildren}
             </summary>
             <div
-                id={`${id} accordion-content`}
+                id={id}
                 className={generatedClasses.content}
                 onClick={handleContentClick}
+                role={"region"}
+                aria-labelledby={"summary"}
             >
                 {React.Children.map(children, (child: any) => {
                     const isReactComponent: boolean =
