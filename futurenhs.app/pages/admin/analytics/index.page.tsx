@@ -71,7 +71,7 @@ export const AdminAnalyticsPage: (props: Props) => JSX.Element = ({
 
         const rows = [
             {
-                children: <span>{key}</span>,
+                children: <span>{key[0].toUpperCase() + key.substring(1)}</span>,
                 className: generatedCellClasses.analytics,
                 headerClassName: generatedHeaderCellClasses.analytics,
             },

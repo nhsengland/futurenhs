@@ -50,10 +50,21 @@ namespace FutureNHS.Api.Services.Admin
                 throw new SecurityException($"Error: User does not have access");
             }
             
-            startTime = _systemClock.UtcNow.UtcDateTime.AddDays(-1);
-            endTime = _systemClock.UtcNow.UtcDateTime;
-            var activeUsers = await _analyticsDataProvider.GetActiveUserCountAsync(startTime, endTime, cancellationToken);
+            var dailyStartTime = _systemClock.UtcNow.UtcDateTime.AddDays(-1);
+            var weeklyStartTime = _systemClock.UtcNow.UtcDateTime.AddDays(-7);
+            var monthlyStartTime = _systemClock.UtcNow.UtcDateTime.AddMonths(-1);
+            endTime = _systemClock.UtcNow.UtcDateTime.AddDays(+1);
+            
+            var dailyActiveUsers = await _analyticsDataProvider.GetActiveUserCountAsync(dailyStartTime, endTime, cancellationToken);
+            var weeklyActiveUsers = await _analyticsDataProvider.GetActiveUserCountAsync(weeklyStartTime, endTime, cancellationToken);
+            var monthlyActiveUsers = await _analyticsDataProvider.GetActiveUserCountAsync(monthlyStartTime, endTime, cancellationToken);
 
+            var activeUsers = new ActiveUsers()
+            {
+                Daily = dailyActiveUsers,
+                Weekly = weeklyActiveUsers,
+                Monthly = monthlyActiveUsers,
+            };
             return activeUsers;
         }
     }

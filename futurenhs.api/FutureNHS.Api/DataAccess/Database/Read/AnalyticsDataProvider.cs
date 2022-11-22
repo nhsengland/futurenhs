@@ -25,39 +25,35 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
 
-        public async Task<ActiveUsers> GetActiveUserCountAsync(DateTime startTime, DateTime endTime,
+        public async Task<uint> GetActiveUserCountAsync(DateTime startTime, DateTime endTime,
             CancellationToken cancellationToken = default)
         {
             const string query =
-                @"
-                   SELECT
+                @" SELECT
                    COUNT(DISTINCT MembershipUserId) AS 'activeUserCount'
                    FROM [FutureNHS].[dbo].[MembershipUserActivity]
-                   WHERE LastActivityDateUTC BETWEEN @startTime AND @endTime
+                   WHERE LastActivityDateUTC BETWEEN @startDate AND @endDate
                    ";
             
-            var dailyQueryDefinition = new CommandDefinition(query, new
-            {
-                startTime = startTime,
-                endTime = endTime,
+            var queryDefinition = new CommandDefinition(query, 
+            new {
+                startDate = startTime.ToString("MM/dd/yyyy hh:mm:ss"),
+                endDate = endTime.ToString("MM/dd/yyyy hh:mm:ss"),
             }, cancellationToken: cancellationToken);
+                
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
-            var dailyResult = await dbConnection.ExecuteAsync(dailyQueryDefinition);
+            var result = await dbConnection.QuerySingleAsync<uint>(queryDefinition);
 
-            if (dailyResult != 1)
+            if (result < 0)
             {
                 _logger.LogError("Error: User request to get active user count for timeframe was not successful.",
-                    dailyQueryDefinition);
+                    queryDefinition);
                 throw new ApplicationException("Error: User request to get active user count for timeframe was not successful.");
             }
 
-            var activeUsers = new ActiveUsers()
-            {
-                Daily = dailyResult,
-            };
-            return activeUsers;
+            return result;
         }
     }
 }

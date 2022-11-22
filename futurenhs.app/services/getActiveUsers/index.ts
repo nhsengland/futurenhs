@@ -29,9 +29,9 @@ declare type Dependencies = {
 }
 
 export type ActiveUsers = {
-    daily?: string
-    // weekly: string
-    // monthly: string
+    Daily?: string
+    Weekly?: string
+    Monthly?: string
 }
 
 export const getActiveUsers = async (
@@ -39,7 +39,7 @@ export const getActiveUsers = async (
     dependencies?: Dependencies
 ): Promise<ServiceResponse<ActiveUsers>> => {
     const serviceResponse: ServiceResponse<ActiveUsers> = {
-        data: {daily:undefined},
+        data: {Daily:undefined, Weekly:undefined, Monthly:undefined},
     }
 
     const setFetchOptions =
