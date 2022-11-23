@@ -53,7 +53,7 @@ namespace FutureNHS.Api.Services.Admin
             var dailyStartTime = _systemClock.UtcNow.UtcDateTime.AddDays(-1);
             var weeklyStartTime = _systemClock.UtcNow.UtcDateTime.AddDays(-7);
             var monthlyStartTime = _systemClock.UtcNow.UtcDateTime.AddMonths(-1);
-            endTime = _systemClock.UtcNow.UtcDateTime.AddDays(+1);
+            endTime = _systemClock.UtcNow.UtcDateTime.AddMinutes(1);
             
             var dailyActiveUsers = await _analyticsDataProvider.GetActiveUserCountAsync(dailyStartTime, endTime, cancellationToken);
             var weeklyActiveUsers = await _analyticsDataProvider.GetActiveUserCountAsync(weeklyStartTime, endTime, cancellationToken);

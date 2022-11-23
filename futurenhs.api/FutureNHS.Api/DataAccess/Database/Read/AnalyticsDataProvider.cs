@@ -37,8 +37,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             
             var queryDefinition = new CommandDefinition(query, 
             new {
-                startDate = startTime.ToString("MM/dd/yyyy hh:mm:ss"),
-                endDate = endTime.ToString("MM/dd/yyyy hh:mm:ss"),
+                startDate = DateTime.SpecifyKind(startTime, DateTimeKind.Utc),
+                endDate = DateTime.SpecifyKind(endTime, DateTimeKind.Utc),
             }, cancellationToken: cancellationToken);
                 
 
