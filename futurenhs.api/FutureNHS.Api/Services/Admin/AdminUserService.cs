@@ -185,7 +185,7 @@ namespace FutureNHS.Api.Services.Admin
             return registrationLink;
         }
         
-        public async Task<IEnumerable<FeatureFlag>> GetFeatureFlagsAsync(Guid adminUserId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<FeatureFlag>> GetFeatureFlagsAdminAsync(Guid adminUserId, CancellationToken cancellationToken)
         {
             if (Guid.Empty == adminUserId) throw new ArgumentOutOfRangeException(nameof(adminUserId));
 
@@ -205,8 +205,15 @@ namespace FutureNHS.Api.Services.Admin
                 Name = "Self Registration",
                 Enabled = canSelfRegister
             };
+            
+            var groupInvite = new FeatureFlag()
+            {
+                Id = "GroupInvite",
+                Name = "Group Invite",
+                Enabled = true
+            };
 
-            var featureFlags = new List<FeatureFlag>{selfRegister};
+            var featureFlags = new List<FeatureFlag>{selfRegister, groupInvite};
 
             return featureFlags;
 

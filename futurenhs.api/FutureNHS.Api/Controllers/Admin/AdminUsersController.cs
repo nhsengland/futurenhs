@@ -111,7 +111,7 @@ namespace FutureNHS.Api.Controllers
         public async Task<IActionResult> GetFeatureFlagsAsync(CancellationToken cancellationToken)
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
-            var featureFlags = await _adminUserService.GetFeatureFlagsAsync(identity.MembershipUserId, cancellationToken);
+            var featureFlags = await _adminUserService.GetFeatureFlagsAdminAsync(identity.MembershipUserId, cancellationToken);
 
             return Ok(featureFlags);
         }

@@ -98,5 +98,16 @@ namespace FutureNHS.Api.Controllers
 
             return Ok(memberInfoResponse);
         }
+        
+                
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("user/features")]
+        public async Task<IActionResult> GetFeatureFlagsAsync(CancellationToken cancellationToken)
+        {
+            var featureFlags = await _userService.GetFeatureFlagsAsync();
+
+            return Ok(featureFlags);
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace FutureNHS.Api.Services.Interfaces
         Task<Guid?> GetInviteIdForEmailAsync(string emailAddress, CancellationToken cancellationToken, Guid? groupId = null);
         Task<Guid?> GetGroupInviteIdForMemberAsync(Guid targetUserId, Guid groupId, CancellationToken cancellationToken);
         Task<Identity> GetMemberIdentityAsync(string subjectId, CancellationToken cancellationToken);
+        Task<IEnumerable<FeatureFlag>> GetFeatureFlagsAsync();
 
     }
 }
