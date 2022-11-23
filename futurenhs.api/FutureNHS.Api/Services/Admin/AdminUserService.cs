@@ -185,38 +185,5 @@ namespace FutureNHS.Api.Services.Admin
             return registrationLink;
         }
         
-        public async Task<IEnumerable<FeatureFlag>> GetFeatureFlagsAdminAsync(Guid adminUserId, CancellationToken cancellationToken)
-        {
-            if (Guid.Empty == adminUserId) throw new ArgumentOutOfRangeException(nameof(adminUserId));
-
-            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(adminUserId, AdminViewRole, cancellationToken);
-            
-            if (!userCanPerformAction)
-            {
-                _logger.LogError($"Error: GetFeatureStatusSelfRegisterAsync - User:{0} does not have access to view admin", adminUserId);
-                throw new SecurityException($"Error: User does not have access");
-            }
-
-            var canSelfRegister = await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration);
-
-            var selfRegister = new FeatureFlag()
-            {
-                Id = FeatureFlags.SelfRegistration,
-                Name = "Self Registration",
-                Enabled = canSelfRegister
-            };
-            
-            var groupInvite = new FeatureFlag()
-            {
-                Id = "GroupInvite",
-                Name = "Group Invite",
-                Enabled = true
-            };
-
-            var featureFlags = new List<FeatureFlag>{selfRegister, groupInvite};
-
-            return featureFlags;
-
-        }
     }
 }
