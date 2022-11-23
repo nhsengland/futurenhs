@@ -31,7 +31,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             const string query =
                 @" SELECT
                    COUNT(DISTINCT MembershipUserId) AS 'activeUserCount'
-                   FROM [FutureNHS].[dbo].[MembershipUserActivity]
+                   FROM [dbo].[MembershipUserActivity]
                    WHERE LastActivityDateUTC BETWEEN @startDate AND @endDate
                    ";
             
