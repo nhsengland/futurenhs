@@ -14,11 +14,9 @@ import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
-import { FeatureFlag, getFeatureFlags } from '@services/getFeatureFlags'
 import { ActiveUsers, getActiveUsers } from '@services/getActiveUsers'
 import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
 import { DataGrid } from '@components/layouts/DataGrid'
-import Switch from 'react-switch'
 import classNames from 'classnames'
 
 declare interface ContentText extends GenericPageTextContent {
@@ -71,14 +69,14 @@ export const AdminAnalyticsPage: (props: Props) => JSX.Element = ({
 
         const rows = [
             {
-                children: <span>{key[0].toUpperCase() + key.substring(1)}</span>,
+                children: (
+                    <span>{key[0].toUpperCase() + key.substring(1)}</span>
+                ),
                 className: generatedCellClasses.analytics,
                 headerClassName: generatedHeaderCellClasses.analytics,
             },
             {
-                children: (
-                    <span>{value}</span>
-                ),
+                children: <span>{value}</span>,
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                 headerClassName: 'u-hidden',
             },

@@ -26,6 +26,7 @@ import { Props } from './interfaces'
 import PrivateGroup from '@components/blocks/PrivateGroup'
 import { groupMemberStatus } from '@constants/group-member-status'
 import { requestMethods } from '@constants/fetch'
+import { flags } from '@constants/feature-flags'
 
 /**
  * Header for group listings and for individual groups
@@ -43,6 +44,7 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     className,
     isPublic,
     isDiscover,
+    featureFlags,
 }) => {
     const router = useRouter()
 
@@ -67,12 +69,18 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const shouldRenderGroupEditLink: boolean = actions?.includes(
         actionsConstants.GROUPS_EDIT
     )
-    /**
-     * TODO: GROUPS_MEMBERS_INVITE action pending API, change to true to temporarily render
-     */
-    const shouldRenderGroupInviteLink: boolean = actions?.includes(
+
+    const inviteEnabled = featureFlags?.some(
+        (f) => f.id === flags.groupInvite && f.enabled
+    )
+
+    const hasInvitePermission = actions?.includes(
         actionsConstants.GROUPS_MEMBERS_INVITE
     )
+
+    const shouldRenderGroupInviteLink: boolean =
+        inviteEnabled && hasInvitePermission
+
     const shouldRenderPendingMessage: boolean =
         memberStatus === groupMemberStatus.PENDING
 

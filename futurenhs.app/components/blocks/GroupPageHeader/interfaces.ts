@@ -1,8 +1,10 @@
 import { actions } from '@constants/actions'
 import { Image } from '@appTypes/image'
 import { Routes } from '@appTypes/routing'
+import { FeatureFlag } from '@services/getUserFeatureFlags'
 
 export interface Props {
+    featureFlags?: Array<FeatureFlag>
     id: string
     /**
      * Controls the colour scheme

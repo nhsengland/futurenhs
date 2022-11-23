@@ -18,28 +18,37 @@ import { Domain } from '@appTypes/domain'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
 import { api } from '@constants/routes'
 
+declare type Options = {
+    user: User
+}
+
 declare type Dependencies = {
     setFetchOptions: any
     fetchJSON: any
 }
 
-export const getPublicRegistrationExists = async (
+export type FeatureFlag = {
+    id: string
+    name: string
+    enabled: boolean
+}
+
+export const getUserFeatureFlags = async (
     dependencies?: Dependencies
-): Promise<ServiceResponse<boolean>> => {
-    const serviceResponse: ServiceResponse<boolean> = {
-        data: false,
+): Promise<ServiceResponse<Array<FeatureFlag>>> => {
+    const serviceResponse: ServiceResponse<Array<FeatureFlag>> = {
+        data: [],
     }
 
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.SITE_PUBLIC_REGISTRATION_EXISTS}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.USER_FEATURE_FLAGS}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
             method: requestMethods.GET,
-            headers: {},
         }),
         defaultTimeOutMillis
     )
@@ -49,16 +58,15 @@ export const getPublicRegistrationExists = async (
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the public registration status',
+            'An unexpected error occurred when attempting to get user feature flags',
             {
-                serviceId: services.GET_PUBLIC_REGISTRATION_EXISTS,
+                serviceId: services.GET_USER_FEATURE_FLAGS,
                 status: status,
                 statusText: statusText,
                 body: apiData,
             }
         )
     }
-
     serviceResponse.data = apiData
 
     return serviceResponse

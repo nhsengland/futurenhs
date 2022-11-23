@@ -23,6 +23,8 @@ export const enum api {
 
     GROUP_INVITE = '/v1/groups/%GROUP_ID%/registration/invite',
 
+    USER_FEATURE_FLAGS = '/v1/user/features',
+
     SITE_INVITE = '/v1/registration/invite',
     SITE_INVITE_DETAILS = '/v1/registration/invite/%SITE_INVITE_ID%',
     SITE_USER_REGISTER = '/v1/registration/register',

@@ -14,7 +14,6 @@ import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
-import { FeatureFlag, getFeatureFlags } from '@services/getFeatureFlags'
 import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
 import { DataGrid } from '@components/layouts/DataGrid'
 import Switch from 'react-switch'
@@ -26,7 +25,6 @@ declare interface ContentText extends GenericPageTextContent {
 
 export interface Props extends Page {
     contentText: ContentText
-    featureFlags: Array<FeatureFlag>
 }
 
 /**
@@ -35,15 +33,13 @@ export interface Props extends Page {
 export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
     contentText,
     featureFlags,
-    actions,
-    routes,
-    user,
-    csrfToken,
 }) => {
     const { secondaryHeading } = contentText ?? {}
+
     const handleFeatureToggle = (id, enabled) => {
         return
     }
+
     const columnList = [
         {
             children: 'Feature',
@@ -54,6 +50,7 @@ export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
             className: 'tablet:u-text-right',
         },
     ]
+
     const rowList = featureFlags.map(({ id, name, enabled }) => {
         const generatedCellClasses = {
             domain: classNames({
@@ -80,6 +77,7 @@ export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
                         onChange={() => {
                             handleFeatureToggle(id, enabled)
                         }}
+                        disabled
                         checked={enabled}
                     />
                 ),
@@ -141,16 +139,6 @@ export const getServerSideProps: GetServerSideProps = async (
                 return {
                     notFound: true,
                 }
-            }
-
-            /**
-             * Get data from services
-             */
-            try {
-                const { data } = await getFeatureFlags({ user })
-                props.featureFlags = data
-            } catch (error) {
-                return handleSSRErrorProps({ props, error })
             }
 
             /**

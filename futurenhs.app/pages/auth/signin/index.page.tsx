@@ -18,7 +18,7 @@ import { getToken } from 'next-auth/jwt'
 import { authOptions } from '@pages/api/auth/[...nextauth].page'
 import { unstable_getServerSession } from 'next-auth'
 import SignInSubmitButton from '@components/forms/SignInSubmitButton'
-import { getPublicRegistrationExists } from '@services/getPublicRegistrationExists'
+import { flags } from '@constants/feature-flags'
 
 interface ContentText extends GenericPageTextContent {
     signUpHtml: string
@@ -40,6 +40,7 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
     contentText,
     canPublicRegister,
     b2cSignUpUrl,
+    featureFlags,
 }) => {
     const { authApiSignInAzureB2C } = routes ?? {}
     const {
@@ -50,6 +51,10 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
         signUpHtml,
         signUpHeading,
     } = contentText ?? {}
+
+    const selfRegisterEnabled = featureFlags?.some(
+        (f) => f.id === flags.selfRegister && f.enabled
+    )
 
     return (
         <PageBody className="tablet:u-px-0">
@@ -70,7 +75,7 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
                         csrfToken={csrfToken}
                         action={authApiSignInAzureB2C}
                     />
-                    {!canPublicRegister
+                    {!selfRegisterEnabled
                         ? secondaryHeading && (
                               <h2 className="nhsuk-heading-l">
                                   {secondaryHeading}
@@ -81,7 +86,7 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
                                   {secondaryHeading}
                               </h2>
                           )}
-                    {!canPublicRegister
+                    {!selfRegisterEnabled
                         ? bodyHtml && (
                               <RichText
                                   wrapperElementType="div"
@@ -166,10 +171,7 @@ export const getServerSideProps: GetServerSideProps = async (
                 const [csrfData] = await Promise.all([
                     getAuthCsrfData({ query }),
                 ])
-                const { data: canPublicRegister } =
-                    await getPublicRegistrationExists()
                 props.csrfToken = csrfData.data
-                props.canPublicRegister = canPublicRegister
                 const callbackUrl: string = `${process.env.APP_URL}/api/auth/signin`
                 props.b2cSignUpUrl = `https://${process.env.AZURE_AD_B2C_TENANT_NAME}.b2clogin.com/${process.env.AZURE_AD_B2C_TENANT_NAME}.onmicrosoft.com/${process.env.AZURE_AD_B2C_SIGNUP_USER_FLOW}/oauth2/v2.0/authorize?client_id=${process.env.AZURE_AD_B2C_CLIENT_ID}&scope=offline_access%20openid&response_type=code&redirect_uri=${callbackUrl}&prompt=login`
 

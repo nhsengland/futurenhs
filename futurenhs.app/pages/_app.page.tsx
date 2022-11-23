@@ -1,7 +1,7 @@
 import '../assets/scss/screen.scss'
 
 import React, { useEffect, useState, useRef } from 'react'
-import App from 'next/app'
+import App, { AppInitialProps } from 'next/app'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import ErrorPage from '@pages/500.page'
@@ -18,6 +18,7 @@ import {
 } from '@helpers/contexts/index'
 import { layoutIds } from '@constants/routes'
 import { SessionProvider, useSession } from 'next-auth/react'
+import { FeatureFlag, getUserFeatureFlags } from '@services/getUserFeatureFlags'
 
 const CustomApp = ({ Component, pageProps }) => {
     const activeRequests: any = useRef([])
@@ -112,7 +113,6 @@ const CustomApp = ({ Component, pageProps }) => {
             .NEXT_PUBLIC_APP_DEBUG
             ? errors
             : null
-
         return (
             <SessionProvider>
                 <NotificationsContext.Provider
@@ -215,10 +215,25 @@ const CustomApp = ({ Component, pageProps }) => {
     )
 }
 
+interface CustomAppProps extends AppInitialProps {
+    featureFlags?: Array<FeatureFlag>
+}
+
 CustomApp.getInitialProps = async (appContext) => {
     const appProps = await App.getInitialProps(appContext)
-
-    return { ...appProps }
+    let featureFlags
+    try {
+        const { data } = await getUserFeatureFlags()
+        featureFlags = data
+    } catch (e) {}
+    const props: CustomAppProps = {
+        ...appProps,
+        pageProps: {
+            ...appProps.pageProps,
+            featureFlags,
+        },
+    }
+    return props
 }
 
 export default CustomApp
