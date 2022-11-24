@@ -83,7 +83,7 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
                           )
                         : signUpHeading && (
                               <h2 className="nhsuk-heading-l">
-                                  {secondaryHeading}
+                                  {signUpHeading}
                               </h2>
                           )}
                     {!selfRegisterEnabled
