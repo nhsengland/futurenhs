@@ -51,7 +51,7 @@ export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
         },
     ]
 
-    const rowList = featureFlags.map(({ id, name, enabled }) => {
+    const rowList = featureFlags?.map(({ id, name, enabled }) => {
         const generatedCellClasses = {
             domain: classNames({
                 ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']:
