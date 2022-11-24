@@ -221,19 +221,7 @@ interface CustomAppProps extends AppInitialProps {
 
 CustomApp.getInitialProps = async (appContext) => {
     const appProps = await App.getInitialProps(appContext)
-    let featureFlags
-    try {
-        const { data } = await getUserFeatureFlags()
-        featureFlags = data
-    } catch (e) {}
-    const props: CustomAppProps = {
-        ...appProps,
-        pageProps: {
-            ...appProps.pageProps,
-            featureFlags,
-        },
-    }
-    return props
+    return appProps
 }
 
 export default CustomApp

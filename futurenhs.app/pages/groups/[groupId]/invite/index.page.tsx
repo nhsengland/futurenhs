@@ -34,6 +34,7 @@ import { useNotification } from '@helpers/hooks/useNotification'
 import { GroupPage } from '@appTypes/page'
 import { postGroupUserInvite } from '@services/postGroupUserInvite'
 import { getStandardServiceHeaders } from '@helpers/fetch'
+import { flags } from '@constants/feature-flags'
 
 export interface Props extends GroupPage {}
 
@@ -60,11 +61,10 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
      * Client-side submission handler - TODO: Pending API
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
-        const headers =
-                getStandardServiceHeaders({
-                    csrfToken,
-                    accessToken: user.accessToken,
-                })
+        const headers = getStandardServiceHeaders({
+            csrfToken,
+            accessToken: user.accessToken,
+        })
         try {
             await postGroupUserInvite({
                 user,
@@ -138,10 +138,7 @@ export const getServerSideProps: GetServerSideProps = async (
              * Get data from request context
              */
             const props: Partial<any> = selectPageProps(context)
-            const user: User = selectUser(context)
-            const csrfToken: string = selectCsrfToken(context)
             const formData: ServerSideFormData = selectFormData(context)
-            const groupId: string = selectParam(context, routeParams.GROUPID)
             const requestMethod: requestMethods = selectRequestMethod(context)
 
             props.layoutId = layoutIds.GROUP
@@ -151,13 +148,18 @@ export const getServerSideProps: GetServerSideProps = async (
             props.forms = {
                 [formTypes.INVITE_USER]: {},
             }
-
             /**
              * Return page not found if user doesn't have permissions to invite a user - TODO: Pending API
              */
-            if (
-                !props.actions?.includes(actionConstants.GROUPS_MEMBERS_INVITE)
-            ) {
+            const hasPermisson = props.actions?.includes(
+                actionConstants.GROUPS_MEMBERS_INVITE
+            )
+
+            const featureEnabled = props.featureFlags.some(
+                (f) => f.id === flags.groupInvite && f.enabled
+            )
+
+            if (!hasPermisson || !featureEnabled) {
                 return {
                     notFound: true,
                 }

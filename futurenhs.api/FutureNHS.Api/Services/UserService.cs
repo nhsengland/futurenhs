@@ -461,7 +461,7 @@ namespace FutureNHS.Api.Services
             {
                 Id = "GroupInvite",
                 Name = "Group Invite",
-                Enabled = true
+                Enabled = false
             };
 
             var featureFlags = new List<FeatureFlag>{selfRegister, groupInvite};

@@ -2,8 +2,13 @@ import { getJsonSafeObject } from '@helpers/routing/getJsonSafeObject'
 import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { getRouteToParam2 } from '@helpers/routing/getRouteToParam'
 import { Hof } from '@appTypes/hof'
+import { getUserFeatureFlags } from '@services/getUserFeatureFlags'
 
-export const withRoutes: Hof = (context) => {
+export const withRoutes: Hof = async (context) => {
+    try {
+        const { data: featureFlags } = await getUserFeatureFlags()
+        context.page.props.featureFlags = featureFlags
+    } catch (e) {}
     /**
      * Set up current routing data relative to context
      */
