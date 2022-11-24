@@ -124,6 +124,12 @@ namespace FutureNHS.Api.Services
         public async Task InviteMemberToGroupAndPlatformAsync(Guid userId, string groupSlug, string email,
             CancellationToken cancellationToken)
         {
+            var featureIsEnabled = await _featureManager.IsEnabledAsync(FeatureFlags.GroupInvite);
+            if (!featureIsEnabled)
+            {
+                throw new NotFoundException(nameof(groupSlug));
+            }
+            
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrEmpty(groupSlug)) throw new ArgumentOutOfRangeException(nameof(groupSlug));
 

@@ -449,6 +449,7 @@ namespace FutureNHS.Api.Services
         {
 
             var canSelfRegister = await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration);
+            var canGroupInvite = await _featureManager.IsEnabledAsync(FeatureFlags.GroupInvite);
 
             var selfRegister = new FeatureFlag()
             {
@@ -459,9 +460,9 @@ namespace FutureNHS.Api.Services
             
             var groupInvite = new FeatureFlag()
             {
-                Id = "GroupInvite",
+                Id = FeatureFlags.GroupInvite,
                 Name = "Group Invite",
-                Enabled = false
+                Enabled = canGroupInvite
             };
 
             var featureFlags = new List<FeatureFlag>{selfRegister, groupInvite};

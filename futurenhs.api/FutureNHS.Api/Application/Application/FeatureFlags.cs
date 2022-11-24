@@ -4,6 +4,7 @@
     {
         public const string Groups = "Groups";
         public const string SelfRegistration = "SelfRegistration";
-        public const string FeatureC = "FeatureC";
+        public const string GroupInvite = "GroupInvite";
+
     }
 }
