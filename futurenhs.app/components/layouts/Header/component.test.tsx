@@ -16,6 +16,8 @@ const testProps: Props = {
     },
     user: {
         id: '12345',
+        status: 'Member',
+        accessToken: '',
         text: {
             userName: 'Mock Name',
         },
@@ -23,7 +25,7 @@ const testProps: Props = {
             src: '/img.jpg',
             altText: 'Image of Mock Name',
             height: 100,
-            width: 100
+            width: 100,
         },
     },
     navMenuList: [],

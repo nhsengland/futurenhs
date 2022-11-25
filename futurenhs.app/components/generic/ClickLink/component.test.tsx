@@ -1,12 +1,11 @@
 import { render, screen } from '@jestMocks/index'
-
-import { ActionLink } from './index'
+import { ClickLink } from '.'
 
 import { Props } from './interfaces'
 
 describe('Action link', () => {
     const props: Props = {
-        href: '/',
+        onClick: () => null,
         text: {
             body: 'Test link',
             ariaLabel: 'Test aria label',
@@ -14,7 +13,7 @@ describe('Action link', () => {
     }
 
     it('Renders correctly', () => {
-        render(<ActionLink {...props} />)
+        render(<ClickLink {...props} />)
 
         expect(screen.getAllByText('Test link').length).toBe(1)
     })

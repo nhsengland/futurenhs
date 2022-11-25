@@ -12,9 +12,10 @@ import { Routes } from '@appTypes/routing'
 import { User } from '@appTypes/user'
 import StandardLayout from '@components/layouts/pages/StandardLayout'
 import { FeatureFlag } from '@services/getUserFeatureFlags'
+import { GroupTabId } from './interfaces'
 
 export interface Props {
-    tabId: 'index' | 'forum' | 'files' | 'members'
+    tabId: GroupTabId
     routes: Routes
     shouldRenderSearch?: boolean
     shouldRenderUserNavigation?: boolean

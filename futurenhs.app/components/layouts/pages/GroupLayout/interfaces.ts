@@ -4,7 +4,7 @@ import { Routes } from '@appTypes/routing'
 import { User } from '@appTypes/user'
 
 export interface Props {
-    tabId: 'index' | 'forum' | 'whiteboard' | 'files' | 'members'
+    tabId: GroupTabId
     routes: Routes
     shouldRenderSearch?: boolean
     shouldRenderUserNavigation?: boolean
@@ -23,3 +23,5 @@ export interface Props {
     pageTitle?: string
     isPublic?: boolean
 }
+
+export type GroupTabId = 'index' | 'forum' | 'whiteboard' | 'files' | 'members'

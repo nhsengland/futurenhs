@@ -1,8 +1,6 @@
 import { render, screen } from '@jestMocks/index'
 import { shallow } from 'enzyme'
-
-import { StandardLayout } from './index'
-
+import StandardLayout from '.'
 import { Props } from './interfaces'
 
 const testProps: Props = {
