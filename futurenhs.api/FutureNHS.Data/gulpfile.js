@@ -103,6 +103,7 @@ const deployFutureNHSDatabase = (done) => {
         `/DeployReportPath:futurenhs.api/FutureNHS.Data/FutureNHS.Data.FutureNHS/Report.xml`,
         `/DeployScriptPath:futurenhs.api/FutureNHS.Data/FutureNHS.Data.FutureNHS/Publish.sql`,
         `/Profile:futurenhs.api/FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS.publish.xml`,
+        '/SourceTrustServerCertificate:True',
     ], {
         cwd: process.cwd(), 
       
@@ -135,6 +136,7 @@ const deployAutomationFutureNHSDatabase = (done) => {
         '/DeployReportPath:futurenhs.api/FutureNHS.Data/FutureNHS.Data.FutureNHS/Report.xml',
         '/DeployScriptPath:futurenhs.api/FutureNHS.Data/FutureNHS.Data.FutureNHS/Publish.sql',
         '/Profile:futurenhs.api/FutureNHS.Data/FutureNHS.Data.FutureNHS/FutureNHS.Data.FutureNHS-automated.publish.xml',
+        '/SourceTrustServerCertificate:True',
     ], {
         cwd: process.cwd()
     });
