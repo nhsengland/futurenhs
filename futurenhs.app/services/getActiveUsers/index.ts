@@ -17,6 +17,7 @@ import { User } from '@appTypes/user'
 import { Domain } from '@appTypes/domain'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
 import { api } from '@constants/routes'
+import { getLastMonthDate } from '@helpers/util/date'
 
 declare type Options = {
     user: User
@@ -29,9 +30,14 @@ declare type Dependencies = {
 }
 
 export type ActiveUsers = {
-    Daily?: string
-    Weekly?: string
-    Monthly?: string
+    daily?: ActiveUsersResult
+    weekly?: ActiveUsersResult
+    monthly?: ActiveUsersResult
+}
+
+declare type ActiveUsersResult = {
+    result: number
+    label: string
 }
 
 export const getActiveUsers = async (
@@ -39,7 +45,7 @@ export const getActiveUsers = async (
     dependencies?: Dependencies
 ): Promise<ServiceResponse<ActiveUsers>> => {
     const serviceResponse: ServiceResponse<ActiveUsers> = {
-        data: {Daily:undefined, Weekly:undefined, Monthly:undefined},
+        data: { daily: undefined, weekly: undefined, monthly: undefined },
     }
 
     const setFetchOptions =
@@ -73,7 +79,31 @@ export const getActiveUsers = async (
         )
     }
 
-    serviceResponse.data = apiData
-
+    serviceResponse.data = Object.entries(apiData).reduce(
+        (acc, [key, value]) => {
+            let label = ''
+            var dateLastMonth = getLastMonthDate()
+            switch (key) {
+                case 'daily':
+                    label = 'Daily (last 24 hours)'
+                    break
+                case 'weekly':
+                    label = 'Weekly (last 7 days)'
+                    break
+                case 'monthly':
+                    label = `Monthly (from ${dateLastMonth})`
+                    break
+            }
+            return {
+                ...acc,
+                [key]: {
+                    result: value,
+                    label,
+                },
+            }
+        },
+        serviceResponse.data
+    )
+    console.log(apiData)
     return serviceResponse
 }

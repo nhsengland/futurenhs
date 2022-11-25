@@ -69,14 +69,12 @@ export const AdminAnalyticsPage: (props: Props) => JSX.Element = ({
 
         const rows = [
             {
-                children: (
-                    <span>{key[0].toUpperCase() + key.substring(1)}</span>
-                ),
+                children: <span>{value.label}</span>,
                 className: generatedCellClasses.analytics,
                 headerClassName: generatedHeaderCellClasses.analytics,
             },
             {
-                children: <span>{value}</span>,
+                children: <span>{value.result}</span>,
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                 headerClassName: 'u-hidden',
             },
