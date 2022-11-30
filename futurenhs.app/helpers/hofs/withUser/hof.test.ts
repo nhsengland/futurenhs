@@ -1,84 +1,56 @@
 import { withUser } from './index'
 import { ServiceError } from '@services/index'
-import { GetUserService } from '@services/getUser'
 import { services } from '@constants/services'
+import { Member } from '@appTypes/member'
+import { User } from '@appTypes/user'
+import fetch from 'jest-fetch-mock'
 
-const mockUser = {
-    id: 'mockId',
+const mockUser: User = {
+    id: 'b23fd84e-0dae-44de-a5d4-285288adf40c',
+    status: 'Member',
     text: {
-        userName: 'A User',
-        initials: 'AU',
+        userName: 'John Jones',
     },
-    image: {
-        src: '/mockSrc',
-        altText: 'mockAltText',
-        height: 100,
-        width: 100,
-    },
+    image: null,
+    accessToken: '4a8ccca1-e89d-4698-b6d7-dd6a97655e9a',
 }
-
-const mockGetSiteUserService = () => new Promise((resolve) => resolve({ data: { image: {} } }))
-const mockGetSiteActionsService = () => new Promise((resolve) => resolve({ data: [] }))
+beforeEach(() => {
+    fetch.resetMocks()
+})
 
 describe('withUser hof', () => {
     it('passes user data into the request context on successful auth', async () => {
-
         const mockContext: any = {
-            req: {},
-            res: {},
+            params: {
+                user: mockUser,
+            },
             page: {
-                props: {}
-            }
+                props: {},
+            },
         } as any
 
-        const mockGetUserService: GetUserService = () =>
-            new Promise((resolve) => {
-                resolve({
-                    data: mockUser,
-                })
-            })
+        await withUser(mockContext, {}, {})
 
-        await withUser(
-            mockContext,
-            {},
-            {
-                getUserService: mockGetUserService,
-                getSiteUserService: mockGetSiteUserService,
-                getSiteActionsService: mockGetSiteActionsService
-            }
+        expect(mockContext).toHaveProperty(
+            'params.user.accessToken',
+            mockContext.params.user.accessToken
         )
-
-        expect(mockContext.req).toHaveProperty('user')
     })
 
     it('returns redirect instructions on unsuccessful auth', async () => {
-
         const mockContext: any = {
             req: {},
             res: {},
             page: {
-                props: {}
-            }
+                props: {},
+            },
         } as any
-
-        const mockGetUserService: GetUserService = () =>
-            new Promise((resolve) => {
-                throw new ServiceError('No auth', {
-                    serviceId: services.GET_USER,
-                    status: 401,
-                    statusText: 'Denied',
-                })
+        fetch.mockResponseOnce(
+            JSON.stringify({
+                redirect: 'http://mock-host:5000/auth/signin',
             })
-
-        const withOutput = await withUser(
-            mockContext,
-            {},
-            {
-                getUserService: mockGetUserService,
-                getSiteUserService: mockGetSiteUserService,
-                getSiteActionsService: mockGetSiteActionsService
-            }
         )
+        const withOutput = await withUser(mockContext, {})
 
         expect(withOutput).toHaveProperty('redirect')
     })
