@@ -2,21 +2,13 @@ import { getServerSideProps } from './index.page'
 
 import { mswServer } from './../../jest-mocks/msw-server'
 import { handlers } from './../../jest-mocks/handlers'
+import { mockUser } from '@helpers/hofs/withUser/hof.test'
 
 const mockLocales = {
     locales: undefined,
     locale: undefined,
     defaultLocale: undefined,
 }
-
-const mockUser = {
-    id: 'b19e1529-cea6-40f8-989a-ad36011e9e89',
-    text: {
-        userName: 'Mock User',
-    },
-    image: null,
-}
-
 const mockQuery = {
     term: 'default Mock Term',
 }

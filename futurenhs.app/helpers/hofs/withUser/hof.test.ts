@@ -5,7 +5,7 @@ import { Member } from '@appTypes/member'
 import { User } from '@appTypes/user'
 import fetch from 'jest-fetch-mock'
 
-const mockUser: User = {
+export const mockUser: User = {
     id: 'b23fd84e-0dae-44de-a5d4-285288adf40c',
     status: 'Member',
     text: {

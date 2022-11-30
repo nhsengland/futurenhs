@@ -3,6 +3,8 @@ import { mswServer } from '@jestMocks/msw-server'
 import { handlers } from '@jestMocks/handlers'
 import fetch from 'jest-fetch-mock'
 import { withGroup } from '.'
+import { User } from '@appTypes/user'
+import { mockUser } from '../withUser/hof.test'
 
 const mockGroup = {
     text: {
@@ -18,11 +20,6 @@ const mockGroup = {
 }
 
 const mockGroupId: string = 'fake-group-id'
-const mockUser: any = {
-    id: 'fake-admin-id',
-    FullName: 'Mock User 2',
-    UserAvatar: null,
-}
 // import { mswServer } from './../../jest-mocks/msw-server'
 // import { handlers } from './../../jest-mocks/handlers'
 

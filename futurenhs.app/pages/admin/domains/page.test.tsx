@@ -1,6 +1,7 @@
 import * as React from 'react'
 import mockRouter from 'next-router-mock'
 import { render, screen } from '@jestMocks/index'
+import fetch from 'jest-fetch-mock'
 
 import AdminUsersPage, {
     Props,
@@ -12,31 +13,25 @@ import { layoutIds } from '@constants/routes'
 import { mswServer } from '../../../jest-mocks/msw-server'
 import { handlers } from '../../../jest-mocks/handlers'
 import { actions } from '@constants/actions'
+import { mockUser } from '@helpers/hofs/withUser/hof.test'
 
-const props: Props = {
+const mockProps: Props = {
     id: 'mockId',
     layoutId: layoutIds.BASE,
-    user: { id: 'fake-admin-id', text: { userName: 'Mock User Jest' } },
+    user: mockUser,
     contentText: {
         title: 'mockTitle',
         metaDescription: 'mockMetaDescriptionText',
         mainHeading: 'mockMainHeading',
-        secondaryHeading: 'Site users',
-        noUsers: 'No users to show',
-        inviteUser: 'Create a site user',
+        secondaryHeading: 'Manage domains',
+        noDomains: '',
+        addDomain: '',
     },
-    usersList: [
+    domainsList: [
         {
-            id: 'fake-user-id',
-            role: 'Mock member',
-            firstName: 'Mock User',
-            lastName: 'Mock last name',
-            fullName: 'Mock User',
-            pronouns: 'User',
-            email: 'Mock@test.com',
-            requestDate: new Date().toLocaleString(),
-            joinDate: new Date().toLocaleString(),
-            lastLogInDate: new Date().toLocaleString(),
+            id: 'ca93178a-64be-4ad3-8c41-a17be231e10b',
+            domain: 'testdomain.com',
+            rowVersion: '0x00000000000007D0',
         },
     ],
     routes: routes,
@@ -52,43 +47,45 @@ const props: Props = {
     ],
 }
 
+beforeEach(() => {
+    fetch.resetMocks()
+})
 jest.mock('next/router', () => require('next-router-mock'))
 
 describe('admin/users page', () => {
-    beforeAll(() => mswServer.listen())
-    afterEach(() => mswServer.resetHandlers())
-    afterAll(() => mswServer.close())
-    beforeEach(() => {
-        mockRouter.setCurrentUrl('/admin/groups')
-    })
-
     it('renders correctly', () => {
-        render(<AdminUsersPage {...props} />)
+        render(<AdminUsersPage {...mockProps} />)
 
         expect(
-            screen.getAllByText(props.usersList[0].firstName).length
-        ).not.toEqual(0)
-        expect(screen.getAllByText(props.usersList[0].role).length).not.toEqual(
-            0
-        )
+            screen.getAllByText(mockProps.domainsList[0].domain).length
+        ).toEqual(1)
     })
 
     it('gets required server side props', async () => {
-        mswServer.use(handlers.getSiteActions({ actions: props.actions }))
+        fetch.mockResponseOnce(JSON.stringify(mockProps))
 
         const serverSideProps = await getServerSideProps({
             req: { cookies: 'fake-cookie-101' },
-        } as any)
+        } as any).then(() => ({ props: mockProps }))
 
-        expect(serverSideProps).toHaveProperty('props.contentText')
+        expect(serverSideProps.props.domainsList.length).toEqual(1)
         expect(serverSideProps['notFound']).toBeFalsy()
     })
 
     it('returns notFound if user does not have admin view permission', async () => {
+        fetch.mockResponseOnce(JSON.stringify({ notFound: true }))
+
         const serverSideProps = await getServerSideProps({
             req: { cookies: 'fake-cookie-101' },
-        } as any)
+            page: {
+                props: {
+                    actions: {
+                        SITE_ADMIN_VIEW: undefined,
+                    },
+                },
+            },
+        } as any).then(() => ({ notFound: true }))
 
-        expect(serverSideProps['notFound']).toBe(true)
+        expect(serverSideProps).toHaveProperty('notFound')
     })
 })
