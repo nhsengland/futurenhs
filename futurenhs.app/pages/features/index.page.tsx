@@ -18,6 +18,7 @@ import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
 import { DataGrid } from '@components/layouts/DataGrid'
 import Switch from 'react-switch'
 import classNames from 'classnames'
+import { getSiteFeatureFlags } from '@services/getSiteFeatureFlags'
 
 declare interface ContentText extends GenericPageTextContent {
     mainHeading: string
@@ -139,6 +140,16 @@ export const getServerSideProps: GetServerSideProps = async (
                 return {
                     notFound: true,
                 }
+            }
+
+            /**
+             * Get data from services
+             */
+            try {
+                const { data } = await getSiteFeatureFlags({ user })
+                props.featureFlags = data
+            } catch (error) {
+                return handleSSRErrorProps({ props, error })
             }
 
             /**

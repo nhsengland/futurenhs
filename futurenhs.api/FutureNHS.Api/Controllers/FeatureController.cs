@@ -66,7 +66,6 @@ namespace FutureNHS.Api.Controllers
                 flags.Add(featureFlag);
             }
             return Ok(flags);
-
         }
     }
 }

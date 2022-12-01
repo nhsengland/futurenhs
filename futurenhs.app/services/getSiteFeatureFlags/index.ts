@@ -19,8 +19,7 @@ import jwtHeader from '@helpers/util/jwt/jwtHeader'
 import { api } from '@constants/routes'
 
 declare type Options = {
-    user: User,
-    accessToken: string
+    user: User
 }
 
 declare type Dependencies = {
@@ -35,7 +34,7 @@ export type FeatureFlag = {
 }
 
 export const getSiteFeatureFlags = async (
-    
+    { user },
     dependencies?: Dependencies
 ): Promise<ServiceResponse<Array<FeatureFlag>>> => {
     const serviceResponse: ServiceResponse<Array<FeatureFlag>> = {
@@ -47,7 +46,7 @@ export const getSiteFeatureFlags = async (
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.SITE_FEATURE_FLAGS}`
-    const authHeader = jwtHeader(accessToken)
+    const authHeader = jwtHeader(user.accessToken)
     const apiHeaders = setFetchOptions({
         method: requestMethods.GET,
         headers: authHeader,
