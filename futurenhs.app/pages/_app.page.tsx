@@ -18,7 +18,7 @@ import {
 } from '@helpers/contexts/index'
 import { layoutIds } from '@constants/routes'
 import { SessionProvider, useSession } from 'next-auth/react'
-import { FeatureFlag, getUserFeatureFlags } from '@services/getUserFeatureFlags'
+import { FeatureFlag, getSiteFeatureFlags } from '@services/getSiteFeatureFlags'
 
 const CustomApp = ({ Component, pageProps }) => {
     const activeRequests: any = useRef([])

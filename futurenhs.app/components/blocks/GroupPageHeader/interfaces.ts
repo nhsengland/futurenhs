@@ -1,7 +1,7 @@
 import { actions } from '@constants/actions'
 import { Image } from '@appTypes/image'
 import { Routes } from '@appTypes/routing'
-import { FeatureFlag } from '@services/getUserFeatureFlags'
+import { FeatureFlag } from '@services/getSiteFeatureFlags'
 
 export interface Props {
     featureFlags?: Array<FeatureFlag>

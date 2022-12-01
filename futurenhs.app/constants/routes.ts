@@ -4,7 +4,7 @@ export const enum routes {
     ADMIN_USERS = '/admin/users',
     ADMIN_GROUPS = '/admin/groups',
     ADMIN_DOMAINS = '/admin/domains',
-    ADMIN_FEATURES = '/admin/features',
+    SITE_FEATURES = '/features',
     ADMIN_ANALYTICS = '/admin/analytics',
     USERS = '/users',
     SIGN_IN = '/auth/signin',
@@ -23,8 +23,7 @@ export const enum api {
 
     GROUP_INVITE = '/v1/groups/%GROUP_ID%/registration/invite',
 
-    USER_FEATURE_FLAGS = '/v1/user/features',
-
+    SITE_FEATURE_FLAGS = '/v1/features',
     SITE_INVITE = '/v1/registration/invite',
     SITE_INVITE_DETAILS = '/v1/registration/invite/%SITE_INVITE_ID%',
     SITE_USER_REGISTER = '/v1/registration/register',
@@ -33,7 +32,7 @@ export const enum api {
     SITE_DOMAIN = '/v1/registration/domains/%DOMAIN%',
     SITE_PUBLIC_REGISTRATION_EXISTS = '/v1/registration/public/exists',
 
-    ADMIN_FEATURE_FLAGS = '/v1/admin/features',
+    // ADMIN_FEATURE_FLAGS = '/v1/admin/features',
     ADMIN_ANALYTICS = '/v1/admin/analytics'
 }
 

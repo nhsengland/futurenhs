@@ -19,7 +19,8 @@ import jwtHeader from '@helpers/util/jwt/jwtHeader'
 import { api } from '@constants/routes'
 
 declare type Options = {
-    user: User
+    user: User,
+    accessToken: string
 }
 
 declare type Dependencies = {
@@ -33,7 +34,8 @@ export type FeatureFlag = {
     enabled: boolean
 }
 
-export const getUserFeatureFlags = async (
+export const getSiteFeatureFlags = async (
+    
     dependencies?: Dependencies
 ): Promise<ServiceResponse<Array<FeatureFlag>>> => {
     const serviceResponse: ServiceResponse<Array<FeatureFlag>> = {
@@ -44,23 +46,27 @@ export const getUserFeatureFlags = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.USER_FEATURE_FLAGS}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.SITE_FEATURE_FLAGS}`
+    const authHeader = jwtHeader(accessToken)
+    const apiHeaders = setFetchOptions({
+        method: requestMethods.GET,
+        headers: authHeader,
+    })
     const apiResponse: any = await fetchJSON(
         apiUrl,
-        setFetchOptions({
-            method: requestMethods.GET,
-        }),
+        apiHeaders,
         defaultTimeOutMillis
     )
+
     const apiData: any = apiResponse.json
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get user feature flags',
+            'An unexpected error occurred when attempting to get site feature flags',
             {
-                serviceId: services.GET_USER_FEATURE_FLAGS,
+                serviceId: services.GET_SITE_FEATURE_FLAGS,
                 status: status,
                 statusText: statusText,
                 body: apiData,

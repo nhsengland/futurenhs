@@ -11,7 +11,7 @@ import { Image } from '@appTypes/image'
 import { Routes } from '@appTypes/routing'
 import { User } from '@appTypes/user'
 import StandardLayout from '@components/layouts/pages/StandardLayout'
-import { FeatureFlag } from '@services/getUserFeatureFlags'
+import { FeatureFlag } from '@services/getSiteFeatureFlags'
 import { GroupTabId } from './interfaces'
 
 export interface Props {

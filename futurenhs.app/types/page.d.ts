@@ -11,7 +11,7 @@ import {
     GroupsPageTextContent,
 } from '@appTypes/content'
 import { User } from '@appTypes/user'
-import { FeatureFlag } from '@services/getUserFeatureFlags'
+import { FeatureFlag } from '@services/getSiteFeatureFlags'
 
 export interface Page {
     id: string
