@@ -6,11 +6,11 @@ public record FeatureFlag
 {
     public FeatureFlag() {}
 
-    public FeatureFlag(FeatureFlag featureFlag)
+    public FeatureFlag(string name, bool enabled)
     {
-        Id = featureFlag.Id;
-        Name = featureFlag.Name;
-        Enabled = featureFlag.Enabled;
+        Id = name;
+        Name = name;
+        Enabled = enabled;
     }
     public string Id { get; init; }
     public string Name { get; init; }

@@ -444,31 +444,5 @@ namespace FutureNHS.Api.Services
 
             return _userCommand.GetMemberByEmailAsync(emailAddress, cancellationToken);
         }
-        
-        public async Task<IEnumerable<FeatureFlag>> GetFeatureFlagsAsync()
-        {
-
-            var canSelfRegister = await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration);
-            var canGroupInvite = await _featureManager.IsEnabledAsync(FeatureFlags.GroupInvite);
-
-            var selfRegister = new FeatureFlag()
-            {
-                Id = FeatureFlags.SelfRegistration,
-                Name = "Self Registration",
-                Enabled = canSelfRegister
-            };
-            
-            var groupInvite = new FeatureFlag()
-            {
-                Id = FeatureFlags.GroupInvite,
-                Name = "Group Invite",
-                Enabled = canGroupInvite
-            };
-
-            var featureFlags = new List<FeatureFlag>{selfRegister, groupInvite};
-
-            return featureFlags;
-
-        }
     }
 }
