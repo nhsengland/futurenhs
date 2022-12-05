@@ -11,7 +11,6 @@ import {
     GroupsPageTextContent,
 } from '@appTypes/content'
 import { User } from '@appTypes/user'
-import { FeatureFlag } from '@services/getSiteFeatureFlags'
 
 export interface Page {
     id: string
@@ -35,7 +34,6 @@ export interface Page {
     pageTitle?: string
     notifications?: Array<Notification>
     appElement?: HTMLElement
-    featureFlags?: Array<FeatureFlag>
 }
 
 export interface GroupPage extends Page {

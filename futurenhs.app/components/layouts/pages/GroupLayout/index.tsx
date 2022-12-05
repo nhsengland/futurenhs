@@ -11,7 +11,6 @@ import { Image } from '@appTypes/image'
 import { Routes } from '@appTypes/routing'
 import { User } from '@appTypes/user'
 import StandardLayout from '@components/layouts/pages/StandardLayout'
-import { FeatureFlag } from '@services/getSiteFeatureFlags'
 import { GroupTabId } from './interfaces'
 
 export interface Props {
@@ -33,7 +32,6 @@ export interface Props {
     children?: any
     pageTitle?: string
     isPublic?: boolean
-    featureFlags?: Array<FeatureFlag>
 }
 
 export const GroupLayout: (props: Props) => JSX.Element = ({
@@ -48,7 +46,6 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
     children,
     shouldRenderGroupHeader = true,
     pageTitle,
-    featureFlags,
     ...rest
 }) => {
     const router: any = useRouter()
@@ -95,7 +92,6 @@ export const GroupLayout: (props: Props) => JSX.Element = ({
                             routes={routes}
                             navMenuList={navMenuList}
                             memberStatus={memberStatus}
-                            featureFlags={featureFlags}
                         />
                     </ErrorBoundary>
                 )}

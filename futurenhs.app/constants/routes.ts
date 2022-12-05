@@ -4,7 +4,7 @@ export const enum routes {
     ADMIN_USERS = '/admin/users',
     ADMIN_GROUPS = '/admin/groups',
     ADMIN_DOMAINS = '/admin/domains',
-    SITE_FEATURES = '/features',
+    SITE_FEATURES = '/admin/features',
     ADMIN_ANALYTICS = '/admin/analytics',
     USERS = '/users',
     SIGN_IN = '/auth/signin',
@@ -22,6 +22,7 @@ export const enum api {
     USER_GROUP_INVITE = '/v1/groups/invite/%GROUP_INVITE_ID%',
 
     GROUP_INVITE = '/v1/groups/%GROUP_ID%/registration/invite',
+    FEATURE_FLAG = '/v1/features/%FLAG%',
 
     SITE_FEATURE_FLAGS = '/v1/features',
     SITE_INVITE = '/v1/registration/invite',
@@ -33,7 +34,13 @@ export const enum api {
     SITE_PUBLIC_REGISTRATION_EXISTS = '/v1/registration/public/exists',
 
     // ADMIN_FEATURE_FLAGS = '/v1/admin/features',
-    ADMIN_ANALYTICS = '/v1/admin/analytics'
+    ADMIN_ANALYTICS = '/v1/admin/analytics',
+}
+
+export const enum features {
+    SELF_REGISTER = 'SelfRegister',
+    GROUP_INVITE = 'GroupInvite',
+    FILE_EDIT = 'FileServer-AllowFileEdit',
 }
 
 export const enum queryParams {

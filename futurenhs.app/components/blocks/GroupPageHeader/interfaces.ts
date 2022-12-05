@@ -1,10 +1,8 @@
 import { actions } from '@constants/actions'
 import { Image } from '@appTypes/image'
 import { Routes } from '@appTypes/routing'
-import { FeatureFlag } from '@services/getSiteFeatureFlags'
 
 export interface Props {
-    featureFlags?: Array<FeatureFlag>
     id: string
     /**
      * Controls the colour scheme
@@ -43,4 +41,5 @@ export interface Props {
     shouldRenderActionsMenu?: boolean
     className?: string
     memberStatus?: string
+    inviteEnabled?: boolean
 }

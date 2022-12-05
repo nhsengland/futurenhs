@@ -20,6 +20,7 @@ export const enum services {
     GET_GROUP_ROLES = 'getGroupRoles',
     GET_GROUP_INVITE = 'getGroupInvite',
     GET_INVITE_DETAILS = 'getInviteDetails',
+    GET_FEATURE_ENABLED = 'getFeatureEnabled',
     GET_DOMAINS = 'getDomains',
     GET_DOMAIN = 'getDomain',
     GET_PENDING_GROUP_MEMBERS = 'getGroupPendingMembers',

@@ -6,12 +6,10 @@ import { services } from '@constants/services'
 import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { ServiceResponse } from '@appTypes/service'
-import { User } from '@appTypes/user'
-import jwtHeader from '@helpers/util/jwt/jwtHeader'
 import { api } from '@constants/routes'
 
 declare type Options = {
-    user: User
+    slug: string
 }
 
 declare type Dependencies = {
@@ -19,29 +17,24 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export type FeatureFlag = {
-    slug: string
-    enabled: boolean
-}
-
-export const getSiteFeatureFlags = async (
-    { user }: Options,
+export const getFeatureEnabled = async (
+    { slug },
     dependencies?: Dependencies
-): Promise<ServiceResponse<Array<FeatureFlag>>> => {
-    const serviceResponse: ServiceResponse<Array<FeatureFlag>> = {
-        data: [],
+): Promise<ServiceResponse<boolean>> => {
+    const serviceResponse: ServiceResponse<boolean> = {
+        data: null,
     }
 
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.SITE_FEATURE_FLAGS}`
-    const authHeader = jwtHeader(user.accessToken)
+    const apiUrl: string = `${
+        process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
+    }${api.FEATURE_FLAG.replace('%FLAG%', slug)}`
     const apiHeaders = setFetchOptions({
         method: requestMethods.GET,
-        headers: authHeader,
     })
+
     const apiResponse: any = await fetchJSON(
         apiUrl,
         apiHeaders,
@@ -56,7 +49,7 @@ export const getSiteFeatureFlags = async (
         throw new ServiceError(
             'An unexpected error occurred when attempting to get site feature flags',
             {
-                serviceId: services.GET_SITE_FEATURE_FLAGS,
+                serviceId: services.GET_FEATURE_ENABLED,
                 status: status,
                 statusText: statusText,
                 body: apiData,

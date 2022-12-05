@@ -3,7 +3,12 @@ import { useContext, useState } from 'react'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { actions as actionConstants } from '@constants/actions'
-import { groupTabIds, layoutIds, routeParams } from '@constants/routes'
+import {
+    features,
+    groupTabIds,
+    layoutIds,
+    routeParams,
+} from '@constants/routes'
 import { withUser } from '@helpers/hofs/withUser'
 import { withRoutes } from '@helpers/hofs/withRoutes'
 import { GetServerSidePropsContext } from '@appTypes/next'
@@ -34,7 +39,7 @@ import { useNotification } from '@helpers/hooks/useNotification'
 import { GroupPage } from '@appTypes/page'
 import { postGroupUserInvite } from '@services/postGroupUserInvite'
 import { getStandardServiceHeaders } from '@helpers/fetch'
-import { flags } from '@constants/feature-flags'
+import { getFeatureEnabled } from '@services/getFeatureEnabled'
 
 export interface Props extends GroupPage {}
 
@@ -137,7 +142,7 @@ export const getServerSideProps: GetServerSideProps = async (
             /**
              * Get data from request context
              */
-            const props: Partial<any> = selectPageProps(context)
+            const props: Partial<Props> = selectPageProps(context)
             const formData: ServerSideFormData = selectFormData(context)
             const requestMethod: requestMethods = selectRequestMethod(context)
 
@@ -155,11 +160,16 @@ export const getServerSideProps: GetServerSideProps = async (
                 actionConstants.GROUPS_MEMBERS_INVITE
             )
 
-            const featureEnabled = props.featureFlags.some(
-                (f) => f.id === flags.groupInvite && f.enabled
-            )
+            let groupInviteEnabled = false
 
-            if (!hasPermisson || !featureEnabled) {
+            try {
+                const { data: enabled } = await getFeatureEnabled({
+                    slug: features.GROUP_INVITE,
+                })
+                groupInviteEnabled = enabled
+            } catch (e) {}
+
+            if (!hasPermisson || !groupInviteEnabled) {
                 return {
                     notFound: true,
                 }

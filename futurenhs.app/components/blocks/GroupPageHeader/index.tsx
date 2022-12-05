@@ -26,7 +26,9 @@ import { Props } from './interfaces'
 import PrivateGroup from '@components/blocks/PrivateGroup'
 import { groupMemberStatus } from '@constants/group-member-status'
 import { requestMethods } from '@constants/fetch'
+import { getFeatureEnabled } from '@services/getFeatureEnabled'
 import { flags } from '@constants/feature-flags'
+import { features } from '@constants/routes'
 
 /**
  * Header for group listings and for individual groups
@@ -44,7 +46,6 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     className,
     isPublic,
     isDiscover,
-    featureFlags,
 }) => {
     const router = useRouter()
 
@@ -53,6 +54,15 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     const [isActionsAccordionOpen] = useState(false)
     const [isMenuAccordionOpen, setIsMenuAccordionOpen] = useState(true)
     const [isLeaveGroupModalOpen, setIsLeaveGroupModalOpen] = useState(false)
+    const [inviteEnabled, setInviteEnabled] = useState(null)
+
+    useEffect(() => {
+        getFeatureEnabled({ slug: features.GROUP_INVITE }).then(
+            ({ data: enabled }) => {
+                setInviteEnabled(!!enabled)
+            }
+        )
+    }, [setInviteEnabled, getFeatureEnabled])
 
     const actionsMenuTitleText: string = 'Actions'
     const { mainHeading, description, navMenuTitle } = text ?? {}
@@ -68,10 +78,6 @@ export const GroupPageHeader: (props: Props) => JSX.Element = ({
     )
     const shouldRenderGroupEditLink: boolean = actions?.includes(
         actionsConstants.GROUPS_EDIT
-    )
-
-    const inviteEnabled = featureFlags?.some(
-        (f) => f.id === flags.groupInvite && f.enabled
     )
 
     const hasInvitePermission = actions?.includes(

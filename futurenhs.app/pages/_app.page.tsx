@@ -17,8 +17,7 @@ import {
     NotificationsContext,
 } from '@helpers/contexts/index'
 import { layoutIds } from '@constants/routes'
-import { SessionProvider, useSession } from 'next-auth/react'
-import { FeatureFlag, getSiteFeatureFlags } from '@services/getSiteFeatureFlags'
+import { SessionProvider } from 'next-auth/react'
 
 const CustomApp = ({ Component, pageProps }) => {
     const activeRequests: any = useRef([])
@@ -213,10 +212,6 @@ const CustomApp = ({ Component, pageProps }) => {
             </NotificationsContext.Provider>
         </SessionProvider>
     )
-}
-
-interface CustomAppProps extends AppInitialProps {
-    featureFlags?: Array<FeatureFlag>
 }
 
 CustomApp.getInitialProps = async (appContext) => {

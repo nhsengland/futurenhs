@@ -14,11 +14,11 @@ import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { RichText } from '@components/generic/RichText'
 import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
-import { getToken } from 'next-auth/jwt'
 import { authOptions } from '@pages/api/auth/[...nextauth].page'
 import { unstable_getServerSession } from 'next-auth'
 import SignInSubmitButton from '@components/forms/SignInSubmitButton'
-import { flags } from '@constants/feature-flags'
+import { getFeatureFlag } from '@services/getFeatureEnabled'
+import { features } from '@constants/routes'
 
 interface ContentText extends GenericPageTextContent {
     signUpHtml: string
@@ -27,7 +27,7 @@ interface ContentText extends GenericPageTextContent {
 
 export interface Props extends Page {
     contentText: ContentText
-    canPublicRegister: boolean
+    selfRegisterEnabled: boolean
     b2cSignUpUrl: string
 }
 
@@ -38,9 +38,8 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
     csrfToken,
     routes,
     contentText,
-    canPublicRegister,
     b2cSignUpUrl,
-    featureFlags,
+    selfRegisterEnabled,
 }) => {
     const { authApiSignInAzureB2C } = routes ?? {}
     const {
@@ -51,10 +50,6 @@ const AuthSignInPage: (props: Props) => JSX.Element = ({
         signUpHtml,
         signUpHeading,
     } = contentText ?? {}
-
-    const selfRegisterEnabled = featureFlags?.some(
-        (f) => f.id === flags.selfRegister && f.enabled
-    )
 
     return (
         <PageBody className="tablet:u-px-0">
@@ -136,7 +131,21 @@ export const getServerSideProps: GetServerSideProps = async (
             ;(props as any).shouldRenderMainNav = false
             ;(props as any).className = 'u-bg-theme-3'
 
+            props.selfRegisterEnabled = false
+
+            try {
+                const {
+                    data: { enabled },
+                } = await getFeatureFlag({
+                    slug: features.SELF_REGISTER,
+                })
+                props.selfRegisterEnabled = enabled
+            } catch (e) {}
+
             /**
+            }
+
+            props.selfRegisterEnabled = 
              * Redirect to site root if already signed in
              */
             if (session) {
