@@ -56,7 +56,9 @@ export const getFeatureEnabled = async (
             }
         )
     }
-    serviceResponse.data = apiData
+    const data = apiData
 
-    return serviceResponse
+    return {
+        data: data,
+    }
 }

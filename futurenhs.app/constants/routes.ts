@@ -38,7 +38,7 @@ export const enum api {
 }
 
 export const enum features {
-    SELF_REGISTER = 'SelfRegister',
+    SELF_REGISTER = 'SelfRegistration',
     GROUP_INVITE = 'GroupInvite',
     FILE_EDIT = 'FileServer-AllowFileEdit',
 }

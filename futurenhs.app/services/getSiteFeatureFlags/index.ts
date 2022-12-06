@@ -20,7 +20,8 @@ declare type Dependencies = {
 }
 
 export type FeatureFlag = {
-    slug: string
+    id: string
+    name: string
     enabled: boolean
 }
 

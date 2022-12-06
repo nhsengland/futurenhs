@@ -18,7 +18,7 @@ import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
 import { DataGrid } from '@components/layouts/DataGrid'
 import Switch from 'react-switch'
 import classNames from 'classnames'
-import { getSiteFeatureFlags } from '@services/getSiteFeatureFlags'
+import { FeatureFlag, getSiteFeatureFlags } from '@services/getSiteFeatureFlags'
 
 declare interface ContentText extends GenericPageTextContent {
     mainHeading: string
@@ -26,6 +26,7 @@ declare interface ContentText extends GenericPageTextContent {
 
 export interface Props extends Page {
     contentText: ContentText
+    featureFlags: Array<FeatureFlag>
 }
 
 /**

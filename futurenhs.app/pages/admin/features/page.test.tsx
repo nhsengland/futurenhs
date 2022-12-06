@@ -9,8 +9,8 @@ import AdminUsersPage, {
 import { routes } from '@jestMocks/generic-props'
 import { layoutIds } from '@constants/routes'
 
-import { mswServer } from '../../jest-mocks/msw-server'
-import { handlers } from '../../jest-mocks/handlers'
+import { mswServer } from '../../../jest-mocks/msw-server'
+import { handlers } from '../../../jest-mocks/handlers'
 import { actions } from '@constants/actions'
 
 const props: Props = {

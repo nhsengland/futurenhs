@@ -2,7 +2,7 @@ import * as React from 'react'
 import { cleanup, render, screen } from '@jestMocks/index'
 import mockRouter from 'next-router-mock'
 import { actions as actionConstants } from '@constants/actions'
-import AdminFeaturesPage, { Props } from '@pages/features/index.page'
+import AdminFeaturesPage, { Props } from '@pages/admin/features/index.page'
 import { routes } from '@jestMocks/generic-props'
 
 jest.mock('next/router', () => require('next-router-mock'))

@@ -17,7 +17,7 @@ import { GenericPageTextContent } from '@appTypes/content'
 import { authOptions } from '@pages/api/auth/[...nextauth].page'
 import { unstable_getServerSession } from 'next-auth'
 import SignInSubmitButton from '@components/forms/SignInSubmitButton'
-import { getFeatureFlag } from '@services/getFeatureEnabled'
+import { getFeatureEnabled } from '@services/getFeatureEnabled'
 import { features } from '@constants/routes'
 
 interface ContentText extends GenericPageTextContent {
@@ -134,12 +134,10 @@ export const getServerSideProps: GetServerSideProps = async (
             props.selfRegisterEnabled = false
 
             try {
-                const {
-                    data: { enabled },
-                } = await getFeatureFlag({
+                const response = await getFeatureEnabled({
                     slug: features.SELF_REGISTER,
                 })
-                props.selfRegisterEnabled = enabled
+                props.selfRegisterEnabled = response.data
             } catch (e) {}
 
             /**
@@ -205,3 +203,8 @@ export const getServerSideProps: GetServerSideProps = async (
 }
 
 export default AuthSignInPage
+function getFeatureFlag(arg0: {
+    slug: features
+}): { data: { enabled: any } } | PromiseLike<{ data: { enabled: any } }> {
+    throw new Error('Function not implemented.')
+}
