@@ -36,7 +36,7 @@ export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
     contentText,
     featureFlags,
 }) => {
-    const { secondaryHeading } = contentText ?? {}
+    const { mainHeading } = contentText ?? {}
 
     const handleFeatureToggle = (id, enabled) => {
         return
@@ -95,7 +95,7 @@ export const AdminFeaturesPage: (props: Props) => JSX.Element = ({
         <>
             <LayoutColumnContainer className="u-w-full u-flex u-flex-col tablet:u-flex-row">
                 <LayoutColumn tablet={9} className="c-page-body">
-                    <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
+                    <h2 className="nhsuk-heading-l">{mainHeading}</h2>
                     <DynamicListContainer
                         containerElementType="div"
                         shouldEnableLoadMore={false}

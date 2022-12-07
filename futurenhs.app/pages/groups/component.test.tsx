@@ -24,6 +24,8 @@ describe('GroupListingTemplate', () => {
             secondaryHeading: 'Mock secondary heading html',
         },
         isGroupMember: true,
+        pendingList: [],
+        pendingPagination: {},
         groupsList: [
             {
                 text: {
@@ -36,6 +38,7 @@ describe('GroupListingTemplate', () => {
                 totalMemberCount: 4,
             },
         ],
+        groupsPagination: {},
     }
 
     it('renders correctly', () => {

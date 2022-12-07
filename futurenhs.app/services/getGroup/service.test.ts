@@ -1,71 +1,33 @@
+import { mockUser } from '@helpers/hofs/withUser/hof.test'
 import { getGroup } from './index'
-
-let mockSetFetchOptions: any
-let mockFetchJSON: any
+import fetch from 'jest-fetch-mock'
 
 describe('getGroup service', () => {
     beforeEach(() => {
-        mockSetFetchOptions = jest.fn()
-        mockFetchJSON = jest.fn()
+        fetch.resetMocks()
     })
 
     it('returns a data object on success', async () => {
-        mockFetchJSON = () =>
-            new Promise((resolve) => {
-                const response: Partial<Response> = {
-                    ok: true,
-                    status: 200,
-                    statusText: 'Success',
-                }
-
-                resolve({
-                    meta: response,
-                    json: {
-                        name: 'mockNameText',
-                        strapline:
-                            'Testing unreleased features of the FutureNHS platform',
-                        image: {
-                            source: '/mockSource',
-                            height: 100,
-                            width: 100,
-                        },
-                    },
-                })
-            })
-
-        const response = await getGroup(
-            {
-                groupId: 'mock-slug',
-                user: {
-                    id: 'mockId',
-                    text: {
-                        userName: 'Mock Name',
-                    },
-                },
-            },
-            {
-                setFetchOptions: mockSetFetchOptions,
-                fetchJSON: mockFetchJSON,
-            }
-        )
-
-        await expect(response.data).toStrictEqual({
-            text: {
-                mainHeading: 'mockNameText',
-                metaDescription: 'A FutureNHS group',
-                strapLine:
-                    'Testing unreleased features of the FutureNHS platform',
-                title: 'mockNameText',
-            },
+        const mockGroupResponse = {
+            name: 'Test Image',
+            strapline: '',
             image: {
-                src: `/mockSource`,
-                altText: 'Group logo',
-                height: 100,
-                width: 100,
+                source: '',
+                width: '',
+                height: '',
+                altText: '',
             },
-            imageId: undefined,
-            themeId: undefined,
-            isPublic: undefined,
+            imageId: '',
+            themeId: '',
+            isPublic: '',
+        }
+
+        fetch.mockResponseOnce(JSON.stringify(mockGroupResponse))
+        const response = await getGroup({
+            groupId: 'mock-slug',
+            user: mockUser,
         })
+
+        expect(response.data.text.title).toEqual('Test Image')
     })
 })
