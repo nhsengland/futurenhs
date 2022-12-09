@@ -422,8 +422,12 @@ namespace FutureNHS.Api.Services
                 _logger.LogError($"Error: GetPendingGroupMembersAsync - User:{0} does not have permission to get pending group members of this group:{1}(slug)", userId, slug);
                 throw new ForbiddenException($"Error: User does not have access");
             }
+            
+            var groupDto = await _groupCommand.GetGroupAsync(slug, cancellationToken);
 
-            return await _groupDataProvider.GetPendingGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
+            var invitesForGroup = await _groupCommand.GetGroupInvitesByGroupAsync(groupDto.Id, cancellationToken);
+
+            return await _groupDataProvider.GetPendingGroupMembersAsync(invitesForGroup, offset, limit, sort, cancellationToken);
         }
 
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
@@ -521,7 +525,7 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var invitesForUser = await _groupCommand.GetInvitesAsync(userId, cancellationToken);
+            var invitesForUser = await _groupCommand.GetGroupInvitesByUserAsync(userId, cancellationToken);
 
             return await _groupDataProvider.GetGroupInvitesForUserAsync(userId, invitesForUser, offset, limit, cancellationToken);
             

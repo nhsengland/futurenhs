@@ -173,7 +173,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return group.SingleOrDefault() ?? throw new NotFoundException("Group not found.");
         }
 
-        public async Task<IEnumerable<GroupInvite>> GetInvitesAsync(Guid userId,
+        public async Task<IEnumerable<GroupInvite>> GetGroupInvitesByUserAsync(Guid userId,
             CancellationToken cancellationToken = default)
         {
             IEnumerable<GroupInvite> invites;
@@ -205,6 +205,40 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             return invites;
         }
+        
+        public async Task<IEnumerable<GroupInvite>> GetGroupInvitesByGroupAsync(Guid groupId, CancellationToken cancellationToken = default)
+        {
+            IEnumerable<GroupInvite> invites;
+            
+                        
+            var inviteQuery = "WHERE GroupId = @GroupId AND IsDeleted = 0";
+
+            string query =
+                @$"SELECT 
+                    [{nameof(GroupInvite.Id)}]                               = Id,
+                    [{nameof(GroupInvite.GroupId)}]                          = GroupId,
+                    [{nameof(GroupInvite.RowVersion)}]                       = RowVersion,
+                    [{nameof(GroupInvite.MembershipUser_Id)}]                = MembershipUser_Id
+
+    
+                FROM GroupInvites            
+                {inviteQuery}
+                ORDER BY    CreatedAtUTC";
+            
+            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
+            {
+                using var reader = await dbConnection.QueryMultipleAsync(query, new
+                {
+                    GroupId = groupId
+                });
+
+                invites = reader.Read<GroupInvite>().ToList();
+
+            }
+
+            return invites;
+        }
+
 
         public async Task DeleteGroupInviteAsync(Guid groupInviteId, byte[] rowVersion, CancellationToken cancellationToken = default)
         {

@@ -360,68 +360,62 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             return (totalCount, members);
         }
-
-        public async Task<(uint, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken = default)
-        {
+        
+        public async Task<(uint, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(IEnumerable<GroupInvite> groupInvites, uint offset, uint limit, string sort, CancellationToken cancellationToken = default)
+                {
             if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
             {
                 throw new ArgumentOutOfRangeException(nameof(limit));
             }
 
-            const string query =
-                @$" SELECT
-                                [{nameof(PendingGroupMember.Id)}]                   = member.Id,
-                                [{nameof(PendingGroupMember.Slug)}]                 = member.Slug, 
-                                [{nameof(PendingGroupMember.Name)}]                 = member.FirstName + ' ' +  member.Surname, 
-                                [{nameof(PendingGroupMember.ApplicationDateUtc)}]   = groupUser.RequestToJoinDateUTC,
-                                [{nameof(PendingGroupMember.LastLoginUtc)}]         = memberactivity.LastActivityDateUTC,
-                                [{nameof(PendingGroupMember.Email)}]                = member.Email
+            uint totalCount;
 
-                    FROM        GroupUser groupUser
-                    JOIN        [Group] groups 
-                    ON          groups.Id = groupUser.Group_Id
-                    JOIN        MembershipUser member 
-                    ON          member.Id = groupUser.MembershipUser_Id
-                    LEFT JOIN   MembershipUserActivity memberactivity 
-                    ON          memberactivity.MembershipUserId = member.Id
-                    WHERE       groups.Slug = @Slug
-                    AND         groupUser.Approved = 0
-                    AND         groupUser.Rejected = 0
-                    AND         groupUser.Locked = 0
-                    AND         groupUser.Banned = 0
-                    AND         member.IsDeleted = 0
-                    ORDER BY    groupUser.RequestToJoinDateUTC desc
+            IEnumerable<PendingGroupMember> members;
 
-                    OFFSET      @Offset ROWS
-                    FETCH NEXT  @Limit ROWS ONLY;
+            var invitesList = groupInvites.ToList();
+            var membershipIdArray = invitesList.Any() ? String.Join(",", invitesList.Select(invite => $"'{invite.MembershipUser_Id}'")) : $"'{default(Guid)}'";
+            var userQuery = $"WHERE Id IN ({membershipIdArray})";
 
-                    SELECT      COUNT(*) 
+            string query =
+                @$"SELECT 
+                    [{nameof(PendingGroupMember.Id)}]                  = Id,
+                    [{nameof(PendingGroupMember.Email)}]               = Email
 
-                    FROM        GroupUser groupUser
-                    JOIN        [Group] groups 
-                    ON          groups.Id = groupUser.Group_Id
-                    WHERE       groups.Slug = @Slug
-                    AND         groupUser.Approved = 0
-                    AND         groupUser.Rejected = 0
-                    AND         groupUser.Locked = 0
-                    AND         groupUser.Banned = 0";
+				FROM [MembershipUser]
+                {userQuery}
+                ORDER BY Email
+                OFFSET @Offset ROWS
+                FETCH NEXT @Limit ROWS ONLY;
 
-            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
-
-            var reader = await dbConnection.QueryMultipleAsync(query, new
+                SELECT COUNT(*) FROM [MembershipUser]
+                {userQuery}";
+            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
-                Offset = Convert.ToInt32(offset),
-                Limit = Convert.ToInt32(limit),
-                Slug = slug
-            });
+                using var reader = await dbConnection.QueryMultipleAsync(query, new
+                {
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
+                });
+                members = reader.Read<PendingGroupMember>().ToList();
 
-            var members = await reader.ReadAsync<PendingGroupMember>();
+                members = members.Select(p =>
+                {
+                    var invite = invitesList.Single(i => i.MembershipUser_Id == p.Id);
+                    if (invite is not null)
+                    {
 
-            var totalCount = Convert.ToUInt32(await reader.ReadFirstAsync<int>());
+                        return p with { Invite = new GroupInvite(invite) };
+                    }
+
+                    return p;
+                });
+
+                totalCount = await reader.ReadFirstAsync<uint>();
+            }
 
             return (totalCount, members);
         }
-
+        
         public async Task<GroupMemberDetails?> GetGroupMemberAsync(string slug, Guid userId, CancellationToken cancellationToken = default)
         {
             const string query =

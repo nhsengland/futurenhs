@@ -1,12 +1,19 @@
 ﻿namespace FutureNHS.Api.DataAccess.Models.Group
 {
-    public record PendingGroupMember
+    public sealed record PendingGroupMember
     {
-        public Guid Id { get; init; }
-        public string Slug{ get; init; }
-        public string Name { get; init; }
-        public string Email { get; init; }
-        public DateTime ApplicationDateUtc { get; init; }
-        public DateTime LastLoginUtc { get; init; }
+        public PendingGroupMember() {}
+
+        public PendingGroupMember(Guid userId, string emailAddress, GroupInvite invite)
+        {
+            Id = userId;
+            Email = emailAddress;
+            Invite = invite;
+        }
+
+            
+        public Guid Id { get; set; }
+        public string Email { get; set; }
+        public GroupInvite? Invite { get; set; }
     }
 }

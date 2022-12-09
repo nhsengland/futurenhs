@@ -25,6 +25,8 @@ public interface IGroupCommand
     Task<GroupInvite> GetInviteToGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default);
     Task RedeemGroupInviteAsync(Guid userId, Guid groupId, CancellationToken cancellationToken);
 
-    Task<IEnumerable<GroupInvite>> GetInvitesAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<GroupInvite>> GetGroupInvitesByUserAsync(Guid userId, CancellationToken cancellationToken = default);
+
+    Task<IEnumerable<GroupInvite>> GetGroupInvitesByGroupAsync(Guid groupId, CancellationToken cancellationToken = default);
 
 }
