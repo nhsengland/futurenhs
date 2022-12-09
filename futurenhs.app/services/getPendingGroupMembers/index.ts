@@ -20,7 +20,7 @@ import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
-    groupId: string
+    slug: string
     pagination?: Pagination
 }
 
@@ -30,7 +30,7 @@ declare type Dependencies = {
 }
 
 export const getPendingGroupMembers: Service = async (
-    { user, groupId, pagination }: Options,
+    { user, slug, pagination }: Options,
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<GroupMember>>> => {
     const serviceResponse: ServicePaginatedResponse<Array<GroupMember>> = {
@@ -41,7 +41,6 @@ export const getPendingGroupMembers: Service = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const id: string = user.id
     const paginationQueryParams: string = getApiPaginationQueryParams({
         pagination,
         defaults: {
@@ -50,11 +49,12 @@ export const getPendingGroupMembers: Service = async (
         },
     })
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/members/pending?${paginationQueryParams}`
-    const authHeader = jwtHeader(user.accessToken)
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${slug}/members/pending?${paginationQueryParams}`
     const apiHeaders = setFetchOptions({
         method: requestMethods.GET,
-        headers: authHeader,
+        headers: {
+            ...jwtHeader(user.accessToken),
+        },
     })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,

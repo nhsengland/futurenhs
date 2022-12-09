@@ -3,6 +3,7 @@ import { useContext, useState } from 'react'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { actions as actionConstants } from '@constants/actions'
+import classNames from 'classnames'
 import {
     features,
     groupTabIds,
@@ -22,6 +23,7 @@ import {
     selectRequestMethod,
     selectUser,
     selectPageProps,
+    selectPagination,
 } from '@helpers/selectors/context'
 import { User } from '@appTypes/user'
 import { getGenericFormError, ServerSideFormData } from '@helpers/util/form'
@@ -40,8 +42,22 @@ import { GroupPage } from '@appTypes/page'
 import { postGroupUserInvite } from '@services/postGroupUserInvite'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getFeatureEnabled } from '@services/getFeatureEnabled'
+import { GenericPageTextContent } from '@appTypes/content'
+import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
+import { DataGrid } from '@components/layouts/DataGrid'
+import { getPendingGroupMembers } from '@services/getPendingGroupMembers'
+import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
+import { Pagination } from '@appTypes/pagination'
 
-export interface Props extends GroupPage {}
+declare interface ContentText extends GenericPageTextContent {
+    noPendingInvites: string
+}
+
+export interface Props extends GroupPage {
+    noUsers: string
+    contentText: ContentText
+    pendingList: Array<any>
+}
 
 /**
  * Group member invite template
@@ -52,15 +68,83 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     user,
     contentText,
     groupId,
+    pagination,
+    pendingList,
 }) => {
     const formConfig: FormConfig = useFormConfig(
         formTypes.INVITE_USER,
         forms[formTypes.INVITE_USER]
     )
+    const [dynamicPendingList, setPendingList] = useState(pendingList)
+    const [dynamicPagination, setPagination] = useState(pagination)
+
     const [errors, setErrors] = useState(formConfig?.errors)
     const notificationsContext: any = useContext(NotificationsContext)
 
-    const { secondaryHeading } = contentText
+    const { secondaryHeading, noPendingInvites } = contentText
+
+    const columnList = [
+        {
+            children: 'User',
+            className: '',
+        },
+        {
+            children: `Invited`,
+            className: 'tablet:u-text-right',
+        },
+        {
+            children: `Cancel`,
+            className: 'tablet:u-text-right',
+        },
+    ]
+
+    const rowList = dynamicPendingList?.map(({ email, rowVersion }) => {
+        const generatedCellClasses = {
+            domain: classNames({
+                ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']:
+                    true,
+            }),
+        }
+
+        const generatedHeaderCellClasses = {
+            domain: classNames({
+                ['u-text-bold']: true,
+            }),
+        }
+
+        const rows = [
+            {
+                children: <span>{email}</span>,
+                className: generatedCellClasses.domain,
+                headerClassName: generatedHeaderCellClasses.domain,
+            },
+            {
+                children: (
+                    // <ClickLink
+                    //     onClick={() => {
+                    //         setDomainToDelete({
+                    //             domain,
+                    //             id,
+                    //             rowVersion,
+                    //         })
+                    //     }}
+                    //     text={{
+                    //         body: 'Delete',
+                    //         ariaLabel: `Delete domain ${domain}`,
+                    //     }}
+                    //     iconName="icon-delete"
+                    // />
+                    <span>test</span>
+                ),
+                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
+                headerClassName: 'u-hidden',
+            },
+        ]
+
+        return rows
+    })
+
+    const hasPendingInvites = !!dynamicPendingList?.length
 
     /**
      * Client-side submission handler - TODO: Pending API
@@ -100,6 +184,27 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     }
 
     /**
+     * Handle client-side pagination
+     */
+    const handleGetPage = async ({
+        pageNumber: requestedPageNumber,
+        pageSize: requestedPageSize,
+    }) => {
+        const { data: additionalPending, pagination } =
+            await getPendingGroupMembers({
+                user: user,
+                groupId: groupId,
+                pagination: {
+                    pageNumber: requestedPageNumber,
+                    pageSize: requestedPageSize,
+                },
+            })
+
+        setPendingList([...dynamicPendingList, ...additionalPending])
+        setPagination(pagination)
+    }
+
+    /**
      * Render
      */
     return (
@@ -121,6 +226,33 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                         <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
                     </FormWithErrorSummary>
                 </LayoutColumn>
+            </LayoutColumnContainer>
+            <LayoutColumnContainer className="c-page-body">
+                <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
+                {hasPendingInvites ? (
+                    <DynamicListContainer
+                        containerElementType="div"
+                        shouldEnableLoadMore
+                        className="u-list-none u-p-0"
+                    >
+                        <DataGrid
+                            id="admin-table-domains"
+                            columnList={columnList}
+                            rowList={rowList}
+                            text={{
+                                caption: 'Allowed domains',
+                            }}
+                        />
+                    </DynamicListContainer>
+                ) : (
+                    <p>{noPendingInvites}</p>
+                )}
+                <PaginationWithStatus
+                    id="group-list-pagination"
+                    shouldEnableLoadMore
+                    getPageAction={handleGetPage}
+                    {...dynamicPagination}
+                />
             </LayoutColumnContainer>
         </LayoutColumn>
     )
@@ -145,6 +277,7 @@ export const getServerSideProps: GetServerSideProps = async (
             const props: Partial<Props> = selectPageProps(context)
             const formData: ServerSideFormData = selectFormData(context)
             const requestMethod: requestMethods = selectRequestMethod(context)
+            const user: User = selectUser(context)
 
             props.layoutId = layoutIds.GROUP
             props.tabId = groupTabIds.MEMBERS
@@ -174,6 +307,22 @@ export const getServerSideProps: GetServerSideProps = async (
                     notFound: true,
                 }
             }
+            const pagination: Pagination = {
+                pageNumber: selectPagination(context).pageNumber ?? 1,
+                pageSize: selectPagination(context).pageSize ?? 20,
+            }
+
+            try {
+                const result = await getPendingGroupMembers({
+                    user: user,
+                    slug: props.groupId,
+                    pagination,
+                })
+
+                props.pagination = result.pagination
+
+                props.pendingList = result.data
+            } catch (e) {}
 
             /**
              * Handle server-side form post
