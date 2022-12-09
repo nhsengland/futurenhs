@@ -15,7 +15,7 @@ import {
 } from '@appTypes/service'
 import { Pagination } from '@appTypes/pagination'
 import { User } from '@appTypes/user'
-import { GroupMember } from '@appTypes/group'
+import { GroupMember, InviteDetails } from '@appTypes/group'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
@@ -29,13 +29,20 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
+export type PendingGroupMember = {
+    id: string
+    email: string
+    invite: InviteDetails
+}
+
 export const getPendingGroupMembers: Service = async (
     { user, slug, pagination }: Options,
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<GroupMember>>> => {
-    const serviceResponse: ServicePaginatedResponse<Array<GroupMember>> = {
-        data: [],
-    }
+    const serviceResponse: ServicePaginatedResponse<Array<PendingGroupMember>> =
+        {
+            data: [],
+        }
 
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
@@ -82,9 +89,8 @@ export const getPendingGroupMembers: Service = async (
     apiData.data?.forEach((datum) => {
         serviceResponse.data.push({
             id: datum.id ?? '',
-            fullName: datum.name ?? '',
             email: datum.email ?? '',
-            requestDate: datum.applicationDateUtc ?? '',
+            invite: datum.invite ?? '',
         })
     })
 

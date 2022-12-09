@@ -1,27 +1,27 @@
-﻿namespace FutureNHS.Api.DataAccess.Models.Group
+﻿namespace FutureNHS.Api.DataAccess.Models.Registration
 {
-    public sealed record GroupInvite
+    public sealed record PlatformInvite
     {
-        public GroupInvite() {}
+        public PlatformInvite() {}
 
-        public GroupInvite(GroupInvite invite)
+        public PlatformInvite(PlatformInvite invite)
         {
             Id = invite.Id;
-            MembershipUser_Id = invite.MembershipUser_Id;
             CreatedAtUTC = invite.CreatedAtUTC;
+            Email = invite.Email;
             GroupId = invite.GroupId;
             RowVersion = invite.RowVersion;
         }
 
             
         public Guid Id { get; set; }
-        public Guid MembershipUser_Id { get; set; }
         public Guid GroupId { get; set; }
         public DateTime CreatedAtUTC { get; set; }
 
         public Guid CreatedBy { get; set; }
+        public string Email { get; set; }
+        
         public DateTime? ExpiresAtUTC { get; set; }
-
         public byte[] RowVersion { get; set; }
     }
 }

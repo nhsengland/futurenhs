@@ -32,6 +32,7 @@ namespace FutureNHS.Api.Services
         private readonly IImageBlobStorageProvider _blobStorageProvider;
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
+        // private readonly IRegistrationCommand _registrationCommand;
         private readonly IFileTypeValidator _fileTypeValidator;
         private readonly IGroupCommand _groupCommand;
         private readonly IGroupImageService _imageService;
@@ -54,6 +55,7 @@ namespace FutureNHS.Api.Services
             IGroupCommand groupCommand,
             IHtmlSanitizer htmlSanitizer, 
             IGroupDataProvider groupDataProvider, 
+            // IRegistrationCommand registrationCommand,
             IContentService contentService)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
@@ -62,6 +64,7 @@ namespace FutureNHS.Api.Services
             _fileTypeValidator = fileTypeValidator ?? throw new ArgumentNullException(nameof(fileTypeValidator));
             _groupCommand = groupCommand ?? throw new ArgumentNullException(nameof(groupCommand));
             _groupDataProvider = groupDataProvider ?? throw new ArgumentNullException(nameof(groupDataProvider));
+            // _registrationCommand = registrationCommand ?? throw new ArgumentNullException(nameof(registrationCommand));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
             _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
@@ -411,7 +414,7 @@ namespace FutureNHS.Api.Services
             return await _groupDataProvider.GetGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
         }
 
-        public async Task<(uint, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PendingGroupMember>> GetPendingGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
@@ -425,9 +428,9 @@ namespace FutureNHS.Api.Services
             
             var groupDto = await _groupCommand.GetGroupAsync(slug, cancellationToken);
 
-            var invitesForGroup = await _groupCommand.GetGroupInvitesByGroupAsync(groupDto.Id, cancellationToken);
-
-            return await _groupDataProvider.GetPendingGroupMembersAsync(invitesForGroup, offset, limit, sort, cancellationToken);
+            var groupInvites = await _groupCommand.GetGroupInvitesByGroupAsync(groupDto.Id, cancellationToken);
+            return await _groupDataProvider.GetPendingGroupMembersAsync(groupInvites, cancellationToken);
+            // var platformInvites = await _registrationCommand.GetPendingGroupInvitesAsync(groupDto.Id, cancellationToken);
         }
 
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)

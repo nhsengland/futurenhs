@@ -26,6 +26,9 @@ type InviteDetails = {
     membershipUser_Id: string
     groupId: string
     rowVersion: string
+    user: string
+    createdAtUTC: string
+    createdBy: string
 }
 
 export interface GroupMember extends Member {}

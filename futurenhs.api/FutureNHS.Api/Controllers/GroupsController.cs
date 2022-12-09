@@ -84,12 +84,23 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPut]
         [Route("groups/invite/{inviteId}")]
-        public async Task<IActionResult> DeleteGroupInviteAsync(Guid inviteId, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> DeleteGroupInviteForUserAsync(Guid inviteId, CancellationToken cancellationToken = default)
         { 
             var identity = await GetUserIdentityAsync(cancellationToken);
             var rowVersion = _etagService.GetIfMatch();
 
             await _groupService.DeleteGroupInviteAsync(inviteId, identity.MembershipUserId, rowVersion, cancellationToken);
+
+            return Ok();
+        }
+        
+        [HttpPut]
+        [Route("users/{userId}/groups/invite/{inviteId}")]
+        public async Task<IActionResult> DeleteGroupInviteAsync(Guid userId, Guid inviteId, CancellationToken cancellationToken = default)
+        { 
+            var rowVersion = _etagService.GetIfMatch();
+
+            await _groupService.DeleteGroupInviteAsync(inviteId, userId, rowVersion, cancellationToken);
 
             return Ok();
         }
@@ -202,11 +213,12 @@ namespace FutureNHS.Api.Controllers
             var identity = await GetUserIdentityAsync(cancellationToken);
             var route = Request.Path.Value;
 
-            var (total, pendingGroupMembers) = await _groupService.GetPendingGroupMembersAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+            var pendingGroupMembers = await _groupService.GetPendingGroupMembersAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
 
-            var pagedResponse = PaginationHelper.CreatePagedResponse(pendingGroupMembers, filter, total, route);
-
-            return Ok(pagedResponse);
+            // var (total, pendingGroupMembers) = await _groupService.GetPendingGroupMembersAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+            //
+            // var pagedResponse = PaginationHelper.CreatePagedResponse(pendingGroupMembers, filter, total, route);
+            return Ok(pendingGroupMembers);
         }
 
         [HttpPost]

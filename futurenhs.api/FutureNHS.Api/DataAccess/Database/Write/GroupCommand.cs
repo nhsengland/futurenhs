@@ -186,6 +186,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     [{nameof(GroupInvite.Id)}]                               = Id,
                     [{nameof(GroupInvite.GroupId)}]                          = GroupId,
                     [{nameof(GroupInvite.RowVersion)}]                       = RowVersion,
+                    [{nameof(GroupInvite.CreatedAtUTC)}]                     = CreatedAtUTC,
                     [{nameof(GroupInvite.MembershipUser_Id)}]                = MembershipUser_Id
     
                 FROM GroupInvites            
@@ -218,6 +219,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     [{nameof(GroupInvite.Id)}]                               = Id,
                     [{nameof(GroupInvite.GroupId)}]                          = GroupId,
                     [{nameof(GroupInvite.RowVersion)}]                       = RowVersion,
+                    [{nameof(GroupInvite.CreatedAtUTC)}]                     = CreatedAtUTC,
                     [{nameof(GroupInvite.MembershipUser_Id)}]                = MembershipUser_Id
 
     

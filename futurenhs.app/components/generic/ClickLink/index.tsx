@@ -11,6 +11,7 @@ import { Props } from './interfaces'
 export const ClickLink: (props: Props) => JSX.Element = ({
     text,
     iconName,
+    material,
     className,
     onClick,
 }) => {
@@ -30,6 +31,7 @@ export const ClickLink: (props: Props) => JSX.Element = ({
                         <SVGIcon
                             name={iconName}
                             className={generatedClasses.icon}
+                            material
                         />
                     )}
                     {body}

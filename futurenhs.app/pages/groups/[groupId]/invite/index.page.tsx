@@ -45,10 +45,20 @@ import { getFeatureEnabled } from '@services/getFeatureEnabled'
 import { GenericPageTextContent } from '@appTypes/content'
 import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
 import { DataGrid } from '@components/layouts/DataGrid'
-import { getPendingGroupMembers } from '@services/getPendingGroupMembers'
+import {
+    getPendingGroupMembers,
+    PendingGroupMember,
+} from '@services/getPendingGroupMembers'
 import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
 import { Pagination } from '@appTypes/pagination'
-
+import { getDateFromUTC } from '@helpers/util/date'
+import { ClickLink } from '@components/generic/ClickLink'
+import { InviteDetails } from '@appTypes/group'
+import { deleteGroupInvite } from '@services/deleteGroupInvite'
+import { mdiCancel } from '@mdi/js'
+import { Dialog } from '@components/generic/Dialog'
+import { deleteGroupMemberInvite } from '@services/deleteGroupMemberInvite'
+import { LayoutWidthContainer } from '@components/layouts/LayoutWidthContainer'
 declare interface ContentText extends GenericPageTextContent {
     noPendingInvites: string
 }
@@ -56,7 +66,7 @@ declare interface ContentText extends GenericPageTextContent {
 export interface Props extends GroupPage {
     noUsers: string
     contentText: ContentText
-    pendingList: Array<any>
+    pendingList: Array<PendingGroupMember>
 }
 
 /**
@@ -77,11 +87,49 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     )
     const [dynamicPendingList, setPendingList] = useState(pendingList)
     const [dynamicPagination, setPagination] = useState(pagination)
-
     const [errors, setErrors] = useState(formConfig?.errors)
     const notificationsContext: any = useContext(NotificationsContext)
+    const [inviteToDelete, setInviteToDelete] =
+        useState<PendingGroupMember | null>(null)
+    const isDeleteInviteOpen = !!inviteToDelete
 
-    const { secondaryHeading, noPendingInvites } = contentText
+    const handleDeleteInvite = async () => {
+        if (!inviteToDelete) return
+        const {
+            id: userId,
+            email,
+            invite: { id: inviteId, rowVersion: etag },
+        } = inviteToDelete
+        try {
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag,
+            })
+            await deleteGroupMemberInvite({
+                userId,
+                inviteId,
+                user,
+                headers,
+            })
+            handleGetPage({
+                pageNumber: pagination.pageNumber,
+                pageSize: pagination.pageSize,
+                refresh: true,
+            })
+            useNotification({
+                notificationsContext,
+                text: {
+                    heading: notifications.SUCCESS,
+                    body: `Cancelled invite to ${email}.`,
+                },
+            })
+            return Promise.resolve({})
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const { mainHeading, secondaryHeading, noPendingInvites } = contentText
 
     const columnList = [
         {
@@ -93,48 +141,36 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
             className: 'tablet:u-text-right',
         },
         {
-            children: `Cancel`,
+            children: `Actions`,
             className: 'tablet:u-text-right',
         },
     ]
 
-    const rowList = dynamicPendingList?.map(({ email, rowVersion }) => {
-        const generatedCellClasses = {
-            domain: classNames({
-                ['u-justify-between u-w-full tablet:u-w-1/4 o-truncated-text-lines-1']:
-                    true,
-            }),
-        }
-
-        const generatedHeaderCellClasses = {
-            domain: classNames({
-                ['u-text-bold']: true,
-            }),
-        }
-
+    const rowList = dynamicPendingList?.map(({ email, id, invite }) => {
         const rows = [
             {
                 children: <span>{email}</span>,
-                className: generatedCellClasses.domain,
-                headerClassName: generatedHeaderCellClasses.domain,
+                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-left',
+                headerClassName: 'u-hidden',
+            },
+            {
+                children: <span>{getDateFromUTC(invite.createdAtUTC)}</span>,
+                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
+                headerClassName: 'u-hidden',
             },
             {
                 children: (
-                    // <ClickLink
-                    //     onClick={() => {
-                    //         setDomainToDelete({
-                    //             domain,
-                    //             id,
-                    //             rowVersion,
-                    //         })
-                    //     }}
-                    //     text={{
-                    //         body: 'Delete',
-                    //         ariaLabel: `Delete domain ${domain}`,
-                    //     }}
-                    //     iconName="icon-delete"
-                    // />
-                    <span>test</span>
+                    <ClickLink
+                        onClick={() => {
+                            setInviteToDelete({ email, id, invite })
+                        }}
+                        text={{
+                            body: 'Cancel',
+                            ariaLabel: `Cancel invite to user ${email}`,
+                        }}
+                        iconName={mdiCancel}
+                        material
+                    />
                 ),
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
                 headerClassName: 'u-hidden',
@@ -170,7 +206,11 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                     body: `Invite sent to ${emailAddress}`,
                 },
             })
-
+            handleGetPage({
+                pageNumber: pagination.pageNumber,
+                pageSize: pagination.pageSize,
+                refresh: true,
+            })
             return Promise.resolve({})
         } catch (error) {
             const errors: FormErrors =
@@ -189,18 +229,23 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     const handleGetPage = async ({
         pageNumber: requestedPageNumber,
         pageSize: requestedPageSize,
+        refresh = false,
     }) => {
         const { data: additionalPending, pagination } =
             await getPendingGroupMembers({
-                user: user,
-                groupId: groupId,
+                user,
+                slug: groupId,
                 pagination: {
                     pageNumber: requestedPageNumber,
                     pageSize: requestedPageSize,
                 },
             })
 
-        setPendingList([...dynamicPendingList, ...additionalPending])
+        setPendingList(
+            refresh
+                ? additionalPending
+                : [...dynamicPendingList, ...additionalPending]
+        )
         setPagination(pagination)
     }
 
@@ -209,6 +254,26 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
      */
     return (
         <LayoutColumn className="c-page-body">
+            <Dialog
+                id="dialog-delete-domain"
+                isOpen={isDeleteInviteOpen}
+                text={{
+                    cancelButton: 'Cancel',
+                    confirmButton: 'Yes, cancel invite',
+                    heading: 'Cancel invite',
+                }}
+                cancelAction={() => {
+                    setInviteToDelete(null)
+                }}
+                confirmAction={() => {
+                    handleDeleteInvite()
+                    setInviteToDelete(null)
+                }}
+            >
+                <p className="u-text-bold">
+                    {`Are you sure you would like to cancel the invite for ${inviteToDelete?.email}?`}
+                </p>
+            </Dialog>
             <LayoutColumnContainer>
                 <LayoutColumn tablet={8}>
                     <FormWithErrorSummary
@@ -223,7 +288,7 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                         submitAction={handleSubmit}
                         shouldClearOnSubmitSuccess={true}
                     >
-                        <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
+                        <h2 className="nhsuk-heading-l">{mainHeading}</h2>
                     </FormWithErrorSummary>
                 </LayoutColumn>
             </LayoutColumnContainer>
@@ -245,7 +310,7 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                         />
                     </DynamicListContainer>
                 ) : (
-                    <p>{noPendingInvites}</p>
+                    <div className="u-w-full">{noPendingInvites}</div>
                 )}
                 <PaginationWithStatus
                     id="group-list-pagination"
@@ -307,12 +372,13 @@ export const getServerSideProps: GetServerSideProps = async (
                     notFound: true,
                 }
             }
-            const pagination: Pagination = {
-                pageNumber: selectPagination(context).pageNumber ?? 1,
-                pageSize: selectPagination(context).pageSize ?? 20,
-            }
 
             try {
+                const pagination: Pagination = {
+                    pageNumber: selectPagination(context).pageNumber ?? 1,
+                    pageSize: selectPagination(context).pageSize ?? 20,
+                }
+
                 const result = await getPendingGroupMembers({
                     user: user,
                     slug: props.groupId,
@@ -338,7 +404,6 @@ export const getServerSideProps: GetServerSideProps = async (
                             main: `Invite sent to ${emailAddress}`,
                         },
                     ]
-
                     return {
                         props: props,
                     }

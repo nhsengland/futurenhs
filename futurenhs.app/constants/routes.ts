@@ -21,6 +21,7 @@ export const enum api {
     USER_GROUP_INVITES = '/v1/groups/invites',
     USER_GROUP_INVITE = '/v1/groups/invite/%GROUP_INVITE_ID%',
 
+    GROUP_MEMBER_INVITE = '/v1/users/%USER_ID%/groups/invite/%GROUP_INVITE_ID%',
     GROUP_INVITE = '/v1/groups/%GROUP_ID%/registration/invite',
     FEATURE_FLAG = '/v1/features/%FLAG%',
 

@@ -361,14 +361,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return (totalCount, members);
         }
         
-        public async Task<(uint, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(IEnumerable<GroupInvite> groupInvites, uint offset, uint limit, string sort, CancellationToken cancellationToken = default)
-                {
-            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
-            {
-                throw new ArgumentOutOfRangeException(nameof(limit));
-            }
-
-            uint totalCount;
+        public async Task<IEnumerable<PendingGroupMember>> GetPendingGroupMembersAsync(IEnumerable<GroupInvite> groupInvites, CancellationToken cancellationToken = default)
+        {
 
             IEnumerable<PendingGroupMember> members;
 
@@ -383,19 +377,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
 				FROM [MembershipUser]
                 {userQuery}
-                ORDER BY Email
-                OFFSET @Offset ROWS
-                FETCH NEXT @Limit ROWS ONLY;
-
-                SELECT COUNT(*) FROM [MembershipUser]
-                {userQuery}";
+                ORDER BY Email";
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
-                using var reader = await dbConnection.QueryMultipleAsync(query, new
-                {
-                    Offset = Convert.ToInt32(offset),
-                    Limit = Convert.ToInt32(limit),
-                });
+                using var reader = await dbConnection.QueryMultipleAsync(query);
                 members = reader.Read<PendingGroupMember>().ToList();
 
                 members = members.Select(p =>
@@ -404,16 +389,15 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     if (invite is not null)
                     {
 
-                        return p with { Invite = new GroupInvite(invite) };
+                        return p with { GroupInvite = new GroupInvite(invite) };
                     }
 
                     return p;
                 });
 
-                totalCount = await reader.ReadFirstAsync<uint>();
             }
 
-            return (totalCount, members);
+            return members;
         }
         
         public async Task<GroupMemberDetails?> GetGroupMemberAsync(string slug, Guid userId, CancellationToken cancellationToken = default)

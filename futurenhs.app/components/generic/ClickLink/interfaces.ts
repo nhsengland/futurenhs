@@ -7,6 +7,7 @@ export interface Props {
         ariaLabel: string
     }
     onClick?: React.MouseEventHandler<HTMLDivElement>
+    material?: true
     /**
      * Controls which icon to render
      */

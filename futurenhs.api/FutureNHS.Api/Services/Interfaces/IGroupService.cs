@@ -14,7 +14,7 @@ namespace FutureNHS.Api.Services.Interfaces
         Task UpdateGroupMultipartDocument(Guid userId, string slug, byte[] rowVersion, Stream requestBody, string? contentType,
             CancellationToken cancellationToken);
         Task<(uint, IEnumerable<GroupMember>)> GetGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken);
-        Task<(uint, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken);
+        Task<IEnumerable<PendingGroupMember>> GetPendingGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken);
         Task<GroupSite> CreateGroupSiteDataAsync(Guid userId, string slug, CancellationToken cancellationToken);
         Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken);
         Task<GroupMemberDetails> GetGroupMemberAsync(Guid userId, string slug, Guid memberId, CancellationToken cancellationToken);
