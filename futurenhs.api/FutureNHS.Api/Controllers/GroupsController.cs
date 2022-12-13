@@ -213,12 +213,10 @@ namespace FutureNHS.Api.Controllers
             var identity = await GetUserIdentityAsync(cancellationToken);
             var route = Request.Path.Value;
 
-            var pendingGroupMembers = await _groupService.GetPendingGroupMembersAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
-
-            // var (total, pendingGroupMembers) = await _groupService.GetPendingGroupMembersAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
-            //
-            // var pagedResponse = PaginationHelper.CreatePagedResponse(pendingGroupMembers, filter, total, route);
-            return Ok(pendingGroupMembers);
+            var (total, pendingGroupMembers) = await _groupService.GetPendingGroupMembersAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
+            
+            var pagedResponse = PaginationHelper.CreatePagedResponse(pendingGroupMembers, filter, total, route);
+            return Ok(pagedResponse);
         }
 
         [HttpPost]

@@ -90,7 +90,7 @@ export const getPendingGroupMembers: Service = async (
         serviceResponse.data.push({
             id: datum.id ?? '',
             email: datum.email ?? '',
-            invite: datum.invite ?? '',
+            invite: datum.groupInvite,
         })
     })
 
