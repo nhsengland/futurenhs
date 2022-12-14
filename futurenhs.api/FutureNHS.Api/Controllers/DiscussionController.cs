@@ -34,11 +34,11 @@ namespace FutureNHS.Api.Controllers
         [HttpGet]
         [Route("groups/{slug}/discussions")]
 
-        public async Task<IActionResult> GetDiscussionsForGroupAsync(Guid? userId, string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDiscussionsForGroupAsync(string slug, [FromQuery] PaginationFilter filter, CancellationToken cancellationToken)
         {
             var route = Request.Path.Value;
             var identity = await GetUserIdentityAsync(cancellationToken);
-            var discussions = await _discussionDataProvider.GetDiscussionsForGroupAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, cancellationToken);
+            var discussions = await _discussionService.GetDiscussionsForGroupAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
             var total = await _discussionDataProvider.GetDiscussionCountForGroupAsync(slug, cancellationToken);
 
             var pagedResponse = PaginationHelper.CreatePagedResponse(discussions, filter, total, route);

@@ -49,14 +49,12 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             return await dbConnection.QuerySingleAsync<uint>(commandDefinition);
         }
 
-        public async Task<IEnumerable<Discussion>?> GetDiscussionsForGroupAsync(Guid? userId, string groupSlug, uint offset, uint limit, CancellationToken cancellationToken)
-        {
-            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
-            {
-                throw new ArgumentOutOfRangeException(nameof(limit));
-            }
+      
 
-            const string query =
+        public async Task<IEnumerable<Discussion>> GetDiscussionsForGroupAsync(Guid? userId, string groupSlug, uint offset, uint limit, string sortBy, CancellationToken cancellationToken)
+        {
+           
+            string query =
                 @$"SELECT
                                 [{nameof(DiscussionData.Id)}]                   = discussion.Entity_Id,
                                 [{nameof(DiscussionData.Title)}]                = discussion.Title, 
@@ -109,7 +107,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     WHERE       groups.Slug = @Slug
                     AND         groups.IsDeleted = 0    
                     AND         discussion.IsDeleted = 0
-                    ORDER BY    discussion.IsSticky DESC, discussion.CreatedAtUTC DESC
+                    ORDER BY    
+                    CASE WHEN   @SqlSort = 'Name' THEN discussion.Title END ASC,
+                    CASE WHEN   @SqlSort = 'DateCreated' THEN discussion.CreatedAtUtc END DESC,
+                    CASE WHEN   @SqlSort = 'LastComment' THEN discussion.IsSticky END DESC, latestComment.CreatedAtUtc DESC
 
                     OFFSET      @Offset ROWS
                     FETCH NEXT  @Limit ROWS ONLY;";
@@ -131,7 +132,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     Offset = Convert.ToInt32(offset),
                     Limit = Convert.ToInt32(limit),
                     Slug = groupSlug,
-                    UserId = userId
+                    UserId = userId,
+                    SqlSort = sortBy
                 }, splitOn: "id");
 
             return GenerateDiscussionModelFromData(results);

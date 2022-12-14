@@ -6,6 +6,9 @@ using FutureNHS.Api.Services.Interfaces;
 using FutureNHS.Api.Services.Validation;
 using Microsoft.AspNetCore.Authentication;
 using System.Security;
+using FutureNHS.Api.Application.Application.HardCodedSettings;
+using FutureNHS.Api.DataAccess.Database.Read;
+using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 
 namespace FutureNHS.Api.Services
 {
@@ -13,18 +16,20 @@ namespace FutureNHS.Api.Services
     {
         private const string DefaultRole = "Standard Members";
         private const string AddDiscussionRole = $"https://schema.collaborate.future.nhs.uk/groups/v1/discussions/add";
-
+        
         private readonly ILogger<DiscussionService> _logger;
         private readonly IDiscussionCommand _discussionCommand;
+        private readonly IDiscussionDataProvider _discussionDataProvider;
         private readonly ISystemClock _systemClock;
         private readonly IGroupCommand _groupCommand;
         private readonly IEntityCommand _entityCommand;
         private readonly IPermissionsService _permissionsService;
 
-        public DiscussionService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IDiscussionCommand discussionCommand, IGroupCommand groupCommand, IEntityCommand entityCommand)
+        public DiscussionService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IDiscussionCommand discussionCommand, IDiscussionDataProvider discussionDataProvider, IGroupCommand groupCommand, IEntityCommand entityCommand)
         {
             _systemClock = systemClock;
             _discussionCommand = discussionCommand;
+            _discussionDataProvider = discussionDataProvider;
             _groupCommand = groupCommand;
             _permissionsService = permissionsService;
             _logger = logger;
@@ -75,6 +80,31 @@ namespace FutureNHS.Api.Services
                 throw new ValidationException(validationResult);
 
             await _discussionCommand.CreateDiscussionAsync(discussionDto, cancellationToken);
+        }
+
+        public async Task<IEnumerable<DataAccess.Models.Discussions.Discussion>> GetDiscussionsForGroupAsync(Guid? userId, string slug,
+            uint offset, uint limit, string? sortBy, CancellationToken cancellationToken)
+        {   
+            if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (string.IsNullOrEmpty(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
+            
+            if (limit is < PaginationSettings.MinLimit or > PaginationSettings.MaxLimit)
+            {
+                throw new ArgumentOutOfRangeException(nameof(limit));
+            }
+
+            
+            var acceptedSorts = new List<string> {SortingParameters.SortByName, SortingParameters.SortByDateCreated, SortingParameters.SortByLastComment};
+
+            if (!acceptedSorts.Contains(sortBy))
+                sortBy = SortingParameters.SortByLastComment;
+            
+            
+
+            return await _discussionDataProvider.GetDiscussionsForGroupAsync(userId, slug, offset, limit, sortBy,
+                cancellationToken);
+            
+
         }
     }
 }
