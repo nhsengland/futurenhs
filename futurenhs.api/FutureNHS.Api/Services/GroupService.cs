@@ -428,8 +428,7 @@ namespace FutureNHS.Api.Services
             
             var groupDto = await _groupCommand.GetGroupAsync(slug, cancellationToken);
 
-            var groupInvites = await _groupCommand.GetGroupInvitesByGroupAsync(groupDto.Id, cancellationToken);
-            return await _groupDataProvider.GetPendingGroupMembersAsync(groupInvites, offset, limit, cancellationToken);
+            return await _groupCommand.GetPendingGroupMembersAsync(groupDto.Id, offset, limit, cancellationToken);
         }
 
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)

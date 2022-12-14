@@ -4,22 +4,19 @@ namespace FutureNHS.Api.DataAccess.Models.Group
 {
     public sealed record PendingGroupMember
     {
-        public PendingGroupMember() {}
-
-        public PendingGroupMember(Guid userId, string emailAddress, GroupInvite groupInvite, PlatformInvite platformInvite)
-        {
-            Id = userId;
-            Email = emailAddress;
-            GroupInvite = groupInvite;
-            PlatformInvite = platformInvite;
-
-        }
-
             
-        public Guid? Id { get; set; }
-        public string Email { get; set; }
-        public GroupInvite? GroupInvite { get; set; }
-        public PlatformInvite? PlatformInvite { get; set; }
+        public Guid Id { get; init; }
+        
+        public Guid? UserId { get; init; }
+        
+        public string Email { get; init; }
+        
+        public string CreatedAtUTC { get; init; }
+        
+        public string InviteType { get; init; }
+        
+        public byte[] RowVersion { get; init; }
+
 
     }
 }

@@ -206,39 +206,77 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             return invites;
         }
-        
-        public async Task<IEnumerable<GroupInvite>> GetGroupInvitesByGroupAsync(Guid groupId, CancellationToken cancellationToken = default)
+
+        public async Task<(uint totalCount, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid groupId, uint offset, uint limit, CancellationToken cancellationToken = default)
         {
-            IEnumerable<GroupInvite> invites;
+
+            IEnumerable<PendingGroupMember> members;
+
+            uint totalCount = 1;
+
+            var groupQuery =
+                $"WHERE gi.GroupId = '{groupId}' AND gi.IsDeleted = 0";
             
-                        
-            var inviteQuery = "WHERE GroupId = @GroupId AND IsDeleted = 0";
+            var platformQuery =
+                $"WHERE pi.GroupId = '{groupId}' AND pi.IsDeleted = 0";
 
             string query =
-                @$"SELECT 
-                    [{nameof(GroupInvite.Id)}]                               = Id,
-                    [{nameof(GroupInvite.GroupId)}]                          = GroupId,
-                    [{nameof(GroupInvite.RowVersion)}]                       = RowVersion,
-                    [{nameof(GroupInvite.CreatedAtUTC)}]                     = CreatedAtUTC,
-                    [{nameof(GroupInvite.MembershipUser_Id)}]                = MembershipUser_Id
+                @$"
+                    SELECT 
+                        [{nameof(PendingGroupMember.Id)}] = results.Id,
+                        [{nameof(PendingGroupMember.UserId)}] = results.UserId,
+                        [{nameof(PendingGroupMember.RowVersion)}] = results.RowVersion,
+                        [{nameof(PendingGroupMember.Email)}] = results.Email,
+                        [{nameof(PendingGroupMember.CreatedAtUTC)}] = results.CreatedAtUTC,
+                        [{nameof(PendingGroupMember.InviteType)}] = results.InviteType
 
-    
-                FROM GroupInvites            
-                {inviteQuery}
-                ORDER BY    CreatedAtUTC";
-            
+                    FROM   (
+                        SELECT 
+                            gi.Id,
+                            UserId = mu.Id,
+                            gi.RowVersion,
+                            mu.Email,
+                            gi.CreatedAtUTC,
+                            InviteType = 'group'
+                        FROM GroupInvites AS gi
+                        JOIN MembershipUser AS mu
+                        ON mu.Id = gi.MembershipUser_Id
+                        {groupQuery}
+                        UNION ALL
+                        SELECT 
+                            pi.Id,
+                            UserId = NULL,
+                            pi.RowVersion,
+                            Email = pi.EmailAddress,
+                            pi.CreatedAtUTC,
+                            InviteType = 'platform'
+                        FROM PlatformInvite AS pi
+                        {platformQuery}
+                    ) AS results
+        ";
+           
+            // SELECT COUNT(*)
+            // FROM   (SELECT *
+            //         FROM   [GroupInvites] groupInvite
+            // JOIN [MembershipUser] mu
+            //     ON mu.Id = groupInvite.Id
+            // {groupQuery}
+            // UNION ALL
+            // SELECT *
+            //     FROM   [PlatformInvite] platformInvite
+            // {platformQuery}
+            // ) results
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
-                using var reader = await dbConnection.QueryMultipleAsync(query, new
-                {
-                    GroupId = groupId
+                using var reader = await dbConnection.QueryMultipleAsync(query, new {
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
                 });
-
-                invites = reader.Read<GroupInvite>().ToList();
-
+                members = reader.Read<PendingGroupMember>().ToList();
+                // totalCount = await reader.ReadFirstAsync<uint>();
             }
 
-            return invites;
+            return (totalCount, members);
         }
 
 

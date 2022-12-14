@@ -47,7 +47,8 @@ import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
 import { DataGrid } from '@components/layouts/DataGrid'
 import {
     getPendingGroupMembers,
-    PendingGroupMember,
+    InviteType,
+    PendingMember,
 } from '@services/getPendingGroupMembers'
 import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
 import { Pagination } from '@appTypes/pagination'
@@ -66,7 +67,7 @@ declare interface ContentText extends GenericPageTextContent {
 export interface Props extends GroupPage {
     noUsers: string
     contentText: ContentText
-    pendingList: Array<PendingGroupMember>
+    pendingList: Array<PendingMember>
 }
 
 /**
@@ -89,28 +90,41 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     const [dynamicPagination, setPagination] = useState(pagination)
     const [errors, setErrors] = useState(formConfig?.errors)
     const notificationsContext: any = useContext(NotificationsContext)
-    const [inviteToDelete, setInviteToDelete] =
-        useState<PendingGroupMember | null>(null)
+    const [inviteToDelete, setInviteToDelete] = useState<PendingMember | null>(
+        null
+    )
     const isDeleteInviteOpen = !!inviteToDelete
 
     const handleDeleteInvite = async () => {
         if (!inviteToDelete) return
         const {
-            id: userId,
+            id,
+            userId,
             email,
-            invite: { id: inviteId, rowVersion: etag },
+            rowVersion: etag,
+            inviteType,
         } = inviteToDelete
         try {
             const headers = getStandardServiceHeaders({
                 csrfToken,
                 etag,
             })
-            await deleteGroupMemberInvite({
-                userId,
-                inviteId,
-                user,
-                headers,
-            })
+            if (inviteType === InviteType.GROUP) {
+                await deleteGroupMemberInvite({
+                    userId,
+                    inviteId: id,
+                    user,
+                    headers,
+                })
+            } else if (inviteType === InviteType.PLATFORM) {
+                // await deletePlatformInvite({
+                //     userId,
+                //     inviteId: id,
+                //     user,
+                //     headers,
+                // })
+                return
+            }
             handleGetPage({
                 pageNumber: pagination.pageNumber,
                 pageSize: pagination.pageSize,
@@ -146,10 +160,10 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
         },
     ]
 
-    const rowList = dynamicPendingList?.map(({ email, id, invite }) => {
+    const rowList = dynamicPendingList?.map((invite) => {
         const rows = [
             {
-                children: <span>{email}</span>,
+                children: <span>{invite.email}</span>,
                 className: 'u-w-full tablet:u-w-1/8 tablet:u-text-left',
                 headerClassName: 'u-hidden',
             },
@@ -162,11 +176,11 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                 children: (
                     <ClickLink
                         onClick={() => {
-                            setInviteToDelete({ email, id, invite })
+                            setInviteToDelete(invite)
                         }}
                         text={{
                             body: 'Cancel',
-                            ariaLabel: `Cancel invite to user ${email}`,
+                            ariaLabel: `Cancel invite to user ${invite.email}`,
                         }}
                         iconName={mdiCancel}
                         material

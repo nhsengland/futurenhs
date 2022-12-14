@@ -29,20 +29,27 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export type PendingGroupMember = {
+export type PendingMember = {
     id: string
+    userId: string | null
     email: string
-    invite: InviteDetails
+    createdAtUTC: string
+    inviteType: InviteType.GROUP | InviteType.PLATFORM
+    rowVersion: string
+}
+
+export enum InviteType {
+    GROUP = 'group',
+    PLATFORM = 'platform',
 }
 
 export const getPendingGroupMembers: Service = async (
     { user, slug, pagination }: Options,
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<GroupMember>>> => {
-    const serviceResponse: ServicePaginatedResponse<Array<PendingGroupMember>> =
-        {
-            data: [],
-        }
+    const serviceResponse: ServicePaginatedResponse<Array<PendingMember>> = {
+        data: [],
+    }
 
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
@@ -86,13 +93,18 @@ export const getPendingGroupMembers: Service = async (
         )
     }
 
-    apiData.data?.forEach((datum) => {
-        serviceResponse.data.push({
-            id: datum.id ?? '',
-            email: datum.email ?? '',
-            invite: datum.groupInvite,
-        })
-    })
+    apiData.data?.forEach(
+        ({ id, userId, email, createdAtUTC, inviteType, rowVersion }) => {
+            serviceResponse.data.push({
+                id,
+                userId: userId ?? null,
+                email,
+                createdAtUTC,
+                inviteType,
+                rowVersion,
+            })
+        }
+    )
 
     serviceResponse.pagination = getClientPaginationFromApi({
         apiPaginatedResponse: apiData,

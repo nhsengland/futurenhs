@@ -27,6 +27,6 @@ public interface IGroupCommand
 
     Task<IEnumerable<GroupInvite>> GetGroupInvitesByUserAsync(Guid userId, CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<GroupInvite>> GetGroupInvitesByGroupAsync(Guid groupId, CancellationToken cancellationToken = default);
+    Task<(uint totalCount, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid groupId, uint offset, uint limit, CancellationToken cancellationToken = default);
 
 }
