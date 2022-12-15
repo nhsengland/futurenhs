@@ -37,7 +37,7 @@ export const deletePlatformInvite = async (
                 ...headers,
                 ...jwtHeader(user.accessToken),
             },
-            method: requestMethods.PUT,
+            method: requestMethods.DELETE,
             body: {},
         }),
         defaultTimeOutMillis
