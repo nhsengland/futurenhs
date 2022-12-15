@@ -32,6 +32,7 @@ namespace FutureNHS.Api.Services.Interfaces
         
         Task<bool> GetSelfRegistrationEnabledAsync();
 
+        Task DeletePlatformInviteAsync(Guid userId, Guid inviteId, byte[] rowVersion, CancellationToken cancellationToken);
 
     }
 }

@@ -43,6 +43,7 @@ namespace FutureNHS.Api.Services
         private readonly IRegistrationDataProvider _registrationDataProvider;
         private readonly IUserService _userService;
         private readonly IGroupService _groupService;
+        private readonly IRegistrationCommand _registrationCommand;
         private readonly IFeatureManager _featureManager;
         // Notification template Ids
         private readonly string _registrationEmailId;
@@ -57,6 +58,7 @@ namespace FutureNHS.Api.Services
             IUserCommand userCommand,
             IEmailService emailService,
             IUserService userService,
+            IRegistrationCommand registrationCommand,
             IGroupCommand groupCommand,
             IGroupService groupService,
             IRegistrationDataProvider registrationDataProvider,
@@ -72,6 +74,7 @@ namespace FutureNHS.Api.Services
             _permissionsService = permissionsService;
             _registrationDataProvider = registrationDataProvider;
             _systemClock = systemClock;
+            _registrationCommand = registrationCommand;
             _logger = logger;
             _userService = userService;
             _userCommand = userCommand;
@@ -464,6 +467,34 @@ namespace FutureNHS.Api.Services
             var canSelfRegister = await _featureManager.IsEnabledAsync(FeatureFlags.SelfRegistration);
 
             return canSelfRegister;
+        }
+
+        public async Task DeletePlatformInviteAsync(Guid userId, Guid inviteId, byte[] rowVersion, CancellationToken cancellationToken)
+        {
+
+            // var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupInviteId, GroupInviteDeleteRole, cancellationToken);
+            // if (userCanPerformAction is not true)
+            // {
+            //     _logger.LogError($"Error: DeleteGroupInviteAsync - User:{0} does not have access to update group invite:{1}", userId, groupInviteId);
+            //     throw new SecurityException($"Error: User does not have access");
+            // }
+            
+            var groupInvite = await _registrationCommand.GetPlatformInviteById(inviteId, cancellationToken);
+            if (!groupInvite.RowVersion.SequenceEqual(rowVersion))
+            {
+                _logger.LogError($"Precondition Failed: DeletePlatformInviteAsync - PlatformInvite:{0} has changed prior to submission ", inviteId);
+                throw new PreconditionFailedExeption("Precondition Failed: PlatformInvite has changed prior to submission");
+            }
+            
+            try
+            {
+                await _registrationCommand.DeletePlatformInvite(inviteId, rowVersion, cancellationToken);
+            }
+            catch (DBConcurrencyException ex)
+            {
+                _logger.LogError(ex, $"Error: DeletePlatformInviteAsync - Error updating platform invite {0}", inviteId);
+            }
+
         }
 
     }

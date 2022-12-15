@@ -124,7 +124,7 @@ namespace FutureNHS.Api.Services
             //     throw new SecurityException($"Error: User does not have access");
             // }
             
-            var groupInvite = await _groupCommand.GetGroupInviteAsync(groupInviteId, userId, cancellationToken);
+            var groupInvite = await _groupCommand.GetGroupInviteByIdAsync(groupInviteId, cancellationToken);
             if (!groupInvite.RowVersion.SequenceEqual(rowVersion))
             {
                 _logger.LogError($"Precondition Failed: DeleteGroupInviteAsync - GroupInvite:{0} has changed prior to submission ", groupInviteId);

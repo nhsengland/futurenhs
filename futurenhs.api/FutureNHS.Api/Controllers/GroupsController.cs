@@ -84,23 +84,12 @@ namespace FutureNHS.Api.Controllers
 
         [HttpPut]
         [Route("groups/invite/{inviteId}")]
-        public async Task<IActionResult> DeleteGroupInviteForUserAsync(Guid inviteId, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> DeleteGroupInviteAsync(Guid inviteId, CancellationToken cancellationToken = default)
         { 
             var identity = await GetUserIdentityAsync(cancellationToken);
             var rowVersion = _etagService.GetIfMatch();
 
             await _groupService.DeleteGroupInviteAsync(inviteId, identity.MembershipUserId, rowVersion, cancellationToken);
-
-            return Ok();
-        }
-        
-        [HttpPut]
-        [Route("users/{userId}/groups/invite/{inviteId}")]
-        public async Task<IActionResult> DeleteGroupInviteAsync(Guid userId, Guid inviteId, CancellationToken cancellationToken = default)
-        { 
-            var rowVersion = _etagService.GetIfMatch();
-
-            await _groupService.DeleteGroupInviteAsync(inviteId, userId, rowVersion, cancellationToken);
 
             return Ok();
         }

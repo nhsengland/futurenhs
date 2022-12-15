@@ -693,31 +693,28 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             await dbConnection.ExecuteAsync(commandDefinition);
         }
         
-        public async Task<GroupInvite> GetGroupInviteAsync(Guid groupInviteId, Guid userId, CancellationToken cancellationToken = default)
+        public async Task<GroupInvite> GetGroupInviteByIdAsync(Guid groupInviteId, CancellationToken cancellationToken = default)
         {
             const string query =
                 @$" SELECT
                                 [{nameof(GroupInviteDto.Id)}]                            = Id,
-                                [{nameof(GroupInviteDto.MembershipUser_Id)}]             = MembershipUser_Id,
                                 [{nameof(GroupInviteDto.RowVersion)}]                    = RowVersion
 
 
                     FROM        [GroupInvites] gi
-                    WHERE       gi.MembershipUser_Id = @MembershipUserId
-                    AND         gi.Id = @Id;";
+                    WHERE       gi.Id = @Id;";
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
             var commandDefinition = new CommandDefinition(query, new
             {
                 Id = groupInviteId,
-                MembershipUserId = userId
             }, cancellationToken: cancellationToken);
 
             return await dbConnection.QuerySingleOrDefaultAsync<GroupInvite>(commandDefinition);
         }
         
-        public async Task<GroupInvite> GetInviteToGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default)
+        public async Task<GroupInvite> GetGroupInviteByUserAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default)
         {
             const string query =
                 @$" SELECT
@@ -750,7 +747,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             await using var connection = new SqlConnection(dbConnection.ConnectionString);
 
-            var invite = await GetInviteToGroupAsync(userId, groupId, cancellationToken);
+            var invite = await GetGroupInviteByUserAsync(userId, groupId, cancellationToken);
             
             await connection.OpenAsync(cancellationToken);
            

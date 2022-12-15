@@ -2,26 +2,14 @@
 {
     public sealed record PlatformInvite
     {
-        public PlatformInvite() {}
+        public Guid Id { get; init; }
+        public Guid GroupId { get; init; }
+        public DateTime CreatedAtUTC { get; init; }
 
-        public PlatformInvite(PlatformInvite invite)
-        {
-            Id = invite.Id;
-            CreatedAtUTC = invite.CreatedAtUTC;
-            Email = invite.Email;
-            GroupId = invite.GroupId;
-            RowVersion = invite.RowVersion;
-        }
-
-            
-        public Guid Id { get; set; }
-        public Guid GroupId { get; set; }
-        public DateTime CreatedAtUTC { get; set; }
-
-        public Guid CreatedBy { get; set; }
-        public string Email { get; set; }
+        public Guid CreatedBy { get; init; }
+        public string Email { get; init; }
         
-        public DateTime? ExpiresAtUTC { get; set; }
-        public byte[] RowVersion { get; set; }
+        public DateTime? ExpiresAtUTC { get; init; }
+        public byte[] RowVersion { get; init; }
     }
 }
