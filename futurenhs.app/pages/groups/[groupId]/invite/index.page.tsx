@@ -110,19 +110,24 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                 etag,
             })
             if (inviteType === InviteType.GROUP) {
-                await deleteGroupMemberInvite({
+                try {
+                    await deleteGroupMemberInvite({
+                        userId,
+                        inviteId: id,
+                        user,
+                        headers,
+                    })
+                } catch (e) {
+                    console.log(e)
+                    return
+                }
+            } else if (inviteType === InviteType.PLATFORM) {
+                await deletePlatformInvite({
                     userId,
                     inviteId: id,
                     user,
                     headers,
                 })
-            } else if (inviteType === InviteType.PLATFORM) {
-                // await deletePlatformInvite({
-                //     userId,
-                //     inviteId: id,
-                //     user,
-                //     headers,
-                // })
                 return
             }
             handleGetPage({

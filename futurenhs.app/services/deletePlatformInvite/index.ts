@@ -21,15 +21,15 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const deleteGroupMemberInvite = async (
+export const deletePlatformInvite = async (
     { headers, user, inviteId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const invitePath = api.USER_GROUP_INVITE.replace('%INVITE_ID%', inviteId)
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${invitePath}`
+    const domainPath = api.PLATFORM_INVITE.replace('%INVITE_ID%', inviteId)
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
