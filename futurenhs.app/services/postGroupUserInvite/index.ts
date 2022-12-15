@@ -33,7 +33,10 @@ export const postGroupUserInvite = async (
     const emailAddress: FormDataEntryValue = body.get('Email')
 
     const gateway = process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    const registrationPath = api.GROUP_INVITE.replace('%GROUP_ID%', groupId)
+    const registrationPath = api.POST_GROUP_INVITE.replace(
+        '%GROUP_ID%',
+        groupId
+    )
     const apiUrl: string = gateway + registrationPath
     const apiHeaders = setFetchOptions({
         method: requestMethods.POST,

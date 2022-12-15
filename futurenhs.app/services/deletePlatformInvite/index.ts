@@ -28,8 +28,8 @@ export const deletePlatformInvite = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const domainPath = api.PLATFORM_INVITE.replace('%INVITE_ID%', inviteId)
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
+    const invitePath = api.SITE_INVITE_ID.replace('%INVITE_ID%', inviteId)
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${invitePath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({

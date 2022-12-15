@@ -30,7 +30,7 @@ export const getFeatureEnabled = async (
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
     const apiUrl: string = `${
         process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    }${api.FEATURE_FLAG.replace('%FLAG%', slug)}`
+    }${api.FEATURE_FLAG_SLUG.replace('%FLAG%', slug)}`
     const apiHeaders = setFetchOptions({
         method: requestMethods.GET,
     })

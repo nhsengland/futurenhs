@@ -28,11 +28,8 @@ export const deleteGroupInvite = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const domainPath = api.USER_GROUP_INVITE.replace(
-        '%GROUP_INVITE_ID%',
-        inviteId
-    )
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
+    const invitePath = api.GROUP_INVITE_ID.replace('%INVITE_ID%', inviteId)
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${invitePath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
@@ -51,7 +48,7 @@ export const deleteGroupInvite = async (
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to delete domain',
+            'An unexpected error occurred when attempting to delete group invite',
             {
                 serviceId: services.DELETE_GROUP_INVITE,
                 status: status,

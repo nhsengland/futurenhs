@@ -54,12 +54,11 @@ import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
 import { Pagination } from '@appTypes/pagination'
 import { getDateFromUTC } from '@helpers/util/date'
 import { ClickLink } from '@components/generic/ClickLink'
-import { InviteDetails } from '@appTypes/group'
-import { deleteGroupInvite } from '@services/deleteGroupInvite'
 import { mdiCancel } from '@mdi/js'
 import { Dialog } from '@components/generic/Dialog'
-import { deleteGroupMemberInvite } from '@services/deleteGroupMemberInvite'
-import { LayoutWidthContainer } from '@components/layouts/LayoutWidthContainer'
+import { deletePlatformInvite } from '@services/deletePlatformInvite'
+import { deleteGroupInvite } from '@services/deleteGroupInvite'
+
 declare interface ContentText extends GenericPageTextContent {
     noPendingInvites: string
 }
@@ -97,37 +96,28 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
 
     const handleDeleteInvite = async () => {
         if (!inviteToDelete) return
-        const {
-            id,
-            userId,
-            email,
-            rowVersion: etag,
-            inviteType,
-        } = inviteToDelete
+        const { id, email, rowVersion: etag, inviteType } = inviteToDelete
         try {
             const headers = getStandardServiceHeaders({
                 csrfToken,
                 etag,
             })
-            if (inviteType === InviteType.GROUP) {
-                try {
-                    await deleteGroupMemberInvite({
-                        userId,
+            try {
+                if (inviteType === InviteType.GROUP) {
+                    await deleteGroupInvite({
                         inviteId: id,
                         user,
                         headers,
                     })
-                } catch (e) {
-                    console.log(e)
-                    return
+                } else if (inviteType === InviteType.PLATFORM) {
+                    await deletePlatformInvite({
+                        inviteId: id,
+                        user,
+                        headers,
+                    })
                 }
-            } else if (inviteType === InviteType.PLATFORM) {
-                await deletePlatformInvite({
-                    userId,
-                    inviteId: id,
-                    user,
-                    headers,
-                })
+            } catch (e) {
+                console.log(e)
                 return
             }
             handleGetPage({
