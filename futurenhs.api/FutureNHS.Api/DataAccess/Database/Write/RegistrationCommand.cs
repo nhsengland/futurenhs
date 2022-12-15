@@ -69,7 +69,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
 
                     FROM        [PlatformInvite] pi
-                    WHERE         gi.Id = @Id;";
+                    WHERE         pi.Id = @Id;";
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 

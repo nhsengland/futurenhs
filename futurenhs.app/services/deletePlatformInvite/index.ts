@@ -48,9 +48,9 @@ export const deletePlatformInvite = async (
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to delete domain',
+            'An unexpected error occurred when attempting to delete platform invite',
             {
-                serviceId: services.DELETE_GROUP_INVITE,
+                serviceId: services.DELETE_PLATFORM_INVITE,
                 status: status,
                 statusText: statusText,
                 body: apiData,
