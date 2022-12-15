@@ -34,10 +34,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             {
                 const string query =
                     @$"
-                    UPDATE          
-                                    [dbo].[PlatformInvite]
-                    SET 
-                                    [IsDeleted]     = 1
+                    DELETE          
+                    FROM                [dbo].[PlatformInvite]
                     WHERE 
                                     [Id]            = @InviteId
                     AND             [RowVersion]    = @RowVersion";

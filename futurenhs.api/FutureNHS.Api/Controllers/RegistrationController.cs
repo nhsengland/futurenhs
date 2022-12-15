@@ -136,7 +136,7 @@ namespace FutureNHS.Api.Controllers
             return Ok(invite);
         }
         
-        [HttpPut]
+        [HttpDelete]
         [Route("registration/invite/{inviteId}")]
         public async Task<IActionResult> DeleteDomainAsync(Guid inviteId, CancellationToken cancellationToken)
         {
