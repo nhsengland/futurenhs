@@ -2,7 +2,7 @@
 
 namespace FutureNHS.Api.DataAccess.DTOs
 {
-    public sealed partial class PlatformInviteDto
+    public sealed class PlatformInviteDto
     {
         public Guid Id { get; set; }
         public string EmailAddress { get; set; }
