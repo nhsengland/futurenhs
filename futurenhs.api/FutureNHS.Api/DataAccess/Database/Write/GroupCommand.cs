@@ -212,7 +212,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             IEnumerable<PendingGroupMember> members;
 
-            uint totalCount = 1;
+            uint totalCount;
 
             var groupQuery =
                 $"WHERE gi.GroupId = '{groupId}' AND gi.IsDeleted = 0";
@@ -253,19 +253,21 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                         FROM PlatformInvite AS pi
                         {platformQuery}
                     ) AS results
-        ";
+                    ORDER BY results.CreatedAtUTC
+                    OFFSET @Offset ROWS
+                    FETCH NEXT @Limit ROWS ONLY;
            
-            // SELECT COUNT(*)
-            // FROM   (SELECT *
-            //         FROM   [GroupInvites] groupInvite
-            // JOIN [MembershipUser] mu
-            //     ON mu.Id = groupInvite.Id
-            // {groupQuery}
-            // UNION ALL
-            // SELECT *
-            //     FROM   [PlatformInvite] platformInvite
-            // {platformQuery}
-            // ) results
+                    SELECT COUNT(*)
+                    FROM   (
+                        SELECT *
+                        FROM GroupInvites AS gi
+                        {groupQuery}
+                        UNION ALL
+                        SELECT *
+                        FROM PlatformInvite AS pi
+                        {platformQuery}
+                    ) AS counted
+        ";
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
             {
                 using var reader = await dbConnection.QueryMultipleAsync(query, new {
@@ -273,7 +275,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     Limit = Convert.ToInt32(limit),
                 });
                 members = reader.Read<PendingGroupMember>().ToList();
-                // totalCount = await reader.ReadFirstAsync<uint>();
+                totalCount = await reader.ReadFirstAsync<uint>();
             }
 
             return (totalCount, members);
