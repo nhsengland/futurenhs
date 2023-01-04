@@ -1,9 +1,6 @@
 ﻿using Dapper;
-using FutureNHS.Api.Application.Application.HardCodedSettings;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Models;
-using FutureNHS.Api.DataAccess.Models.Domain;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
 {
