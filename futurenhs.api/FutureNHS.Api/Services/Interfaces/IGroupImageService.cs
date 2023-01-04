@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using FutureNHS.Api.DataAccess.DTOs;
+﻿using FutureNHS.Api.DataAccess.DTOs;
 
 namespace FutureNHS.Api.Services.Interfaces
 {

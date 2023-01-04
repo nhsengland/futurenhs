@@ -1,14 +1,11 @@
 using FutureNHS.Api.Attributes;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Models.FileAndFolder;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace FutureNHS.Api.Controllers
 {

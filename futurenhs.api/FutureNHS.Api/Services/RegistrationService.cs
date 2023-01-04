@@ -1,10 +1,8 @@
 ﻿using System.Data;
-using System.Linq.Expressions;
 using System.Net.Mail;
 using System.Security;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Database.Write;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Domain;

@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using FutureNHS.Api.Models.Discussion;
+﻿using FutureNHS.Api.Models.Discussion;
 
 namespace FutureNHS.Api.Services.Interfaces
 {

@@ -3,7 +3,6 @@ using Dapper;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.DTOs;
-using FutureNHS.Api.DataAccess.Models.Comment;
 using FutureNHS.Api.DataAccess.Models.FileAndFolder;
 using FutureNHS.Api.Exceptions;
 
