@@ -36,7 +36,7 @@ namespace FileServer.Wopi.Services
             return fileContentMetadata;
         }
         
-        public async Task<byte[]> SaveFileAsync(Stream stream,string fileName,string contentType, CancellationToken cancellationToken)
+        public async Task<AzureBlobMetadata> SaveFileAsync(Stream stream,string fileName,string contentType, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             return await _fileMetaDataProvider.SaveFileAsync(stream, fileName, contentType, cancellationToken);

@@ -7,5 +7,5 @@ public interface IWopiFileContentService
     Task<FileContentMetadata> GetFileContentAsync(Models.File file, AuthenticatedUser authenticatedUser, Stream responseStream,
         CancellationToken cancellationToken);
 
-    Task<byte[]> SaveFileAsync(Stream stream, string fileName, string contentType, CancellationToken cancellationToken);
+    Task<AzureBlobMetadata> SaveFileAsync(Stream stream, string fileName, string contentType, CancellationToken cancellationToken);
 }

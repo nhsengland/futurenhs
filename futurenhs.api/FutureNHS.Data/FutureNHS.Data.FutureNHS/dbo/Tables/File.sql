@@ -13,6 +13,7 @@
     [ParentFolder]  UNIQUEIDENTIFIER NOT NULL,
     [FileStatus]    UNIQUEIDENTIFIER              NOT NULL,
     [BlobHash]      BINARY (16)      NULL,
+    [VersionId]     NVARCHAR (50)    NULL,
     [IsDeleted] BIT  DEFAULT ((0)) NOT NULL, 
     [RowVersion] ROWVERSION NOT NULL, 
     CONSTRAINT [PK_dbo.File] PRIMARY KEY CLUSTERED ([Id] ASC),
