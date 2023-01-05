@@ -5,6 +5,7 @@ using Dapper;
 using FileServer.DataAccess.Interfaces;
 using FileServer.Models;
 using FileServer.PlatformHelpers.Interfaces;
+using Microsoft.Data.SqlClient;
 
 namespace FileServer.DataAccess.Sql.Read
 {
@@ -72,30 +73,133 @@ namespace FileServer.DataAccess.Sql.Read
         }
     
     
-    public async Task UpdateFileMetaDataForUserAsync(Guid fileId, Guid userId,byte[] contentHash, DateTime modifiedAtutc, CancellationToken cancellationToken)
+    public async Task UpdateFileMetaDataForUserAsync(Guid fileId, Guid userId,AzureBlobMetadata blobMetadata, DateTime modifiedAtUtc, CancellationToken cancellationToken)
         {   
             cancellationToken.ThrowIfCancellationRequested();
 
             if (fileId == Guid.Empty) throw new ArgumentNullException(nameof(fileId));
             if (userId == Guid.Empty) throw new ArgumentNullException(nameof(userId));
             
+            // get metadata for superseded file version from file.sql
+            const string currentFileQuery =
+                $@"SELECT       [{nameof(FileHistoryMetadata.FileId)}]                = files.[Id],
+                                [{nameof(FileHistoryMetadata.Title)}]                 = files.[Title],
+                                [{nameof(FileHistoryMetadata.Description)}]           = files.[Description],
+                                [{nameof(FileHistoryMetadata.FileName)}]              = files.[FileName],           
+                                [{nameof(FileHistoryMetadata.FileSizeBytes)}]         = files.[FileSizeBytes], 
+                                [{nameof(FileHistoryMetadata.FileExtension)}]         = files.[FileExtension],
+                                [{nameof(FileHistoryMetadata.BlobName)}]              = files.[BlobName],  
+                                [{nameof(FileHistoryMetadata.ModifiedBy)}]            = files.[ModifiedBy],
+                                [{nameof(FileHistoryMetadata.ModifiedAtUtc)}]         = files.[ModifiedAtUtc],
+                                [{nameof(FileHistoryMetadata.FileStatus)}]            = files.[FileStatus],
+                                [{nameof(FileHistoryMetadata.BlobHash)}]              = files.[BlobHash], 
+                                [{nameof(FileHistoryMetadata.VersionId)}]             = files.[VersionId],
+                                [{nameof(FileHistoryMetadata.IsDeleted)}]             = files.[IsDeleted],
+                                [{nameof(FileHistoryMetadata.RowVersion)}]            = files.[RowVersion]
+
+
+                    FROM      dbo.[File]           files
+         
+                    WHERE  files.[Id]               = @FileId
+                    AND    files.[IsDeleted]        = 0;";
+            
+            using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
+
+            await using var connection = new SqlConnection(dbConnection.ConnectionString);
+            
+            await connection.OpenAsync(cancellationToken);
+
+           var currentFileCommandDefinition = new CommandDefinition(currentFileQuery, new
+            {
+                FileId = fileId,
+
+            }, cancellationToken: cancellationToken);
+
+            var currentFileMetaData = await connection.QueryFirstOrDefaultAsync<FileHistoryMetadata>(currentFileCommandDefinition);
+
+            if (currentFileMetaData is null)
+            {
+                _logger?.LogError($"Failed to get the file ({fileId}) for user ({userId}) from table File");
+                throw new FileNotFoundException("Could not get the meta data for the file");
+            }
+            var transaction = await connection.BeginTransactionAsync(cancellationToken);
+            
+            // Add metadata for the recently superseded file to FileHistory.sql
+            const string fileHistoryQuery =
+                $@" INSERT INTO [dbo].[FileHistory]
+                                ([FileID],
+                                [Title], 
+                                [Description], 
+                                [FileName],   
+                                [FileSizeBytes],
+                                [FileExtension],
+                                [BlobName],
+                                [ModifiedBy],
+                                [ModifiedAtUtc],
+                                [FileStatus],
+                                [BlobHash],
+                                [VersionId],
+                                [IsDeleted])
+            
+                VALUES          (@FileId,
+                                @Title,
+                                @Description,
+                                @FileName, 
+                                @FileSizeBytes,
+                                @FileExtension,
+                                @BlobName,
+                                @ModifiedBy,
+                                @ModifiedAtUtc,
+                                @FileStatus,
+                                @BlobHash,
+                                @VersionId,
+                                @IsDeleted)";
+
+            
+                    
+            var fileHistoryUpdated = await connection.ExecuteAsync(fileHistoryQuery, new
+            {
+                FileId =  currentFileMetaData.FileId,
+                Title =  currentFileMetaData.Title,
+                Description = currentFileMetaData.Description,
+                FileName = currentFileMetaData.FileName,
+                FileSizeBytes = currentFileMetaData.FileSizeBytes,
+                FileExtension =  currentFileMetaData.FileExtension,
+                BlobName =  currentFileMetaData.BlobName,
+                ModifiedBy =  currentFileMetaData.ModifiedBy,
+                ModifiedAtUtc =  currentFileMetaData.ModifiedAtUtc,
+                FileStatus =  currentFileMetaData.FileStatus,
+                BlobHash =  currentFileMetaData.BlobHash,
+                VersionId =  currentFileMetaData.VersionId,
+                IsDeleted =  currentFileMetaData.IsDeleted
+                
+            },transaction: transaction);
+
+            if (fileHistoryUpdated != 1)
+            {
+                throw new DBConcurrencyException("Failed to update the fileHistory table");
+            }
+            ;
+        
+            
+            
             const string query =
                 $@" UPDATE      [dbo].[File]
                     SET         [ModifiedBy] = @UserId,
                                 [ModifiedAtUtc] = @UpdatedDateUTC,
-                                [BlobHash] = @ContentHash
+                                [BlobHash] = @ContentHash,
+                                [VersionID] = @VersionId
                     WHERE       [Id] = @FileId ";
-
-            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
             var commandDefinition = new CommandDefinition(query, new
             {
                 FileId = fileId,
                 UserId = userId,
-                ContentHash = contentHash,
-                UpdatedDateUTC = modifiedAtutc
+                ContentHash = blobMetadata.ContentHash,
+                VersionId = blobMetadata.VersionId,
+                UpdatedDateUTC = modifiedAtUtc
 
-            }, cancellationToken: cancellationToken);
+            },transaction: transaction, cancellationToken: cancellationToken);
 
             var updated = await dbConnection.ExecuteAsync(commandDefinition);
 
@@ -103,8 +207,8 @@ namespace FileServer.DataAccess.Sql.Read
             {
                 throw new DBConcurrencyException("Failed to update the file");
             }
+            await transaction.CommitAsync(cancellationToken);
 
-;
         }
     }
 }

@@ -6,6 +6,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
+using FileServer.Models;
 using FileServer.PlatformHelpers.Interfaces;
 using FutureNHS.WOPIHost.Configuration;
 using FutureNHS.WOPIHost.Exceptions;
@@ -78,7 +79,7 @@ namespace FileServer.PlatformHelpers
 
             return blobClientOptions;
         }
-        public async Task<byte[]> UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
+        public async Task<AzureBlobMetadata> UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
         {
             try
             {
@@ -96,7 +97,10 @@ namespace FileServer.PlatformHelpers
                 };
 
                 var response = await blob.UploadAsync(stream, headers,null,null,null,null,cancellationToken);
-                return response.Value.ContentHash;
+                
+                var blobMetadata = new AzureBlobMetadata
+                    { ContentHash = response.Value.ContentHash, VersionId = response.Value.VersionId };
+                return blobMetadata;
             }
             catch (AuthenticationFailedException ex)
             {

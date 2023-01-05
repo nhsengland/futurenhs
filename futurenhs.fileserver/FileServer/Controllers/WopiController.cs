@@ -270,9 +270,9 @@ namespace FileServer.Controllers
             stream.Position = 0;
             
             var contentType = MimeTypesMap.GetMimeType(fileMetadata.BlobName);
-            var contentHash = await _wopiFileContentService.SaveFileAsync(stream, fileMetadata.BlobName, contentType , cancellationToken);
+            var blobMetadata = await _wopiFileContentService.SaveFileAsync(stream, fileMetadata.BlobName, contentType , cancellationToken);
 
-            await _fileMetaDataProvider.UpdateFileMetaDataForUserAsync(fileId, authenticatedUser.Id, contentHash, _systemClock.UtcNow.UtcDateTime, cancellationToken);
+            await _fileMetaDataProvider.UpdateFileMetaDataForUserAsync(fileId, authenticatedUser.Id, blobMetadata, _systemClock.UtcNow.UtcDateTime, cancellationToken);
             return Ok();
         }
 

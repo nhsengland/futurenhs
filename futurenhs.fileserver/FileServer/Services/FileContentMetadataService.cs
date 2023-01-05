@@ -29,7 +29,7 @@ namespace FileServer.Services
             _blobContainerName = blobContainerName;
         }
 
-        public async Task<byte[]> SaveFileAsync(Stream stream,string fileName,string contentType, CancellationToken cancellationToken)
+        public async Task<AzureBlobMetadata> SaveFileAsync(Stream stream,string fileName,string contentType, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             return await _azureBlobStoreClient.UploadFileAsync(stream, fileName, contentType, cancellationToken);
