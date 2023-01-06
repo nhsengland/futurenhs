@@ -83,12 +83,10 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/invite");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like/view");
                     permissions.Add($"{Schema}/platform/{DefaultApiVerison}/invite");
-
                     break;
                 case "Standard Members":
-                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/download");
-                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/view");
                     break;
                 case "Guest":
                     break;
@@ -130,8 +128,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/invite");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
-                    permissions.Add($"{Schema}/platform/{DefaultApiVerison}/invite");
-
                     break;
                 case "Standard Members":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
@@ -147,6 +143,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/edit");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like/view");
                     break;
                 case "Guest":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/view");
@@ -156,6 +153,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like/view");
                     break;
                 case "":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/join");
