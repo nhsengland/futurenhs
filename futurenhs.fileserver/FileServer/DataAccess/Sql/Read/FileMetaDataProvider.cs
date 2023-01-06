@@ -80,48 +80,12 @@ namespace FileServer.DataAccess.Sql.Read
             if (fileId == Guid.Empty) throw new ArgumentNullException(nameof(fileId));
             if (userId == Guid.Empty) throw new ArgumentNullException(nameof(userId));
             
-            // get metadata for superseded file version from file.sql
-            const string currentFileQuery =
-                $@"SELECT       [{nameof(FileHistoryMetadata.FileId)}]                = files.[Id],
-                                [{nameof(FileHistoryMetadata.Title)}]                 = files.[Title],
-                                [{nameof(FileHistoryMetadata.Description)}]           = files.[Description],
-                                [{nameof(FileHistoryMetadata.FileName)}]              = files.[FileName],           
-                                [{nameof(FileHistoryMetadata.FileSizeBytes)}]         = files.[FileSizeBytes], 
-                                [{nameof(FileHistoryMetadata.FileExtension)}]         = files.[FileExtension],
-                                [{nameof(FileHistoryMetadata.BlobName)}]              = files.[BlobName],  
-                                [{nameof(FileHistoryMetadata.ModifiedBy)}]            = files.[ModifiedBy],
-                                [{nameof(FileHistoryMetadata.ModifiedAtUtc)}]         = files.[ModifiedAtUtc],
-                                [{nameof(FileHistoryMetadata.FileStatus)}]            = files.[FileStatus],
-                                [{nameof(FileHistoryMetadata.BlobHash)}]              = files.[BlobHash], 
-                                [{nameof(FileHistoryMetadata.VersionId)}]             = files.[VersionId],
-                                [{nameof(FileHistoryMetadata.IsDeleted)}]             = files.[IsDeleted],
-                                [{nameof(FileHistoryMetadata.RowVersion)}]            = files.[RowVersion]
-
-
-                    FROM      dbo.[File]           files
-         
-                    WHERE  files.[Id]               = @FileId
-                    AND    files.[IsDeleted]        = 0;";
-            
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
             await using var connection = new SqlConnection(dbConnection.ConnectionString);
             
             await connection.OpenAsync(cancellationToken);
 
-           var currentFileCommandDefinition = new CommandDefinition(currentFileQuery, new
-            {
-                FileId = fileId,
-
-            }, cancellationToken: cancellationToken);
-
-            var currentFileMetaData = await connection.QueryFirstOrDefaultAsync<FileHistoryMetadata>(currentFileCommandDefinition);
-
-            if (currentFileMetaData is null)
-            {
-                _logger?.LogError($"Failed to get the file ({fileId}) for user ({userId}) from table File");
-                throw new FileNotFoundException("Could not get the meta data for the file");
-            }
             var transaction = await connection.BeginTransactionAsync(cancellationToken);
             
             // Add metadata for the recently superseded file to FileHistory.sql
@@ -140,38 +104,32 @@ namespace FileServer.DataAccess.Sql.Read
                                 [BlobHash],
                                 [VersionId],
                                 [IsDeleted])
-            
-                VALUES          (@FileId,
-                                @Title,
-                                @Description,
-                                @FileName, 
-                                @FileSizeBytes,
-                                @FileExtension,
-                                @BlobName,
-                                @ModifiedBy,
-                                @ModifiedAtUtc,
-                                @FileStatus,
-                                @BlobHash,
-                                @VersionId,
-                                @IsDeleted)";
+     
+                    SELECT      files.[Id],
+                                files.[Title],
+                                files.[Description],
+                                files.[FileName],           
+                                files.[FileSizeBytes], 
+                                files.[FileExtension],
+                                files.[BlobName],  
+                                files.[ModifiedBy],
+                                files.[ModifiedAtUtc],
+                                files.[FileStatus],
+                                files.[BlobHash], 
+                                files.[VersionId],
+                                files.[IsDeleted]
+
+
+                    FROM        dbo.[File] files
+                    WHERE       files.[Id] = @FileId
+                    AND         files.[IsDeleted] = 0;";
+                
 
             
                     
             var fileHistoryUpdated = await connection.ExecuteAsync(fileHistoryQuery, new
             {
-                FileId =  currentFileMetaData.FileId,
-                Title =  currentFileMetaData.Title,
-                Description = currentFileMetaData.Description,
-                FileName = currentFileMetaData.FileName,
-                FileSizeBytes = currentFileMetaData.FileSizeBytes,
-                FileExtension =  currentFileMetaData.FileExtension,
-                BlobName =  currentFileMetaData.BlobName,
-                ModifiedBy =  currentFileMetaData.ModifiedBy,
-                ModifiedAtUtc =  currentFileMetaData.ModifiedAtUtc,
-                FileStatus =  currentFileMetaData.FileStatus,
-                BlobHash =  currentFileMetaData.BlobHash,
-                VersionId =  currentFileMetaData.VersionId,
-                IsDeleted =  currentFileMetaData.IsDeleted
+                FileId =  fileId,
                 
             },transaction: transaction);
 
@@ -201,7 +159,7 @@ namespace FileServer.DataAccess.Sql.Read
 
             },transaction: transaction, cancellationToken: cancellationToken);
 
-            var updated = await dbConnection.ExecuteAsync(commandDefinition);
+            var updated = await connection.ExecuteAsync(commandDefinition);
 
             if (updated != 1)
             {
