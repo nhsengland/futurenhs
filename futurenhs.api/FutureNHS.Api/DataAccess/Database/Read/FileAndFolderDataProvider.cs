@@ -318,11 +318,44 @@ namespace FutureNHS.Api.DataAccess.Database.Read
 
             if (fileData is null)
                 return null;
+            
+            List<FileData> versions;
+            
+            const string versionQuery =
+                $@"SELECT
+                            [{nameof(FileData.Id)}]             = fh.Id, 
+                            [{nameof(FileData.Title)}]          = fh.Title,
+                            [{nameof(FileData.Description)}]    = fh.Description, 
+                            [{nameof(FileData.CreatedAtUtc)}]   = files.CreatedAtUtc,
+                            [{nameof(FileData.ModifiedAtUtc)}]  = fh.ModifiedAtUtc,
+                            [{nameof(FileData.ModifierId)}]     = mu.Id,
+                            [{nameof(FileData.ModifierName)}]   = mu.FirstName + ' ' + mu.Surname,
+                            [{nameof(FileData.FileName)}]       = fh.FileName,
+				            [{nameof(FileData.FileExtension)}]  = fh.FileExtension
+                            
+                                
+                FROM        FileHistory fh
+                LEFT JOIN   MembershipUser mu 
+                ON          mu.Id = fh.ModifiedBy
+                RIGHT JOIN  [File] files
+                ON          files.Id = fh.fileId
+                WHERE       fh.FileId = @FileId;";
+            
+            using var fileHistoryDbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
-            return GenerateFileModelFromData(fileData, pathToFile);
+            using var versionReader = await dbConnection.QueryMultipleAsync(versionQuery, new
+            {
+                FileId = fileId
+            });
+
+            versions = versionReader.Read<FileData>().ToList();
+            var fileModel =  GenerateFileModelFromData(fileData, pathToFile, versions);
+
+            return fileModel;
+
         }
 
-        private File GenerateFileModelFromData(FileData fileData, IEnumerable<FolderPathItem> pathToFile)
+        private File GenerateFileModelFromData(FileData fileData, IEnumerable<FolderPathItem> pathToFile,List<FileData> versions)
         {
             new FileExtensionContentTypeProvider().Mappings.TryGetValue(fileData.FileExtension, out var mimeType);
 
@@ -341,29 +374,19 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                         Slug = fileData.CreatorSlug
                     }
                 },
-                Versions = new List<FileVersion>
+                Versions = versions.Select(version => new FileVersion
                 {
-                    new FileVersion
+                    Id = version.Id,
+                    Name = version.FileName,
+                    ModifiedByUser = new UserNavProperty
                     {
-                        Id = fileData.Id,
-                        Name = fileData.FileName,
-                        FirstRegistered = new Models.Shared.Properties
-                        {
-                            AtUtc = fileData.CreatedAtUtc,
-                            By = new UserNavProperty
-                            {
-                                Id = fileData.CreatorId,
-                                Name = fileData.CreatorName,
-                                Slug = fileData.CreatorSlug
-                            }
-                        },
-                        AdditionalMetadata = new FileProperties
-                        {
-                            FileExtension = fileData.FileExtension,
-                            MediaType = mimeType
-                        }
-                    }
-                },
+                        Id = version.ModifierId,
+                        Name = version.ModifierName,
+                        
+                    },
+                    ModifiedAtUtc = version.ModifiedAtUtc
+                    
+                 }).ToList(),
                 Path = pathToFile
             };
 

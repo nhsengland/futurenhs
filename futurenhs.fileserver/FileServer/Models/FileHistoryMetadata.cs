@@ -4,6 +4,7 @@ namespace FileServer.Models
 {
     public sealed record FileHistoryMetadata
     {
+        public Guid Id { get; init; }
         public Guid FileId { get; init; }
         public string Title { get; init; }
         public string Description { get; init; }
@@ -12,7 +13,7 @@ namespace FileServer.Models
         public string FileExtension { get; init; }
         public string BlobName { get; init; }
         public Guid ModifiedBy { get; init; }
-        public DateTime? ModifiedAtUtc { get; init; } //Type should be DateTimeOffset ?
+        public DateTime? ModifiedAtUtc { get; init; }
         public Guid FileStatus { get; init; }
         public byte[] BlobHash { get; init; } 
         public string VersionId { get; init; }
