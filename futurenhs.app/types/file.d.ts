@@ -22,9 +22,23 @@ export interface FolderContent {
     modifiedBy?: Partial<User>;
     created?: string;
     createdBy?: Partial<User>;
+    lastUpdated?: Partial<User>;
     text?: {
         body?: string;
     };
     path?: BreadCrumbList;
     downloadLink?: string;
+    versions?: Array<FileVersionUser>
+}
+
+export interface FileVersionUser{
+    id: string;
+    name: string;
+    modifiedByUser:{
+        id?: string;
+        name?: string;
+        slug?: string;
+        image?: ImageData;
+    }
+    modifiedAtUtc?: string;
 }

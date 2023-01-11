@@ -7,7 +7,7 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
-import { FolderContent } from '@appTypes/file'
+import { FileVersionUser, FolderContent } from '@appTypes/file'
 import { User } from '@appTypes/user'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
@@ -47,8 +47,28 @@ export const getGroupFile = async (
         apiHeaders,
         defaultTimeOutMillis
     )
+    try {
+        await fetch("https://dummyjson.com/products", {
+            method: "POST",
+            body: JSON.stringify({
+                Monday: "Pump my tyres",
+                Tuesday: "Oil my chain",
+                Wednesday: "Adjust my gears"
+            })
+    
+        })
+        // const toDosJson = await postToDos.status
+        // console.log(toDosJson)
+    
+    }
+    catch(error){
+        
+    }
+    
+
 
     const apiData: ApiResponse<any> = apiResponse.json
+    // console.log(JSON.stringify(apiData) + '\n\n')
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText } = apiMeta
@@ -81,12 +101,29 @@ export const getGroupFile = async (
                 userName: apiData.firstRegistered?.by?.name,
             },
         },
+        lastUpdated: {
+            id: apiData.lastUpdated?.by?.id,
+            text: {
+                userName: apiData.lastUpdated?.by?.name,
+            },
+        },
         modifiedBy: {
             id: apiData.lastUpdated?.by?.id,
             text: {
                 userName: apiData.lastUpdated?.by?.name,
             },
         },
+        versions: apiData.versions
+            ? apiData.versions.map((v: FileVersionUser) => {
+                  return {
+                      id: v.modifiedByUser.id,
+                      text: {
+                          userName: v.modifiedByUser.name,
+                          modifiedAtUtc: v.modifiedAtUtc,
+                      },
+                  }
+              })
+            : null,
         modified: apiData.lastUpdated?.atUtc,
         path:
             reversedPath.map(({ id, name }) => ({

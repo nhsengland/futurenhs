@@ -45,6 +45,7 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
     file,
     contentText,
     routes,
+    
 }) => {
     const { createdByLabel } = contentText ?? {}
     const {
@@ -58,7 +59,7 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
         text: fileText,
     } = file ?? {}
     const { body } = fileText ?? {}
-
+    console.log(file)
     const fileDownloadPath: string = `${
         routes.groupFilesRoot
     }/${encodeURIComponent(id)}/download`

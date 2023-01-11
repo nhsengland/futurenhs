@@ -319,8 +319,6 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             if (fileData is null)
                 return null;
             
-            List<FileData> versions;
-            
             const string versionQuery =
                 $@"SELECT
                             [{nameof(FileData.Id)}]             = fh.Id, 
@@ -335,7 +333,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                             
                                 
                 FROM        FileHistory fh
-                LEFT JOIN   MembershipUser mu 
+                LEFT JOIN   MembershipUser mu
                 ON          mu.Id = fh.ModifiedBy
                 RIGHT JOIN  [File] files
                 ON          files.Id = fh.fileId
@@ -348,7 +346,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 FileId = fileId
             });
 
-            versions = versionReader.Read<FileData>().ToList();
+            List<FileData>versions = versionReader.Read<FileData>().ToList();
             var fileModel =  GenerateFileModelFromData(fileData, pathToFile, versions);
 
             return fileModel;
