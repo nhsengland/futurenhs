@@ -12,6 +12,7 @@ namespace FutureNHS.Api.DataAccess.Models.FileAndFolder
         public string? CreatorName { get; set; }
         public string? CreatorSlug { get; set; }
         public DateTime? ModifiedAtUtc { get; init; }
+        public int? Size { get; init; }
         public Guid? ModifierId { get; set; }
         public string? ModifierName { get; set; }
         public string? ModifierSlug { get; set; }
