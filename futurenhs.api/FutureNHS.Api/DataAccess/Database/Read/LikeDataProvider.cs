@@ -25,7 +25,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                @$"SELECT
                                 [{nameof(EntityLikeData.Id)}]            = entityLike.Entity_Id,         
                                 [{nameof(EntityLikeData.CreatedAtUtc)}]        = entityLike.CreatedAtUTC,
-                                [{nameof(EntityLikeData.MembershipUserId)}]    = entityLike.MembershipUser_Id,
+                               
 
                     FROM            Entity_Like entityLike
 					WHERE           LikedEntity.Entity_Id = @EntityId";
@@ -50,8 +50,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
         {
             const string query =
                 @$"SELECT
-                                [{nameof(EntityLikeData.Id)}]            = entityLike.Entity_Id,         
-                                [{nameof(EntityLikeData.MembershipUserId)}]    = entityLike.MembershipUser_Id,
+                                [{nameof(EntityLikeData.Id)}]                  = entityLike.Entity_Id,         
                                 [{nameof(Models.Shared.Properties.AtUtc)}]     = entityLike.CreatedAtUTC,
                                 [{nameof(UserNavProperty.Id)}]                 = CreatedByUser.Id,
                                 [{nameof(UserNavProperty.Name)}]               = CreatedByUser.FirstName + ' ' + CreatedByUser.Surname,
@@ -81,7 +80,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
             }, new
             {
                 EntityId = entityId,
-            }, splitOn: $"{nameof(EntityLikeData.Id)}");
+            }, splitOn: $"{nameof(Models.Shared.Properties.AtUtc)},{nameof(UserNavProperty.Id)}");
 
             return likedEntityData;
         }
