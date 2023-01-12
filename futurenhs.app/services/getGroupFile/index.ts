@@ -7,7 +7,7 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse, ServiceResponse } from '@appTypes/service'
-import { FileVersionUser, FolderContent } from '@appTypes/file'
+import { FileVersion, FolderContent } from '@appTypes/file'
 import { User } from '@appTypes/user'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
@@ -47,28 +47,27 @@ export const getGroupFile = async (
         apiHeaders,
         defaultTimeOutMillis
     )
-    try {
-        await fetch("https://dummyjson.com/products", {
-            method: "POST",
-            body: JSON.stringify({
-                Monday: "Pump my tyres",
-                Tuesday: "Oil my chain",
-                Wednesday: "Adjust my gears"
-            })
-    
-        })
-        // const toDosJson = await postToDos.status
-        // console.log(toDosJson)
-    
-    }
-    catch(error){
-        
-    }
-    
 
+    // try {
+    //     await fetch("https://dummyjson.com/products", {
+    //         method: "POST",
+    //         body: JSON.stringify({
+    //             Monday: "Pump my tyres",
+    //             Tuesday: "Oil my chain",
+    //             Wednesday: "Adjust my gears"
+    //         })
+
+    //     })
+    //     // const toDosJson = await postToDos.status
+    //     // console.log(toDosJson)
+
+    // }
+    // catch(error){
+
+    // }
 
     const apiData: ApiResponse<any> = apiResponse.json
-    // console.log(JSON.stringify(apiData) + '\n\n')
+     console.log(`index.ts lin 70 apiDatajson ${JSON.stringify(apiData)} + '\n\n'`)
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText } = apiMeta
@@ -98,7 +97,7 @@ export const getGroupFile = async (
         createdBy: {
             id: apiData.firstRegistered?.by?.id,
             text: {
-                userName: apiData.firstRegistered?.by?.name,
+                userName: apiData.firstRegistered.by.name,
             },
         },
         lastUpdated: {
@@ -114,13 +113,19 @@ export const getGroupFile = async (
             },
         },
         versions: apiData.versions
-            ? apiData.versions.map((v: FileVersionUser) => {
+            ? apiData.versions.map((version) => {
                   return {
-                      id: v.modifiedByUser.id,
-                      text: {
-                          userName: v.modifiedByUser.name,
-                          modifiedAtUtc: v.modifiedAtUtc,
-                      },
+                      id: version.id,
+                      type: 'file',
+                      name: version.name,
+                      modifiedAt: version.modifiedAt,
+                      size: version.size,
+                      lastUpdated: {
+                          id: version.lastUpdated.by.id,
+                            text:{
+                                userName: version.lastUpdated.by.name,
+                          },
+                        },
                   }
               })
             : null,
@@ -131,6 +136,8 @@ export const getGroupFile = async (
                 text: name,
             })) ?? [],
     }
-
+    console.log(
+        `serviceresponse.data.versions: ${serviceResponse.data.versions[0].lastUpdated.id}`
+    )
     return serviceResponse
 }

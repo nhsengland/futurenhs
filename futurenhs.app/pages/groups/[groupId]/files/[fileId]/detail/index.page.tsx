@@ -24,8 +24,10 @@ import { RichText } from '@components/generic/RichText'
 import { BreadCrumb } from '@components/generic/BreadCrumb'
 import { BreadCrumbList } from '@appTypes/routing'
 import { FolderContent } from '@appTypes/file'
+import { FileVersion } from '@appTypes/file'
 import { GroupPage } from '@appTypes/page'
 import { GroupsPageTextContent } from '@appTypes/content'
+import { version } from 'react'
 
 declare interface ContentText extends GroupsPageTextContent {
     createdByLabel?: string
@@ -45,7 +47,6 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
     file,
     contentText,
     routes,
-    
 }) => {
     const { createdByLabel } = contentText ?? {}
     const {
@@ -56,10 +57,13 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
         createdBy,
         modified,
         modifiedBy,
+        versions,
         text: fileText,
     } = file ?? {}
+
     const { body } = fileText ?? {}
-    console.log(file)
+    // const versionArray = Array(versions)
+    console.log(`versions: ${versions[0].name}`)
     const fileDownloadPath: string = `${
         routes.groupFilesRoot
     }/${encodeURIComponent(id)}/download`
@@ -80,6 +84,7 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
             }
         })
     }
+    
 
     const hasBreadCrumb: boolean = breadCrumbList.length > 0
 
@@ -89,7 +94,7 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
         }),
         modifiedBy: classNames({
             ['u-justify-between u-w-full tablet:u-w-1/4']: true,
-            ['u-hidden tablet:u-block']: !modifiedBy?.text?.userName,
+            ['u-hidden tablet:u-block']: modifiedBy?.text?.userName,
         }),
         lastUpdate: classNames({
             ['u-justify-between u-w-full tablet:u-w-1/6 u-items-center']: true,
@@ -111,6 +116,50 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
             ['u-text-bold']: true,
         }),
     }
+
+    let versionRows = [];
+    for (let i=0; i < versions.length; i++){
+        const sizeInKb = `${(versions[i].size*0.001).toFixed(2)}KB`
+        versionRows.push([
+            {
+                children: sizeInKb,
+                shouldRenderCellHeader: true,
+                className: generatedCellClasses.name,
+                headerClassName:
+                    generatedHeaderCellClasses.name,
+            },
+            {
+                children: versions[i].lastUpdated.text.userName ?? '',
+                shouldRenderCellHeader: true,
+                className: generatedCellClasses.modifiedBy,
+                headerClassName:
+                    generatedHeaderCellClasses.modifiedBy,
+            },
+            {
+                children: versions[i].modifiedAt
+                    ? dateTime({ value: modified })
+                    : dateTime({ value: created }),
+                shouldRenderCellHeader: true,
+                className: generatedCellClasses.lastUpdate,
+                headerClassName:
+                    generatedHeaderCellClasses.lastUpdate,
+            },
+            {
+                children: (
+                    <ActionLink
+                        href={fileDownloadPath}
+                        text={{
+                            body: 'Download',
+                            ariaLabel: `Download ${name}`,
+                        }}
+                        iconName="icon-download"
+                    />
+                ),
+                shouldRenderCellHeader: false,
+                className: generatedCellClasses.actions,
+            }
+        ])
+    };
 
     return (
         <>
@@ -175,7 +224,7 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
                                     generatedHeaderCellClasses.name,
                             },
                             {
-                                children: modifiedBy?.text?.userName ?? '',
+                                children: modifiedBy.text.userName ?? '',
                                 shouldRenderCellHeader: true,
                                 className: generatedCellClasses.modifiedBy,
                                 headerClassName:
@@ -206,6 +255,33 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
                             },
                         ],
                     ]}
+                    className="u-mb-12"
+                />
+
+                <DataGrid
+                    id="group-table-file"
+                    text={{
+                        caption: 'Version History',
+                    }}
+                    shouldRenderCaption={true}
+                    columnList={[
+                        {
+                            children: 'Size',
+                        },
+                        {
+                            children: 'Modified By',
+                        },
+                        {
+                            children: 'Modified At',
+                        },
+                        {
+                            children: 'Actions',
+                            className: 'tablet:u-text-right',
+                        },
+                    ]}
+                                  
+                    rowList={versionRows}
+                  
                     className="u-mb-12"
                 />
             </LayoutColumn>

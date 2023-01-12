@@ -325,6 +325,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                             [{nameof(FileData.Title)}]          = fh.Title,
                             [{nameof(FileData.Description)}]    = fh.Description, 
                             [{nameof(FileData.CreatedAtUtc)}]   = files.CreatedAtUtc,
+                            [{nameof(FileData.Size)}]           = fh.FileSizeBytes,
                             [{nameof(FileData.ModifiedAtUtc)}]  = fh.ModifiedAtUtc,
                             [{nameof(FileData.ModifierId)}]     = mu.Id,
                             [{nameof(FileData.ModifierName)}]   = mu.FirstName + ' ' + mu.Surname,
@@ -376,15 +377,19 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 {
                     Id = version.Id,
                     Name = version.FileName,
-                    ModifiedByUser = new UserNavProperty
+                    Size = version.Size,
+                    LastUpdated = new Models.Shared.Properties
                     {
-                        Id = version.ModifierId,
-                        Name = version.ModifierName,
-                        
-                    },
-                    ModifiedAtUtc = version.ModifiedAtUtc
-                    
-                 }).ToList(),
+                        AtUtc = version.ModifiedAtUtc,
+                        By = new UserNavProperty
+                        {
+                            Id = version.ModifierId.GetValueOrDefault(),
+                            Name = version.ModifierName,
+                            Slug = version.ModifierSlug
+                        }
+                    }
+    
+                }).ToList(),
                 Path = pathToFile
             };
 
