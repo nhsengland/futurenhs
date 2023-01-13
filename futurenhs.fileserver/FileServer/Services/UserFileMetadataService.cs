@@ -20,6 +20,10 @@ public sealed class UserFileMetadataService : IUserFileMetadataService
     {
         cancellationToken.ThrowIfCancellationRequested();
         var metaData = await _fileMetaDataProvider.GetFileMetaDataForUserAsync(fileId, authenticatedUser.Id, cancellationToken);
+        
+        if(metaData == null)
+            metaData =  await _fileMetaDataProvider.GetFileVersionMetaDataForUserAsync(fileId, authenticatedUser.Id, cancellationToken);
+        
         return metaData;
     }
 }

@@ -40,7 +40,9 @@ namespace FutureNHS.Api.Controllers
 
             if (file is null)
             {
-                return NotFound();
+                file = await _fileAndFolderDataProvider.GetFileVersionAsync(id, cancellationToken);
+                if (file is null)
+                    return NotFound();
             }
 
             return Ok(file);

@@ -174,6 +174,38 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 
+            var result = await dbConnection.QueryFirstOrDefaultAsync<AuthUserData>(queryDefinition);
+            return result;
+        }
+        
+        public async Task<AuthUserData> GetFileVersionAccess(Guid userId,Guid fileId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$"
+                    SELECT 
+                                [{nameof(AuthUserData.Id)}]                 = membershipUser.Id,
+                                [{nameof(AuthUserData.EmailAddress)}]       = membershipUser.Email,          
+                                [{nameof(AuthUserData.FullName)}]           = TRIM(ISNULL(membershipUser.FirstName, '') + ' ' + ISNULL(membershipUser.Surname, '')),
+                                [{nameof(AuthUserData.Initials)}]           = membershipUser.Initials, 
+                                [{nameof(AuthUserData.FileId)}]             = fileHistory.Id, 
+                                [{nameof(AuthUserData.GroupSlug)}]          = groups.Slug 
+
+                    FROM MembershipUser membershipUser
+                    JOIN [FileHistory] fileHistory on fileHistory.Id = @FileId
+                    JOIN [File] files on files.Id = fileHistory.FileId
+                    JOIN Folder folder on folder.Id = files.ParentFolder
+                    JOIN [Group] groups on groups.Id = folder.Group_Id
+                    WHERE membershipUser.Id = @UserId
+                ";
+
+            var queryDefinition = new CommandDefinition(query, new
+            {
+                UserId = userId,
+                FileId = fileId
+            }, cancellationToken: cancellationToken);
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
             var result = await dbConnection.QueryFirstAsync<AuthUserData>(queryDefinition);
 
             return result;

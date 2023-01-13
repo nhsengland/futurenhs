@@ -39,7 +39,7 @@ namespace FileServer.Services
         {
             AuthenticatedUser? authenticatedUser = null;
             if (accessToken.HasValue)
-                authenticatedUser = await AuthenticateAccessTokenAsync(accessToken.Value, fileId,accessPermission, cancellationToken);
+                authenticatedUser = await AuthenticateAccessTokenAsync(accessToken.Value, fileId, accessPermission, cancellationToken);
             else if(!string.IsNullOrEmpty(authHeader))
             {
                 authenticatedUser = await AuthenticateAuthHeaderAsync(authHeader, fileId, accessPermission, cancellationToken);
@@ -47,6 +47,9 @@ namespace FileServer.Services
                 authenticatedUser =  authenticatedUser with { FileMetadata = userFileMetadata };
                 if (authenticatedUser != null)
                 {
+                    if (!string.IsNullOrEmpty(userFileMetadata.FileVersion))
+                        accessPermission = FileAccessPermission.View;
+                    
                     var token = await GenerateAccessToken(authenticatedUser, fileId, accessPermission, cancellationToken);
                     authenticatedUser = token.User;
                 }

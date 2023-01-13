@@ -20,7 +20,7 @@ namespace FileServer.DataAccess.Sql.Read
             _logger = logger;
         }
         
-        public async Task<UserFileMetadata> GetFileMetaDataForUserAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
+        public async Task<UserFileMetadata?> GetFileMetaDataForUserAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
         {   
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -63,15 +63,61 @@ namespace FileServer.DataAccess.Sql.Read
 
             var metaData = await dbConnection.QueryFirstOrDefaultAsync<UserFileMetadata>(commandDefinition);
 
+            return metaData;
+        }
+    public async Task<UserFileMetadata> GetFileVersionMetaDataForUserAsync(Guid fileId, Guid userId, CancellationToken cancellationToken)
+        {   
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (fileId == Guid.Empty) throw new ArgumentNullException(nameof(fileId));
+            if (userId == Guid.Empty) throw new ArgumentNullException(nameof(userId));
+            
+            const string query =
+                $@"SELECT       [{nameof(UserFileMetadata.FileId)}]                = fileHistory.[Id],
+                                [{nameof(UserFileMetadata.Title)}]                 = fileHistory.[Title],
+                                [{nameof(UserFileMetadata.Description)}]           = fileHistory.[Description],
+                                [{nameof(UserFileMetadata.GroupName)}]             = groups.[Name],
+                                [{nameof(UserFileMetadata.Name)}]                  = fileHistory.[FileName],           
+                                [{nameof(UserFileMetadata.SizeInBytes)}]           = fileHistory.[FileSizeBytes], 
+                                [{nameof(UserFileMetadata.Extension)}]             = fileHistory.[FileExtension],
+                                [{nameof(UserFileMetadata.BlobName)}]              = fileHistory.[BlobName],     
+                                [{nameof(UserFileMetadata.ContentHash)}]           = fileHistory.[BlobHash], 
+                                [{nameof(UserFileMetadata.FileVersion)}]           = fileHistory.[VersionId], 
+                                [{nameof(UserFileMetadata.LastWriteTimeUtc)}]      = CONVERT(DATETIMEOFFSET, ISNULL(fileHistory.[ModifiedAtUtc], files.[CreatedAtUtc])),
+                                [{nameof(UserFileMetadata.OwnerUserName)}]         = owner.[UserName]
+
+                    FROM      dbo.[FileHistory]    fileHistory
+                    JOIN      dbo.[File]           files ON files.[Id] = fileHistory.[FileId]
+                    JOIN      dbo.[MembershipUser] owner ON owner.[Id] = files.[CreatedBy]
+                    JOIN      dbo.[Folder]         folder ON folder.[Id] = files.[ParentFolder] AND folder.[IsDeleted] = 0
+                    JOIN      dbo.[Group]          groups ON groups.[Id] = folder.[Group_Id]  AND groups.[IsDeleted] = 0
+                    JOIN      dbo.[FileStatus]     fileStatus ON files.[FileStatus] = fileStatus.[Id]
+                    LEFT JOIN dbo.[MembershipUser] membershipUser ON membershipUser.[Id] = @UserId AND membershipUser.[IsApproved] = 1
+                    LEFT JOIN dbo.[GroupUser]      groupUser ON groupUser.[Group_Id] = groups.[Id] AND groupUser.[MembershipUser_Id] = membershipUser.[Id] AND groupUser.[Approved] = 1
+         
+                    WHERE  fileHistory.[Id]         = @FileId
+                    AND    fileStatus.[Name]        = 'Verified'
+                    AND    files.[IsDeleted]        = 0;";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            var commandDefinition = new CommandDefinition(query, new
+            {
+                FileId = fileId,
+                UserId = userId
+
+            }, cancellationToken: cancellationToken);
+
+            var metaData = await dbConnection.QueryFirstOrDefaultAsync<UserFileMetadata>(commandDefinition);
+
             if (metaData is null)
             {
-                _logger?.LogError($"Failed to get the file ({fileId}) for user ({userId})");
-                throw new FileNotFoundException("Could not get the meta data for the file");
+                _logger?.LogError($"Failed to get the file Version ({fileId}) for user ({userId})");
+                throw new FileNotFoundException("Could not get the meta data for the file version");
             }
 
             return metaData;
         }
-    
     
     public async Task UpdateFileMetaDataForUserAsync(Guid fileId, Guid userId,AzureBlobMetadata blobMetadata, DateTime modifiedAtUtc, CancellationToken cancellationToken)
         {   
