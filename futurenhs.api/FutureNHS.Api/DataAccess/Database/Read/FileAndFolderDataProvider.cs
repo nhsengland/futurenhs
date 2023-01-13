@@ -338,7 +338,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 ON          mu.Id = fh.ModifiedBy
                 RIGHT JOIN  [File] files
                 ON          files.Id = fh.fileId
-                WHERE       fh.FileId = @FileId;";
+                WHERE       fh.FileId = @FileId
+                ORDER BY    fh.ModifiedAtUtc DESC;";
             
             using var fileHistoryDbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
 

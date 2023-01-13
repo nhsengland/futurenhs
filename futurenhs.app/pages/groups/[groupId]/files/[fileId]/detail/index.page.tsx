@@ -137,7 +137,7 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
             },
             {
                 children: versions[i].modifiedAt
-                    ? dateTime({ value: modified })
+                    ? dateTime({ value: versions[i].modifiedAt })
                     : dateTime({ value: created }),
                 shouldRenderCellHeader: true,
                 className: generatedCellClasses.lastUpdate,
