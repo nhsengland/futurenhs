@@ -48,26 +48,10 @@ export const getGroupFile = async (
         defaultTimeOutMillis
     )
 
-    // try {
-    //     await fetch("https://dummyjson.com/products", {
-    //         method: "POST",
-    //         body: JSON.stringify({
-    //             Monday: "Pump my tyres",
-    //             Tuesday: "Oil my chain",
-    //             Wednesday: "Adjust my gears"
-    //         })
-
-    //     })
-    //     // const toDosJson = await postToDos.status
-    //     // console.log(toDosJson)
-
-    // }
-    // catch(error){
-
-    // }
-
     const apiData: ApiResponse<any> = apiResponse.json
-     console.log(`index.ts lin 70 apiDatajson ${JSON.stringify(apiData)} + '\n\n'`)
+    console.log(
+        `index.ts lin 70 apiDatajson ${JSON.stringify(apiData)} + '\n\n'`
+    )
     const apiMeta: any = apiResponse.meta
 
     const { ok, status, statusText } = apiMeta
@@ -118,14 +102,14 @@ export const getGroupFile = async (
                       id: version.id,
                       type: 'file',
                       name: version.name,
-                      modifiedAt: version.modifiedAt,
+                      modifiedAt: version.lastUpdated.atUtc,
                       size: version.size,
                       lastUpdated: {
                           id: version.lastUpdated.by.id,
-                            text:{
-                                userName: version.lastUpdated.by.name,
+                          text: {
+                              userName: version.lastUpdated.by.name,
                           },
-                        },
+                      },
                   }
               })
             : null,
