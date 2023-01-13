@@ -29,8 +29,9 @@ namespace FileServer.Controllers
         private readonly IWopiDiscoveryDocumentFactory _wopiDiscoveryDocumentFactory;
         private readonly WopiConfiguration _wopiConfiguration;
         private readonly IWopiFileContentService _wopiFileContentService;
+        private readonly IUserFileMetadataService _userFileMetadataService;
         private readonly ISystemClock _systemClock;
-        public WopiController(ILogger<WopiController> logger, IUserAuthenticationService userAuthenticationService, IWopiDiscoveryDocumentFactory wopiDiscoveryDocumentFactory, IOptionsSnapshot<WopiConfiguration> wopiConfig, IWopiFileContentService wopiFileContentService,IFileMetaDataProvider fileMetaDataProvider,ISystemClock systemClock)
+        public WopiController(ILogger<WopiController> logger, IUserAuthenticationService userAuthenticationService, IWopiDiscoveryDocumentFactory wopiDiscoveryDocumentFactory, IOptionsSnapshot<WopiConfiguration> wopiConfig, IWopiFileContentService wopiFileContentService,IFileMetaDataProvider fileMetaDataProvider,IUserFileMetadataService userFileMetadataService,ISystemClock systemClock)
         {
             _logger = logger;
             _userAuthenticationService = userAuthenticationService;
@@ -38,6 +39,7 @@ namespace FileServer.Controllers
             _wopiConfiguration = wopiConfig.Value;
             _wopiFileContentService = wopiFileContentService;
             _fileMetaDataProvider = fileMetaDataProvider;
+            _userFileMetadataService = userFileMetadataService;
             _systemClock = systemClock;
         }
 
@@ -107,7 +109,8 @@ namespace FileServer.Controllers
             var accessPermission =  permission?.ToLower() == "view" ? FileAccessPermission.View : FileAccessPermission.Edit;
             var authenticatedUser = await _userAuthenticationService.AuthenticateUser(fileId, authHeader, access_token, accessPermission, cancellationToken);
             
-            var fileMetadata = await _fileMetaDataProvider.GetFileMetaDataForUserAsync(fileId, authenticatedUser.Id, cancellationToken);
+            var fileMetadata = await _userFileMetadataService.GetForFileAsync(fileId, authenticatedUser, cancellationToken);
+            
             
             if (fileMetadata is null) return NotFound();
             if (authenticatedUser.UserAccess is not (FileAccessPermission.Edit or FileAccessPermission.View)) return Forbid();
@@ -263,6 +266,7 @@ namespace FileServer.Controllers
             var authenticatedUser = await _userAuthenticationService.AuthenticateUser(fileId, authHeader, access_token, accessPermission, cancellationToken);
             
             var fileMetadata = await _fileMetaDataProvider.GetFileMetaDataForUserAsync(fileId, authenticatedUser.Id, cancellationToken);
+            
             //convert to memoryStream.
             
             var stream = new MemoryStream();

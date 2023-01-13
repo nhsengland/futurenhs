@@ -348,14 +348,93 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                 FileId = fileId
             });
 
-            List<FileData>versions = versionReader.Read<FileData>().ToList();
+            var versions = versionReader.Read<FileData>();
+            if (!versions.Any())
+                versions = null;
             var fileModel =  GenerateFileModelFromData(fileData, pathToFile, versions);
 
             return fileModel;
 
         }
+        
+        public async Task<File?> GetFileVersionAsync(Guid fileId, CancellationToken cancellationToken)
+        {
+            const string query =
+                @$"SELECT
+                                [{nameof(FileData.Id)}]             = fileHistory.Id, 
+                                [{nameof(FileData.Title)}]          = fileHistory.Title, 
+                                [{nameof(FileData.Description)}]    = fileHistory.Description, 
+                                [{nameof(FileData.CreatedAtUtc)}]   = files.CreatedAtUtc,
+                                [{nameof(FileData.CreatorId)}]      = createUser.Id,
+                                [{nameof(FileData.CreatorName)}]    = createUser.FirstName + ' ' + createUser.Surname,
+                                [{nameof(FileData.CreatorSlug)}]    = createUser.Slug,  
+                                [{nameof(FileData.ModifiedAtUtc)}]  = fileHistory.ModifiedAtUtc,
+                                [{nameof(FileData.ModifierId)}]     = modifyUser.Id,
+                                [{nameof(FileData.ModifierName)}]   = modifyUser.FirstName + ' ' + modifyUser.Surname,
+                                [{nameof(FileData.ModifierSlug)}]   = modifyUser.Slug,
+				                [{nameof(FileData.FileName)}]       = fileHistory.FileName,
+				                [{nameof(FileData.FileExtension)}]  = fileHistory.FileExtension
 
-        private File GenerateFileModelFromData(FileData fileData, IEnumerable<FolderPathItem> pathToFile,List<FileData> versions)
+                    FROM        [FileHistory] fileHistory
+                    JOIN        [File] files 
+                    ON          files.[Id] = fileHistory.[FileId]
+                    LEFT JOIN   MembershipUser createUser 
+                    ON          createUser.Id = files.CreatedBy
+					LEFT JOIN   MembershipUser modifyUser 
+                    ON          modifyUser.Id = files.ModifiedBy
+                    WHERE       fileHistory.Id = @FileId 
+                    AND         files.FileStatus = (SELECT Id FROM [FileStatus] WHERE Name = 'Verified');                    
+                    WITH BreadCrumbs
+                    AS 
+                    (
+                    SELECT
+                                folder.Id,
+                                folder.Title,
+                                folder.ParentFolder AS ParentFolder
+
+                    FROM        Folder folder
+                    JOIN        [File] files 
+                    ON          files.ParentFolder = folder.Id
+                    JOIN        [FileHistory] fileHistory
+                    ON          fileHistory.[FileId] = files.[Id]
+                    WHERE       fileHistory.Id = @FileId
+                    UNION ALL
+                    SELECT
+                                PK = folder.Id,
+                                Title = folder.[Title],
+                                ParentFK = folder.ParentFolder
+
+                    FROM        Folder folder
+                    INNER JOIN  BreadCrumbs Breadcrumb 
+                    ON          Breadcrumb.ParentFolder = folder.Id
+                    )
+                    
+                    SELECT
+                                [{nameof(FolderPathItem.Id)}]    = Id,
+                                [{nameof(FolderPathItem.Name)}]  = Title
+
+                    FROM        BreadCrumbs;";
+
+            using var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken);
+
+            using var reader = await dbConnection.QueryMultipleAsync(query, new
+            {
+                FileId = fileId
+            });
+
+            var fileData = await reader.ReadFirstOrDefaultAsync<FileData>();
+            var pathToFile = await reader.ReadAsync<FolderPathItem>();
+
+            if (fileData is null)
+                return null;
+            
+            var fileModel =  GenerateFileModelFromData(fileData, pathToFile, null);
+
+            return fileModel;
+
+        }
+
+        private File GenerateFileModelFromData(FileData fileData, IEnumerable<FolderPathItem> pathToFile, IEnumerable<FileData>? versions)
         {
             new FileExtensionContentTypeProvider().Mappings.TryGetValue(fileData.FileExtension, out var mimeType);
 
@@ -374,7 +453,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                         Slug = fileData.CreatorSlug
                     }
                 },
-                Versions = versions.Select(version => new FileVersion
+                
+                Versions = versions?.Select(version => new FileVersion
                 {
                     Id = version.Id,
                     Name = version.FileName,
@@ -406,6 +486,22 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                             Id = fileData.ModifierId.GetValueOrDefault(),
                             Name = fileData.ModifierName,
                             Slug = fileData.ModifierSlug
+                        }
+                    }
+                };
+            }
+            else
+            {
+                file = file with
+                {
+                    LastUpdated = new Models.Shared.Properties
+                    {
+                        AtUtc = fileData.CreatedAtUtc,
+                        By = new UserNavProperty
+                        {
+                            Id = fileData.CreatorId,
+                            Name = fileData.CreatorName,
+                            Slug = fileData.CreatorSlug
                         }
                     }
                 };

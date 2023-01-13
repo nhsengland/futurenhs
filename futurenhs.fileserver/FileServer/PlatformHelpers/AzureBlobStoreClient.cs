@@ -122,47 +122,6 @@ namespace FileServer.PlatformHelpers
                 throw;
             }
         }
-        // public async Task<string?> UploadFileAsync(string containerName, Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
-        // {
-        //     stream.CanSeek = true;
-        //     try
-        //     {
-        //         if (string.IsNullOrWhiteSpace(blobName)) throw new ArgumentNullException(nameof(blobName));
-        //
-        //         cancellationToken.ThrowIfCancellationRequested();
-        //
-        //         if (_blobServiceClient is null)
-        //         {
-        //             throw new InvalidOperationException("A connection to blob storage was not opened");
-        //         }
-        //         var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
-        //         var blobClient = containerClient.GetBlobClient(blobName);
-        //         var properties = blobClient.GetProperties();
-        //         var MetaData = new Dictionary<string, string> {{"ContentType", contentType}};
-        //         blobClient.(MetaData,null,cancellationToken);
-        //         var result = await blobClient.UploadAsync(stream, cancellationToken);
-        //        return Convert.ToBase64String(result.Value.ContentHash);
-        //     }
-        //     catch (AuthenticationFailedException ex)
-        //     {
-        //         _logger?.LogError(ex, "Unable to authenticate with the Azure Blob Storage service using the default credentials.  Please ensure the user account this application is running under has permissions to access the Blob Storage account we are targeting");
-        //
-        //         throw;
-        //     }
-        //     catch (RequestFailedException ex)
-        //     {
-        //         _logger?.LogError(ex, "Unable to access the storage endpoint as the download request failed: '{StatusCode} {StatusCodeName}'", ex.Status, Enum.Parse(typeof(HttpStatusCode), Convert.ToString(ex.Status, CultureInfo.InvariantCulture)));
-        //
-        //         throw;
-        //     }
-        //
-        //     catch (Exception ex)
-        //     {
-        //         _logger?.LogError(ex, "Unable to access the storage endpoint as the download request failed:'");
-        //
-        //         throw;
-        //     }
-        // }
 
         public async Task<BlobDownloadDetails> FetchBlobAndWriteToStream(string containerName, string blobName, string? blobVersion, Stream streamToWriteTo, byte[] contentHash, CancellationToken cancellationToken)
         {
@@ -178,7 +137,8 @@ namespace FileServer.PlatformHelpers
             var blobRequestConditions = new BlobDownloadOptions() {  };
             var blobClient = containerClient.GetBlobClient(blobName);
             
-            if (blobVersion is not null) blobClient = blobClient.WithVersion(blobVersion);
+            if (blobVersion is not null) 
+                blobClient = blobClient.WithVersion(blobVersion);
 
             try
             {

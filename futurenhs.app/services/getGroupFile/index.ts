@@ -97,17 +97,17 @@ export const getGroupFile = async (
             },
         },
         versions: apiData.versions
-            ? apiData.versions.map((version) => {
+            ? apiData.versions?.map((version) => {
                   return {
-                      id: version.id,
+                      id: version?.id,
                       type: 'file',
-                      name: version.name,
-                      modifiedAt: version.lastUpdated.atUtc,
-                      size: version.size,
+                      name: version?.name,
+                      modifiedAt: version?.lastUpdated.atUtc,
+                      size: version?.size,
                       lastUpdated: {
-                          id: version.lastUpdated.by.id,
+                          id: version?.lastUpdated.by.id,
                           text: {
-                              userName: version.lastUpdated.by.name,
+                              userName: version?.lastUpdated.by.name,
                           },
                       },
                   }
@@ -120,8 +120,9 @@ export const getGroupFile = async (
                 text: name,
             })) ?? [],
     }
-    console.log(
-        `serviceresponse.data.versions: ${serviceResponse.data.versions[0].lastUpdated.id}`
-    )
+    console
+        .log
+        //`serviceresponse.data.versions: ${serviceResponse.data.versions[0].lastUpdated.id}`
+        ()
     return serviceResponse
 }

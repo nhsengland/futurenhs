@@ -83,6 +83,9 @@ namespace FutureNHS.Api.Services
         {
             var userAccess = await _fileCommand.GetFileAccess(userId, fileId, cancellationToken);
 
+            if (userAccess == null)
+                userAccess = await _fileCommand.GetFileVersionAccess(userId, fileId, cancellationToken);
+
             var userCanPerformAction = false;
 
             if (permission == "view")
