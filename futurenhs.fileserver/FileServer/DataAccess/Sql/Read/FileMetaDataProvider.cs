@@ -192,7 +192,8 @@ namespace FileServer.DataAccess.Sql.Read
                     SET         [ModifiedBy] = @UserId,
                                 [ModifiedAtUtc] = @UpdatedDateUTC,
                                 [BlobHash] = @ContentHash,
-                                [VersionID] = @VersionId
+                                [VersionID] = @VersionId,
+                                [FileSizeBytes] = @SizeInBytes
                     WHERE       [Id] = @FileId ";
 
             var commandDefinition = new CommandDefinition(query, new
@@ -201,6 +202,8 @@ namespace FileServer.DataAccess.Sql.Read
                 UserId = userId,
                 ContentHash = blobMetadata.ContentHash,
                 VersionId = blobMetadata.VersionId,
+                SizeInBytes = blobMetadata.SizeInBytes,
+                
                 UpdatedDateUTC = modifiedAtUtc
 
             },transaction: transaction, cancellationToken: cancellationToken);

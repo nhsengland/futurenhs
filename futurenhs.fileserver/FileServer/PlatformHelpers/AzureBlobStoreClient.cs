@@ -99,7 +99,7 @@ namespace FileServer.PlatformHelpers
                 var response = await blob.UploadAsync(stream, headers,null,null,null,null,cancellationToken);
                 
                 var blobMetadata = new AzureBlobMetadata
-                    { ContentHash = response.Value.ContentHash, VersionId = response.Value.VersionId };
+                    { ContentHash = response.Value.ContentHash, VersionId = response.Value.VersionId, SizeInBytes = stream.Position };
                 return blobMetadata;
             }
             catch (AuthenticationFailedException ex)
