@@ -77,9 +77,6 @@ export default function ExcalidrawApp() {
                         state: AppState
                     ) => console.log('Elements :', elements, 'State : ', state)}
                     onPointerUpdate={(payload) => console.log(payload)}
-                    onCollabButtonClick={() =>
-                        window.alert('You clicked on collab button')
-                    }
                     viewModeEnabled={viewModeEnabled}
                     zenModeEnabled={zenModeEnabled}
                     gridModeEnabled={gridModeEnabled}
