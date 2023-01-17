@@ -5,4 +5,5 @@ public sealed record AzureBlobMetadata
     public byte[] ContentHash { get; init; }
     
     public string VersionId { get; init; }
+    public long SizeInBytes { get; init; }
     }

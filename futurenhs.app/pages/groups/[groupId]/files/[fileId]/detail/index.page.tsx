@@ -17,7 +17,7 @@ import { User } from '@appTypes/user'
 import classNames from 'classnames'
 import { Link } from '@components/generic/Link'
 import { ActionLink } from '@components/generic/ActionLink'
-import { dateTime } from '@helpers/formatters/dateTime'
+import { dateTime, dateTimeWithTime } from '@helpers/formatters/dateTime'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { DataGrid } from '@components/layouts/DataGrid'
 import { RichText } from '@components/generic/RichText'
@@ -60,6 +60,26 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
         versions,
         text: fileText,
     } = file ?? {}
+
+const readableFileSize = (bytes, si=true, dp=2) => {
+    const thresh = si ? 1000 : 1024;
+  
+    if (Math.abs(bytes) < thresh) {
+      return bytes + ' B';
+    }
+  
+    const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    let u = -1;
+    const r = 10**dp;
+  
+    do {
+      bytes /= thresh;
+      ++u;
+    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+  
+  
+    return bytes.toFixed(dp) + ' ' + units[u];
+  }
 
     const { body } = fileText ?? {}
    
@@ -121,13 +141,13 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
 
     let versionRows = []
     for (let i = 0; i < versions?.length; i++) {
-        const sizeInKb = `${(versions[i].size * 0.001).toFixed(2)}KB`;
-        const versionPath: string = `${
-            routes.groupFilesRoot
-        }/${encodeURIComponent(versions[i].id)}`
-        versionRows.push([
+            const versionPath: string = `${
+                routes.groupFilesRoot
+                }/${encodeURIComponent(versions[i].id)}`
+            versionRows.push([
             {
-                children: sizeInKb,
+                children: readableFileSize(versions[i].size),
+                // children: sizeInKb,
                 shouldRenderCellHeader: true,
                 className: generatedCellClasses.name,
                 headerClassName: generatedHeaderCellClasses.name,
@@ -140,8 +160,8 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
             },
             {
                 children: versions[i].modifiedAt
-                    ? dateTime({ value: versions[i].modifiedAt })
-                    : dateTime({ value: created }),
+                    ? dateTimeWithTime({ value: versions[i].modifiedAt })
+                    : dateTimeWithTime({ value: created }),
                 shouldRenderCellHeader: true,
                 className: generatedCellClasses.lastUpdate,
                 headerClassName: generatedHeaderCellClasses.lastUpdate,
@@ -234,8 +254,8 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
                             },
                             {
                                 children: modified
-                                    ? dateTime({ value: modified })
-                                    : dateTime({ value: created }),
+                                    ? dateTimeWithTime({ value: modified })
+                                    : dateTimeWithTime({ value: created }),
                                 shouldRenderCellHeader: true,
                                 className: generatedCellClasses.lastUpdate,
                                 headerClassName:

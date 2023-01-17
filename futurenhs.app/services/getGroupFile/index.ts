@@ -120,9 +120,5 @@ export const getGroupFile = async (
                 text: name,
             })) ?? [],
     }
-    console
-        .log
-        //`serviceresponse.data.versions: ${serviceResponse.data.versions[0].lastUpdated.id}`
-        ()
     return serviceResponse
 }
