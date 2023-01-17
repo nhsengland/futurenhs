@@ -156,14 +156,20 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(AuthUserData.EmailAddress)}]       = membershipUser.Email,          
                                 [{nameof(AuthUserData.FullName)}]           = TRIM(ISNULL(membershipUser.FirstName, '') + ' ' + ISNULL(membershipUser.Surname, '')),
                                 [{nameof(AuthUserData.Initials)}]           = membershipUser.Initials, 
+                                [{nameof(AuthUserData.AvatarUrl)}]          = [image].FileName, 
                                 [{nameof(AuthUserData.FileId)}]             = files.Id, 
                                 [{nameof(AuthUserData.GroupSlug)}]          = groups.Slug 
 
-                    FROM MembershipUser membershipUser
-                    JOIN [File] files on files.Id = @FileId
-                    JOIN Folder folder on folder.Id = files.ParentFolder
-                    JOIN [Group] groups on groups.Id = folder.Group_Id
-                    WHERE membershipUser.Id = @UserId
+                    FROM        MembershipUser membershipUser
+                    JOIN        [File] files 
+                    on          files.Id = @FileId
+                    JOIN        Folder folder 
+                    on          folder.Id = files.ParentFolder
+                    JOIN        [Group] groups 
+                    on          groups.Id = folder.Group_Id
+                    LEFT JOIN   Image [image]
+                    ON          [image].Id = membershipUser.ImageId  
+                    WHERE       membershipUser.Id = @UserId
                 ";
 
             var queryDefinition = new CommandDefinition(query, new
@@ -186,7 +192,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                 [{nameof(AuthUserData.Id)}]                 = membershipUser.Id,
                                 [{nameof(AuthUserData.EmailAddress)}]       = membershipUser.Email,          
                                 [{nameof(AuthUserData.FullName)}]           = TRIM(ISNULL(membershipUser.FirstName, '') + ' ' + ISNULL(membershipUser.Surname, '')),
-                                [{nameof(AuthUserData.Initials)}]           = membershipUser.Initials, 
+                                [{nameof(AuthUserData.Initials)}]           = membershipUser.Initials,
+                                [{nameof(AuthUserData.AvatarUrl)}]          = [image].FileName, 
                                 [{nameof(AuthUserData.FileId)}]             = fileHistory.Id, 
                                 [{nameof(AuthUserData.GroupSlug)}]          = groups.Slug 
 
@@ -195,6 +202,8 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     JOIN [File] files on files.Id = fileHistory.FileId
                     JOIN Folder folder on folder.Id = files.ParentFolder
                     JOIN [Group] groups on groups.Id = folder.Group_Id
+                    LEFT JOIN   Image [image]
+                    ON          [image].Id = membershipUser.ImageId  
                     WHERE membershipUser.Id = @UserId
                 ";
 

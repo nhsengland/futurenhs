@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.Diagnostics;
 using System.Net;
 using System.Runtime.Serialization;
@@ -11,6 +11,7 @@ using System.Text;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
+using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
 using FutureNHS.Api.Exceptions;
@@ -24,6 +25,8 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.Azure.Storage.Blob;
 using FutureNHS.Api.Services.Validation;
 using FutureNHS.Api.DataAccess.Models.FileAndFolder;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FutureNHS.Api.Services
 {
@@ -41,9 +44,10 @@ namespace FutureNHS.Api.Services
         private readonly IPermissionsService _permissionsService;
         private readonly IFileTypeValidator _fileTypeValidator;
         private readonly IGroupCommand _groupCommand;
+        private readonly IOptions<AzureImageBlobStorageConfiguration> _options;
         private readonly string[] _acceptedFileTypes = new[] { ".pdf", ".ppt", ".pptx", ".doc", ".docx", ".xls", ".xlsx" };
 
-        public FileService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, IFileBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupCommand groupCommand)
+        public FileService(ISystemClock systemClock, ILogger<DiscussionService> logger, IPermissionsService permissionsService, IFileCommand fileCommand, IFileBlobStorageProvider blobStorageProvider, IFileTypeValidator fileTypeValidator, IGroupCommand groupCommand, IOptions<AzureImageBlobStorageConfiguration> options)
         {
             _systemClock = systemClock;
             _fileCommand = fileCommand;
@@ -52,6 +56,7 @@ namespace FutureNHS.Api.Services
             _fileTypeValidator = fileTypeValidator;
             _groupCommand = groupCommand;
             _logger = logger;
+            _options = options;
         }
 
         private async Task CreateFileAsync(FileDto fileDto, CancellationToken cancellationToken)
@@ -103,7 +108,17 @@ namespace FutureNHS.Api.Services
                 throw new SecurityException($"Error: User does not have access");
             }
 
-            return new AuthUser { Id = userAccess.Id, FullName = userAccess.FullName, Initials = userAccess.Initials, EmailAddress = userAccess.EmailAddress };
+            string? avatar = null;
+            if (!userAccess.AvatarUrl.IsNullOrEmpty())
+                avatar = $"{_options.Value.PrimaryServiceUrl}/{userAccess.AvatarUrl}";
+            
+            return new AuthUser 
+                {   Id = userAccess.Id, 
+                    FullName = userAccess.FullName, 
+                    Initials = userAccess.Initials, 
+                    EmailAddress = userAccess.EmailAddress,
+                    AvatarUrl = avatar
+                };
         }
 
         // TODO Need to figure out how we rollback if cancellation is requested or prevent it?

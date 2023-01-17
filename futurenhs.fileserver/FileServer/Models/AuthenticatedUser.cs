@@ -10,6 +10,8 @@ namespace FileServer.Models
         public Guid Id { get; init; }
         public string? FullName { get; init; }
         public string? EmailAddress { get; init; }
+        
+        public string? AvatarUrl { get; init; }
         public Guid? AccessToken{ get; init; }
         
         public FileAccessPermission UserAccess{ get; init; }

@@ -171,10 +171,10 @@ namespace FileServer.Controllers
 
             dynamic userExtraInfo = new ExpandoObject();
 
-            //var userAvatarUri = authenticatedUser.UserAvatar?.Source;
+            var userAvatarUri = authenticatedUser.AvatarUrl;
             var userEmailAddress = authenticatedUser.EmailAddress;
 
-            //if (userAvatarUri is not null && userAvatarUri.IsAbsoluteUri) userExtraInfo.Avatar = userAvatarUri.AbsoluteUri;
+            if (userAvatarUri is not null) userExtraInfo.Avatar = userAvatarUri;
             if (!string.IsNullOrWhiteSpace(userEmailAddress)) userExtraInfo.Mail = userEmailAddress;
 
             responseBody.UserExtraInfo = userExtraInfo;
