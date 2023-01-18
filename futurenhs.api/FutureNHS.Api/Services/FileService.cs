@@ -25,6 +25,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.Azure.Storage.Blob;
 using FutureNHS.Api.Services.Validation;
 using FutureNHS.Api.DataAccess.Models.FileAndFolder;
+using FutureNHS.Api.Models.File;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -135,6 +136,7 @@ namespace FutureNHS.Api.Services
             var file = await this.UploadMultipartContent(requestBody, contentType, cancellationToken);
 
             file.CreatedBy = userId;
+            file.ModifiedBy = userId;
             file.ParentFolder = folderId;
 
             var validator = new FileValidator();
@@ -194,7 +196,7 @@ namespace FutureNHS.Api.Services
 
                             // now make it unique
                             var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
-                            string? md5Hash;
+                            AzureBlobMetaData blobUploadData;
 
                             // TODO MimeDetective does not work when stream has already been uploaded - figure out a solution
                             //if (fileContentTypeMatchesExtension is false)
@@ -211,7 +213,7 @@ namespace FutureNHS.Api.Services
                             }
                             try
                             {
-                                md5Hash = await _blobStorageProvider.UploadFileAsync(section.Body, uniqueFileName, MimeTypesMap.GetMimeType(encodedFileName), cancellationToken);
+                                blobUploadData = await _blobStorageProvider.UploadFileAsync(section.Body, uniqueFileName, MimeTypesMap.GetMimeType(encodedFileName), cancellationToken);
                             }
                             catch (Exception ex)
                             {
@@ -237,8 +239,13 @@ namespace FutureNHS.Api.Services
                             fileDto.FileSizeBytes = size;
                             fileDto.BlobName = uniqueFileName;
                             fileDto.CreatedAtUTC = now;
-                            if (md5Hash != null) 
-                                fileDto.BlobHash = Convert.FromBase64String(md5Hash);
+                            fileDto.ModifiedAtUTC = now;
+
+                            if (blobUploadData != null)
+                            {
+                                fileDto.VersionId = blobUploadData.VersionId;
+                                fileDto.BlobHash = blobUploadData.ContentHash;
+                            }
                         }
                     }
                     else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))

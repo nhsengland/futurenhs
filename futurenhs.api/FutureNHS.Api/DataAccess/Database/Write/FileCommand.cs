@@ -36,6 +36,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                  ,[ModifiedAtUTC]
                                  ,[ParentFolder]
                                  ,[FileStatus]
+                                 ,[VersionId]
                                  ,[BlobHash]
                                  ,[IsDeleted])
                     VALUES
@@ -51,6 +52,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                                  ,@ModifiedAtUTC
                                  ,@ParentFolder
                                  ,@FileStatus
+                                 ,@VersionId
                                  ,@BlobHash
                                  ,@IsDeleted)";
 
@@ -70,6 +72,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 FileStatus = file.FileStatus,
                 BlobHash = file.BlobHash,
                 IsDeleted = file.IsDeleted,
+                VersionId = file.VersionId
             }, cancellationToken: cancellationToken);
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);

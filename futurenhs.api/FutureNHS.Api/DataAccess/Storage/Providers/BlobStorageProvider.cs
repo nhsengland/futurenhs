@@ -5,8 +5,10 @@ using Azure.Identity;
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
 using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
+using FutureNHS.Api.Models.File;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
@@ -24,6 +26,8 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
         private readonly Uri _downloadEndpoint;
         private readonly ILogger<BlobStorageProvider> _logger;
         private readonly ISystemClock _systemClock;
+        private readonly string _connectionString;
+        private readonly string _containerName;
 
         private readonly CloudBlobContainer? _cloudBlobContainer;
 
@@ -33,30 +37,43 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
             _systemClock = systemClock;
             _logger = logger;
             _downloadEndpoint = downloadEndpoint;
-
+            _connectionString = connectionString;
+            _containerName = containerName;
+            
             var cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
             var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
             _cloudBlobContainer = cloudBlobClient.GetContainerReference(containerName);
         }
 
-        public async Task<string?> UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
+        public async Task<AzureBlobMetaData?> UploadFileAsync(Stream stream, string blobName, string contentType, CancellationToken cancellationToken)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(blobName)) throw new ArgumentNullException(nameof(blobName));
 
                 cancellationToken.ThrowIfCancellationRequested();
+                
+                var blob = new BlockBlobClient(_connectionString, _containerName,blobName);
 
-                if (_cloudBlobContainer is null)
+                using var md5 = System.Security.Cryptography.MD5.Create();
+
+                var headers = new BlobHttpHeaders
                 {
-                    throw new InvalidOperationException("A connection to blob storage was not opened");
-                }
+                    ContentType = contentType,
+                };
+                
+                var newStream = new MemoryStream();
+                await stream.CopyToAsync(newStream, cancellationToken);
+                newStream.Position = 0;
+                
+                var response = await blob.UploadAsync(newStream, headers,null,null,null,null,cancellationToken);
+                
+                var blobMetadata = new AzureBlobMetaData
+                    { ContentHash = response.Value.ContentHash, VersionId = response.Value.VersionId };
 
-                var blob = _cloudBlobContainer.GetBlockBlobReference(blobName);
-
-                blob.Properties.ContentType = contentType;
-                await blob.UploadFromStreamAsync(stream, cancellationToken);
-                return blob.Properties.ContentMD5;
+                
+                
+                return blobMetadata;
             }
             catch (AuthenticationFailedException ex)
             {
@@ -78,25 +95,29 @@ namespace FutureNHS.Api.DataAccess.Storage.Providers
                 throw;
             }
         }
-
-        public async Task<string?> UploadFileAsync(byte[] bytes, string blobName, string contentType, CancellationToken cancellationToken)
+        
+        public async Task<AzureBlobMetaData?> UploadFileAsync(byte[] bytes, string blobName, string contentType, CancellationToken cancellationToken)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(blobName)) throw new ArgumentNullException(nameof(blobName));
 
                 cancellationToken.ThrowIfCancellationRequested();
+                
+                var blob = new BlockBlobClient(_connectionString, _containerName,blobName);
 
-                if (_cloudBlobContainer is null)
+                using var md5 = System.Security.Cryptography.MD5.Create();
+
+                var headers = new BlobHttpHeaders
                 {
-                    throw new InvalidOperationException("A connection to blob storage was not opened");
-                }
-
-                var blob = _cloudBlobContainer.GetBlockBlobReference(blobName);
-
-                blob.Properties.ContentType = contentType;
-                await blob.UploadFromByteArrayAsync(bytes, 0, bytes.Length, cancellationToken);
-                return blob.Properties.ContentMD5;
+                    ContentType = contentType,
+                };
+                var stream = new MemoryStream(bytes);
+                var response = await blob.UploadAsync(stream, headers,null,null,null,null,cancellationToken);
+                
+                var blobMetadata = new AzureBlobMetaData
+                    { ContentHash = response.Value.ContentHash, VersionId = response.Value.VersionId };
+                return blobMetadata;
             }
             catch (AuthenticationFailedException ex)
             {

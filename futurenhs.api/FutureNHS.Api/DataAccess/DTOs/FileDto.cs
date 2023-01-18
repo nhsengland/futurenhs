@@ -8,6 +8,8 @@
         public string FileName { get; set; }
         public long FileSizeBytes { get; set; }
         public string FileExtension { get; set; }
+        
+        public string VersionId { get; set; }
         public string BlobName { get; set; }
         public Guid CreatedBy { get; set; }
         public DateTime CreatedAtUTC { get; set; }
