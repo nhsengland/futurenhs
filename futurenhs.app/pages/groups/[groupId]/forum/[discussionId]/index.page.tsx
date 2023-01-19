@@ -50,6 +50,10 @@ import { ErrorBoundary } from '@components/layouts/ErrorBoundary'
 import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
 import { UserMeta } from '@components/blocks/UserMeta'
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies'
+import {
+    CommentLikes,
+    getGroupDiscussionCommentLikes,
+} from '@services/getGroupDiscussionCommentLikes'
 import { getRouteToParam } from '@helpers/routing/getRouteToParam'
 import { FormErrors, FormConfig } from '@appTypes/form'
 import { getStandardServiceHeaders } from '@helpers/fetch'
@@ -95,6 +99,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     services = {
         getGroupDiscussionCommentsWithReplies:
             getGroupDiscussionCommentsWithReplies,
+        getGroupDiscussionCommentLikes: getGroupDiscussionCommentLikes,
         postGroupDiscussionComment: postGroupDiscussionComment,
         postGroupDiscussionCommentReply: postGroupDiscussionCommentReply,
         putGroupDiscussionCommentLike: putGroupDiscussionCommentLike,
@@ -183,6 +188,25 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
             } catch (error) {
                 console.log(error)
             }
+        },
+        []
+    )
+
+    const viewLikes = useCallback(
+        async (commentId: string): Promise<CommentLikes> => {
+            try {
+                await services.getGroupDiscussionCommentLikes({
+                    user,
+                    groupId,
+                    discussionId,
+                    commentId,
+                    pagination,
+                })
+            } catch (error) {
+                console.log(error)
+                console.log('Help JS is scary')
+            }
+            return 'this is working'
         },
         []
     )
@@ -624,6 +648,9 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 likeAction={handleLike}
                                                 className="u-border-l-theme-8"
                                             >
+                                                <p>{`I have been liked by ${viewLikes(
+                                                    commentId
+                                                )}`}</p>
                                                 {hasReply && (
                                                     <ul className="u-list-none c-comment_replies-list u-p-0">
                                                         {repliesComponents[0]}

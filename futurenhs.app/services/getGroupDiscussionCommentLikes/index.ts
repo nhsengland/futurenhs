@@ -14,9 +14,7 @@ import {
 } from '@appTypes/service'
 import { Pagination } from '@appTypes/pagination'
 import { User } from '@appTypes/user'
-import { Domain } from '@appTypes/domain'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
-import { api } from '@constants/routes'
 
 declare type Options = {
     groupId: string
