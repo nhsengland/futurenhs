@@ -29,7 +29,7 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export type CommentLikes = {}
+export type CommentLikes = string
 
 export const getGroupDiscussionCommentLikes = async (
     { groupId, discussionId, commentId, user, pagination }: Options,
@@ -70,17 +70,17 @@ export const getGroupDiscussionCommentLikes = async (
         )
     }
 
-    serviceResponse.data = Object.entries(apiData).reduce(
-        (acc, [key, value]) => {
-            return {
-                ...acc,
-                [key]: {
-                    result: value,
-                },
-            }
-        },
-        serviceResponse.data
-    )
-    console.log(apiData)
-    return serviceResponse
+    // serviceResponse.data = Object.entries(apiData).reduce(
+    //     (acc, [key, value]) => {
+    //         return {
+    //             ...acc,
+    //             [key]: {
+    //                 result: value,
+    //             },
+    //         }
+    //     },
+    //     serviceResponse.data
+    // )
+    // console.log(apiData[0].firstRegistered.by.name)
+    return apiData[0].firstRegistered.by.name
 }

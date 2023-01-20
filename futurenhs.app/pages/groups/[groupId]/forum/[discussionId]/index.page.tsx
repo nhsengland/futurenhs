@@ -195,22 +195,27 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     const viewLikes = useCallback(
         async (commentId: string): Promise<CommentLikes> => {
             try {
-                await services.getGroupDiscussionCommentLikes({
+                var value = await services.getGroupDiscussionCommentLikes({
                     user,
                     groupId,
                     discussionId,
                     commentId,
                     pagination,
                 })
+                return value
             } catch (error) {
                 console.log(error)
                 console.log('Help JS is scary')
             }
-            return 'this is working'
         },
         []
     )
 
+    // try to resolve the promise
+    let viewedLike = viewLikes('1af57d07-9012-4511-b9fc-ad88012033b0')
+    viewedLike.then(function (result) {
+        console.log(result)
+    })
     /**
      * Handle client-side validation failure in forms
      */
@@ -648,9 +653,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 likeAction={handleLike}
                                                 className="u-border-l-theme-8"
                                             >
-                                                <p>{`I have been liked by ${viewLikes(
-                                                    commentId
-                                                )}`}</p>
+                                                <p>{`I have been liked by ${commentId}`}</p>
                                                 {hasReply && (
                                                     <ul className="u-list-none c-comment_replies-list u-p-0">
                                                         {repliesComponents[0]}
