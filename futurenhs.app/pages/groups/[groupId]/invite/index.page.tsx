@@ -319,7 +319,7 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                         />
                     </DynamicListContainer>
                 ) : (
-                    <div className="u-w-full">{noPendingInvites}</div>
+                    <p>{noPendingInvites}</p>
                 )}
                 <PaginationWithStatus
                     id="group-list-pagination"
