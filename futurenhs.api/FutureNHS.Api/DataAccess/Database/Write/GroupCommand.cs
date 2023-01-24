@@ -173,7 +173,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return group.SingleOrDefault() ?? throw new NotFoundException("Group not found.");
         }
 
-        public async Task<IEnumerable<GroupInvite>> GetGroupInvitesByUserAsync(Guid userId,
+        public async Task<IEnumerable<GroupInvite>> GetGroupInvitesByUserIdAsync(Guid userId,
             CancellationToken cancellationToken = default)
         {
             IEnumerable<GroupInvite> invites;
@@ -704,7 +704,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
 
                     FROM        [GroupInvites] gi
-                    WHERE       gi.Id = @Id;";
+                    WHERE       gi.Id = @Id AND gi.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
@@ -716,7 +716,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return await dbConnection.QuerySingleOrDefaultAsync<GroupInvite>(commandDefinition);
         }
         
-        public async Task<GroupInvite> GetGroupInviteByUserAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default)
+        public async Task<GroupInvite> GetGroupInviteForUserIdAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default)
         {
             const string query =
                 @$" SELECT
@@ -749,7 +749,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             await using var connection = new SqlConnection(dbConnection.ConnectionString);
 
-            var invite = await GetGroupInviteByUserAsync(userId, groupId, cancellationToken);
+            var invite = await GetGroupInviteForUserIdAsync(userId, groupId, cancellationToken);
             
             await connection.OpenAsync(cancellationToken);
            

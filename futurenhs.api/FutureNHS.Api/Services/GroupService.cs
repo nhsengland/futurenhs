@@ -32,7 +32,6 @@ namespace FutureNHS.Api.Services
         private readonly IImageBlobStorageProvider _blobStorageProvider;
         private readonly ISystemClock _systemClock;
         private readonly IPermissionsService _permissionsService;
-        // private readonly IRegistrationCommand _registrationCommand;
         private readonly IFileTypeValidator _fileTypeValidator;
         private readonly IGroupCommand _groupCommand;
         private readonly IGroupImageService _imageService;
@@ -54,8 +53,7 @@ namespace FutureNHS.Api.Services
             IGroupImageService imageService,
             IGroupCommand groupCommand,
             IHtmlSanitizer htmlSanitizer, 
-            IGroupDataProvider groupDataProvider, 
-            // IRegistrationCommand registrationCommand,
+            IGroupDataProvider groupDataProvider,
             IContentService contentService)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
@@ -64,7 +62,6 @@ namespace FutureNHS.Api.Services
             _fileTypeValidator = fileTypeValidator ?? throw new ArgumentNullException(nameof(fileTypeValidator));
             _groupCommand = groupCommand ?? throw new ArgumentNullException(nameof(groupCommand));
             _groupDataProvider = groupDataProvider ?? throw new ArgumentNullException(nameof(groupDataProvider));
-            // _registrationCommand = registrationCommand ?? throw new ArgumentNullException(nameof(registrationCommand));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _imageService = imageService ?? throw new ArgumentNullException(nameof(imageService));
             _htmlSanitizer = htmlSanitizer ?? throw new ArgumentNullException(nameof(htmlSanitizer));
@@ -526,7 +523,7 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var invitesForUser = await _groupCommand.GetGroupInvitesByUserAsync(userId, cancellationToken);
+            var invitesForUser = await _groupCommand.GetGroupInvitesByUserIdAsync(userId, cancellationToken);
 
             return await _groupDataProvider.GetGroupInvitesForUserAsync(userId, invitesForUser, offset, limit, cancellationToken);
             

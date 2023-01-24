@@ -214,7 +214,7 @@ namespace FutureNHS.Api.Services
                 throw new ValidationException(nameof(groupUser.MembershipUser), "User has already requested access to this group");
             }
             
-            var userIsInvited = await _groupCommand.GetGroupInviteByUserAsync(userId, group.Id, cancellationToken);
+            var userIsInvited = await _groupCommand.GetGroupInviteForUserIdAsync(userId, group.Id, cancellationToken);
             if (userIsInvited is not null)
             {
                 await _groupCommand.RedeemGroupInviteAsync(userId, group.Id, cancellationToken);

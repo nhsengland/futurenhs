@@ -22,10 +22,10 @@ public interface IGroupCommand
     Task DeleteGroupInviteAsync(Guid groupInviteId, byte[] rowVersion, CancellationToken cancellationToken = default);
     Task<GroupInvite> GetGroupInviteByIdAsync(Guid groupInviteId, CancellationToken cancellationToken = default);
 
-    Task<GroupInvite> GetGroupInviteByUserAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default);
+    Task<GroupInvite> GetGroupInviteForUserIdAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default);
     Task RedeemGroupInviteAsync(Guid userId, Guid groupId, CancellationToken cancellationToken);
 
-    Task<IEnumerable<GroupInvite>> GetGroupInvitesByUserAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<GroupInvite>> GetGroupInvitesByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
     Task<(uint totalCount, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid groupId, uint offset, uint limit, CancellationToken cancellationToken = default);
 

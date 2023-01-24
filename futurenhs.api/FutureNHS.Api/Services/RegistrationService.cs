@@ -30,6 +30,7 @@ namespace FutureNHS.Api.Services
         private const string AddDomainRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/add";
         private const string UpdateDomainRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/edit";
         private const string DeleteDomainRole = $"https://schema.collaborate.future.nhs.uk/domain/v1/delete";
+        private const string DeleteInviteRole = $"https://schema.collaborate.future.nhs.uk/platform/v1/invite";
 
         private readonly string _fqdn;
         private readonly ILogger<AdminUserService> _logger;
@@ -472,12 +473,12 @@ namespace FutureNHS.Api.Services
         public async Task DeletePlatformInviteAsync(Guid userId, Guid inviteId, byte[] rowVersion, CancellationToken cancellationToken)
         {
 
-            // var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, groupInviteId, GroupInviteDeleteRole, cancellationToken);
-            // if (userCanPerformAction is not true)
-            // {
-            //     _logger.LogError($"Error: DeleteGroupInviteAsync - User:{0} does not have access to update group invite:{1}", userId, groupInviteId);
-            //     throw new SecurityException($"Error: User does not have access");
-            // }
+            var userCanPerformAction = await _permissionsService.UserCanPerformActionAsync(userId, DeleteInviteRole, cancellationToken);
+            if (userCanPerformAction is not true)
+            {
+                _logger.LogError($"Error: DeleteGroupInviteAsync - User:{0} does not have access to update group invite:{1}", userId, inviteId);
+                throw new SecurityException($"Error: User does not have access");
+            }
             
             var groupInvite = await _registrationCommand.GetPlatformInviteById(inviteId, cancellationToken);
             if (!groupInvite.RowVersion.SequenceEqual(rowVersion))
