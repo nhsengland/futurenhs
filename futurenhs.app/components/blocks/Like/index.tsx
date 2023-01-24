@@ -5,6 +5,8 @@ import { SVGIcon } from '@components/generic/SVGIcon'
 
 import { Props } from './interfaces'
 
+import { getGroupDiscussionCommentLikes } from '@services/getGroupDiscussionCommentLikes'
+
 export const Like: (props: Props) => JSX.Element = ({
     targetId,
     iconName = 'icon-like-fill',
@@ -19,6 +21,9 @@ export const Like: (props: Props) => JSX.Element = ({
     const [dynamicLikeCount, setDynamicLikeCount] = useState(likeCount)
     const [isProcessing, setisProcessing] = useState(false)
     const [hasLiked, setHasLiked] = useState(isLiked)
+
+    const names: string[] = ['Dave']
+    let namesList: string = names.join(', ')
 
     const likeTimeOut = useRef(null)
     const processingTimeOut = useRef(null)
@@ -76,18 +81,24 @@ export const Like: (props: Props) => JSX.Element = ({
 
     if (isActive) {
         return (
-            <button
-                aria-label={ariaLabelToUse}
-                className={generatedClasses.wrapper}
-                aria-disabled={isProcessing}
-                onClick={handleLikeToggle}
-            >
-                <SVGIcon name={iconName} className={generatedClasses.icon} />
-                <span>
-                    {dynamicLikeCount}{' '}
-                    {dynamicLikeCount === 1 ? countSingular : countPlural}
-                </span>
-            </button>
+            <div>
+                <button
+                    aria-label={ariaLabelToUse}
+                    className={generatedClasses.wrapper}
+                    aria-disabled={isProcessing}
+                    onClick={handleLikeToggle}
+                >
+                    <SVGIcon
+                        name={iconName}
+                        className={generatedClasses.icon}
+                    />
+                    <span>
+                        {dynamicLikeCount}{' '}
+                        {dynamicLikeCount === 1 ? countSingular : countPlural}
+                    </span>
+                </button>
+                {names.length != 0 ? <p>Liked by: {namesList}</p> : null}
+            </div>
         )
     }
 

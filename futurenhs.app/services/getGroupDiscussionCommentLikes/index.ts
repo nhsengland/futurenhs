@@ -29,14 +29,12 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export type CommentLikes = string
-
 export const getGroupDiscussionCommentLikes = async (
     { groupId, discussionId, commentId, user, pagination }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<CommentLikes>> => {
-    const serviceResponse: ServiceResponse<CommentLikes> = {
-        data: {},
+): Promise<ServiceResponse<Array<string>>> => {
+    const serviceResponse: ServiceResponse<Array<string>> = {
+        data: [],
     }
 
     const setFetchOptions =
@@ -70,17 +68,10 @@ export const getGroupDiscussionCommentLikes = async (
         )
     }
 
-    // serviceResponse.data = Object.entries(apiData).reduce(
-    //     (acc, [key, value]) => {
-    //         return {
-    //             ...acc,
-    //             [key]: {
-    //                 result: value,
-    //             },
-    //         }
-    //     },
-    //     serviceResponse.data
-    // )
-    // console.log(apiData[0].firstRegistered.by.name)
-    return apiData[0].firstRegistered.by.name
+    let commentLikesUserNames: Array<string> = []
+    for (let i = 0; i < apiData.length; i++) {
+        commentLikesUserNames.push(apiData[i].firstRegistered.by.name)
+    }
+    serviceResponse.data = commentLikesUserNames
+    return serviceResponse
 }

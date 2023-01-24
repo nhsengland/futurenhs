@@ -50,10 +50,7 @@ import { ErrorBoundary } from '@components/layouts/ErrorBoundary'
 import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
 import { UserMeta } from '@components/blocks/UserMeta'
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies'
-import {
-    CommentLikes,
-    getGroupDiscussionCommentLikes,
-} from '@services/getGroupDiscussionCommentLikes'
+import { getGroupDiscussionCommentLikes } from '@services/getGroupDiscussionCommentLikes'
 import { getRouteToParam } from '@helpers/routing/getRouteToParam'
 import { FormErrors, FormConfig } from '@appTypes/form'
 import { getStandardServiceHeaders } from '@helpers/fetch'
@@ -193,7 +190,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     )
 
     const viewLikes = useCallback(
-        async (commentId: string): Promise<CommentLikes> => {
+        async (commentId: string): Promise<Array<string>> => {
             try {
                 var value = await services.getGroupDiscussionCommentLikes({
                     user,
@@ -202,7 +199,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                     commentId,
                     pagination,
                 })
-                return value
+                return []
             } catch (error) {
                 console.log(error)
                 console.log('Help JS is scary')
@@ -211,11 +208,11 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
         []
     )
 
-    // try to resolve the promise
-    let viewedLike = viewLikes('1af57d07-9012-4511-b9fc-ad88012033b0')
-    viewedLike.then(function (result) {
-        console.log(result)
-    })
+    // // try to resolve the promise
+    // let viewedLike = viewLikes('1af57d07-9012-4511-b9fc-ad88012033b0')
+    // viewedLike.then(function (result) {
+    //     console.log(result)
+    // })
     /**
      * Handle client-side validation failure in forms
      */
@@ -653,7 +650,6 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 likeAction={handleLike}
                                                 className="u-border-l-theme-8"
                                             >
-                                                <p>{`I have been liked by ${commentId}`}</p>
                                                 {hasReply && (
                                                     <ul className="u-list-none c-comment_replies-list u-p-0">
                                                         {repliesComponents[0]}
