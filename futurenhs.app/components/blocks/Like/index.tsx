@@ -5,8 +5,6 @@ import { SVGIcon } from '@components/generic/SVGIcon'
 
 import { Props } from './interfaces'
 
-import { getGroupDiscussionCommentLikes } from '@services/getGroupDiscussionCommentLikes'
-
 export const Like: (props: Props) => JSX.Element = ({
     targetId,
     iconName = 'icon-like-fill',
@@ -103,12 +101,15 @@ export const Like: (props: Props) => JSX.Element = ({
     }
 
     return (
-        <span className={generatedClasses.wrapper}>
-            <SVGIcon name={iconName} className={generatedClasses.icon} />
-            <span>
-                {dynamicLikeCount}{' '}
-                {dynamicLikeCount === 1 ? countSingular : countPlural}
+        <div>
+            <span className={generatedClasses.wrapper}>
+                <SVGIcon name={iconName} className={generatedClasses.icon} />
+                <span>
+                    {dynamicLikeCount}{' '}
+                    {dynamicLikeCount === 1 ? countSingular : countPlural}
+                </span>
             </span>
-        </span>
+            {names.length != 0 ? <p>Liked by: {namesList}</p> : null}
+        </div>
     )
 }
