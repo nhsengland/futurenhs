@@ -189,30 +189,6 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
         []
     )
 
-    const viewLikes = useCallback(
-        async (commentId: string): Promise<Array<string>> => {
-            try {
-                var value = await services.getGroupDiscussionCommentLikes({
-                    user,
-                    groupId,
-                    discussionId,
-                    commentId,
-                    pagination,
-                })
-                return []
-            } catch (error) {
-                console.log(error)
-                console.log('Help JS is scary')
-            }
-        },
-        []
-    )
-
-    // // try to resolve the promise
-    // let viewedLike = viewLikes('1af57d07-9012-4511-b9fc-ad88012033b0')
-    // viewedLike.then(function (result) {
-    //     console.log(result)
-    // })
     /**
      * Handle client-side validation failure in forms
      */
