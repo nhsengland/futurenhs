@@ -32,6 +32,7 @@ export const Comment: (props: Props) => JSX.Element = ({
     likeAction,
     likeCount,
     isLiked,
+    likes,
     children,
     className,
 }) => {
@@ -110,6 +111,7 @@ export const Comment: (props: Props) => JSX.Element = ({
                         like: 'like',
                         removeLike: 'Remove like',
                     }}
+                    likes={likes}
                     className="u-mr-6"
                 />
                 {shouldEnableReplies && (

@@ -120,6 +120,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(
         discussionCommentsList
     )
+
     const [dynamicPagination, setPagination] = useState(pagination)
     const [newReplyId, setNewReplyId] = useState(null)
 
@@ -545,6 +546,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                         likeCount,
                                         isLiked,
                                         replies,
+                                        likes,
                                     },
                                     index
                                 ) => {
@@ -561,6 +563,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                             text: {
                                                 body: discussionBody,
                                             },
+                                            likes,
                                         }
                                     const commenterUserInitials: string =
                                         initials({
@@ -624,6 +627,11 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 likeCount={likeCount}
                                                 isLiked={isLiked}
                                                 likeAction={handleLike}
+                                                likes={
+                                                    likes.length
+                                                        ? likes
+                                                        : undefined
+                                                }
                                                 className="u-border-l-theme-8"
                                             >
                                                 {hasReply && (

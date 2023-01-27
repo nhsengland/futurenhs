@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import { SVGIcon } from '@components/generic/SVGIcon'
 
 import { Props } from './interfaces'
+import { CommentLike } from '@services/getGroupDiscussionCommentLikes'
 
 export const Like: (props: Props) => JSX.Element = ({
     targetId,
@@ -13,6 +14,7 @@ export const Like: (props: Props) => JSX.Element = ({
     shouldEnable,
     likeAction,
     text,
+    likes,
     className,
 }) => {
     const [isActive, setIsActive] = useState(false)
@@ -20,8 +22,7 @@ export const Like: (props: Props) => JSX.Element = ({
     const [isProcessing, setisProcessing] = useState(false)
     const [hasLiked, setHasLiked] = useState(isLiked)
 
-    const names: string[] = ['Dave']
-    let namesList: string = names.join(', ')
+    const names: CommentLike[] = likes
 
     const likeTimeOut = useRef(null)
     const processingTimeOut = useRef(null)
@@ -95,7 +96,7 @@ export const Like: (props: Props) => JSX.Element = ({
                         {dynamicLikeCount === 1 ? countSingular : countPlural}
                     </span>
                 </button>
-                {names.length != 0 ? <p>Liked by: {namesList}</p> : null}
+                {<p>Liked by: {names}</p>}
             </div>
         )
     }
@@ -109,7 +110,7 @@ export const Like: (props: Props) => JSX.Element = ({
                     {dynamicLikeCount === 1 ? countSingular : countPlural}
                 </span>
             </span>
-            {names.length != 0 ? <p>Liked by: {namesList}</p> : null}
+            {<p>Liked by: {names}</p>}
         </div>
     )
 }

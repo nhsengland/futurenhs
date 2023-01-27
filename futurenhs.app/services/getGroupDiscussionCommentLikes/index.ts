@@ -29,11 +29,26 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
+export interface CommentLike {
+    id: string
+    createdByThisUser?: boolean
+    createdAtUtc?: string
+    firstRegistered?: {
+        atUtc?: string
+    }
+    by?: {
+        id?: string
+        name?: string
+        slug?: string
+        image?: ImageData
+    }
+}
+
 export const getGroupDiscussionCommentLikes = async (
     { groupId, discussionId, commentId, user, pagination }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<Array<string>>> => {
-    const serviceResponse: ServiceResponse<Array<string>> = {
+): Promise<ServiceResponse<Array<CommentLike>>> => {
+    const serviceResponse: ServiceResponse<Array<CommentLike>> = {
         data: [],
     }
 
@@ -68,10 +83,7 @@ export const getGroupDiscussionCommentLikes = async (
         )
     }
 
-    let commentLikesUserNames: Array<string> = []
-    for (let i = 0; i < apiData.length; i++) {
-        commentLikesUserNames.push(apiData[i].firstRegistered.by.name)
-    }
-    serviceResponse.data = commentLikesUserNames
+    console.log(apiData)
+    serviceResponse.data = apiData
     return serviceResponse
 }

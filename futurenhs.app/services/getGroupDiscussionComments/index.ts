@@ -7,7 +7,7 @@ import { defaultTimeOutMillis, requestMethods } from '@constants/fetch'
 import { ServiceError } from '..'
 import { getApiPaginationQueryParams } from '@helpers/routing/getApiPaginationQueryParams'
 import { getClientPaginationFromApi } from '@helpers/routing/getClientPaginationFromApi'
-import { ServicePaginatedResponse } from '@appTypes/service'
+import { ServicePaginatedResponse, ServiceResponse } from '@appTypes/service'
 import { FetchResponse } from '@appTypes/fetch'
 import { ApiResponse } from '@appTypes/service'
 import { DiscussionComment } from '@appTypes/discussion'
@@ -15,6 +15,10 @@ import { User } from '@appTypes/user'
 import { Pagination } from '@appTypes/pagination'
 import { mapToProfileImageObject } from '@helpers/util/data'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
+import {
+    CommentLike,
+    getGroupDiscussionCommentLikes,
+} from '@services/getGroupDiscussionCommentLikes'
 
 declare type Options = {
     groupId: string
@@ -78,6 +82,8 @@ export const getGroupDiscussionComments = async (
             }
         )
     }
+    const commentLikeRequests: Array<Promise<ServiceResponse<CommentLike[]>>> =
+        []
 
     apiData.data?.forEach((datum) => {
         serviceResponse.data.push({
@@ -90,18 +96,51 @@ export const getGroupDiscussionComments = async (
                 text: {
                     userName: datum.firstRegistered?.by?.name ?? '',
                 },
-                image: mapToProfileImageObject(datum.firstRegistered?.by?.image, 'Profile image')
+                image: mapToProfileImageObject(
+                    datum.firstRegistered?.by?.image,
+                    'Profile image'
+                ),
             },
             created: datum.firstRegistered?.atUtc ?? '',
             replyCount: datum.repliesCount ?? 0,
             likeCount: datum.likesCount ?? 0,
             isLiked: datum.currentUser?.liked,
+            likes: [],
         })
+        commentLikeRequests.push(
+            getGroupDiscussionCommentLikes({
+                groupId,
+                discussionId,
+                commentId: datum.id,
+                user,
+                pagination,
+            })
+        )
+    })
+    const commentLikesResponses = await Promise.all(commentLikeRequests)
+    const commentLikes = commentLikesResponses.map(
+        (serviceResponse) => serviceResponse.data
+    )
+
+    apiData.data.forEach((comment, index: number) => {
+        const hasLikes = commentLikes.some((likes) =>
+            likes.some((like) => like.id === comment.id)
+        )
+
+        if (hasLikes) {
+            const likes = commentLikes.find(
+                (likes) => !!likes[0] && likes[0].id === comment.id
+            )
+            const idx = serviceResponse.data.findIndex(
+                (c) => c.commentId === comment.id
+            )
+            serviceResponse.data[idx].likes = likes
+        }
     })
 
     serviceResponse.pagination = getClientPaginationFromApi({
         apiPaginatedResponse: apiData,
     })
-
+    console.log(serviceResponse)
     return serviceResponse
 }
