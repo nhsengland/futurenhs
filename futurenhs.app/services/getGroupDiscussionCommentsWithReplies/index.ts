@@ -94,6 +94,7 @@ export const getGroupDiscussionCommentsWithReplies = async (
     > = []
     const commentLikeRequests: Array<Promise<ServiceResponse<CommentLike[]>>> =
         []
+
     apiData.data?.forEach(async (datum) => {
         if (datum?.repliesCount > 0) {
             commentIdsWithReplies.push(datum.id)
@@ -145,38 +146,22 @@ export const getGroupDiscussionCommentsWithReplies = async (
     })
 
     const [...commentReplies] = await Promise.all(commentRepliesRequests)
-    const commentLikesResponses = await Promise.all(commentLikeRequests)
-    const commentLikes = commentLikesResponses.map(
+    const getAllLikes = await Promise.all(commentLikeRequests)
+    const likesCollection = getAllLikes.map(
         (serviceResponse) => serviceResponse.data
     )
 
-    commentIdsWithReplies.forEach((commentId: string, index: number) => {
-        const parentComment: any = serviceResponse.data.find(
-            (comment) => comment.commentId === commentId
-        )
-
-        if (parentComment && commentReplies[index]?.data?.length > 0) {
-            parentComment.replies = commentReplies[index]?.data
-        }
-
-        const hasLikes = commentLikes.some((likes) =>
-            likes.some((like) => like.id === parentComment.id)
-        )
-
-        if (hasLikes) {
-            const likes = commentLikes.find(
-                (likes) => !!likes[0] && likes[0].id === parentComment.id
-            )
-            const idx = serviceResponse.data.findIndex(
-                (c) => c.commentId === commentId
-            )
-            serviceResponse.data[idx].likes = likes
-        }
+    serviceResponse.data.forEach(({ commentId }, i) => {
+        const commentLikes = likesCollection.find((commentLikes) => {
+            const commentHasLikes = !!commentLikes[0]
+            const likesAreThisComment = commentLikes[0].id === commentId
+            return commentHasLikes && likesAreThisComment
+        })
+        serviceResponse.data[i].likes = commentLikes
     })
 
     serviceResponse.pagination = getClientPaginationFromApi({
         apiPaginatedResponse: apiData,
     })
-
     return serviceResponse
 }

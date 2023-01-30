@@ -62,6 +62,6 @@ export interface Props {
      * Determines whether the user has liked the comment already
      */
     isLiked?: boolean
-    likes?: Array<CommentLike>
+    likes: Array<CommentLike>
     className?: string
 }

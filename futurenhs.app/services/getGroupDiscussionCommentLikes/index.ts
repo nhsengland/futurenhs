@@ -35,12 +35,12 @@ export interface CommentLike {
     createdAtUtc?: string
     firstRegistered?: {
         atUtc?: string
-    }
-    by?: {
-        id?: string
-        name?: string
-        slug?: string
-        image?: ImageData
+        by?: {
+            id?: string
+            name?: string
+            slug?: string
+            image?: ImageData
+        }
     }
 }
 
@@ -82,8 +82,6 @@ export const getGroupDiscussionCommentLikes = async (
             }
         )
     }
-
-    console.log(apiData)
     serviceResponse.data = apiData
     return serviceResponse
 }

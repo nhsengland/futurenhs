@@ -352,6 +352,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                 text,
                 likeCount,
                 isLiked,
+                likes,
             }) => {
                 const formattedCommentId: string =
                     getFormattedCommentId(commentId)
@@ -407,6 +408,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                             replySubmitAction={handleCommentReplySubmit}
                             shouldEnableLikes={shouldEnableLikes}
                             likeCount={likeCount}
+                            likes={likes}
                             isLiked={isLiked}
                             likeAction={handleLike}
                             className="c-comment--reply u-border-l-theme-8"
@@ -627,11 +629,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 likeCount={likeCount}
                                                 isLiked={isLiked}
                                                 likeAction={handleLike}
-                                                likes={
-                                                    likes.length
-                                                        ? likes
-                                                        : undefined
-                                                }
+                                                likes={likes}
                                                 className="u-border-l-theme-8"
                                             >
                                                 {hasReply && (

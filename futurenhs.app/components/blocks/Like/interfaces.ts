@@ -34,6 +34,6 @@ export interface Props {
         like: string
         removeLike: string
     }
-    likes?: Array<CommentLike>
+    likes: Array<CommentLike>
     className?: string
 }

@@ -21,8 +21,9 @@ export const Like: (props: Props) => JSX.Element = ({
     const [dynamicLikeCount, setDynamicLikeCount] = useState(likeCount)
     const [isProcessing, setisProcessing] = useState(false)
     const [hasLiked, setHasLiked] = useState(isLiked)
-
-    const names: CommentLike[] = likes
+    const names: Array<string> = likes?.map(
+        (like) => like.firstRegistered.by.name
+    )
 
     const likeTimeOut = useRef(null)
     const processingTimeOut = useRef(null)
@@ -96,7 +97,7 @@ export const Like: (props: Props) => JSX.Element = ({
                         {dynamicLikeCount === 1 ? countSingular : countPlural}
                     </span>
                 </button>
-                {<p>Liked by: {names}</p>}
+                {names ? <p>Liked by: {names}</p> : null}
             </div>
         )
     }
@@ -110,7 +111,7 @@ export const Like: (props: Props) => JSX.Element = ({
                     {dynamicLikeCount === 1 ? countSingular : countPlural}
                 </span>
             </span>
-            {<p>Liked by: {names}</p>}
+            {names ? <p>Liked by: {names}</p> : null}
         </div>
     )
 }

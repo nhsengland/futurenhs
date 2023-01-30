@@ -117,25 +117,18 @@ export const getGroupDiscussionCommentReplies = async (
             })
         )
     })
-    const commentLikesResponses = await Promise.all(commentLikeRequests)
-    const commentLikes = commentLikesResponses.map(
+    const getAllLikes = await Promise.all(commentLikeRequests)
+    const likesCollection = getAllLikes.map(
         (serviceResponse) => serviceResponse.data
     )
 
-    apiData.data.forEach((comment, index: number) => {
-        const hasLikes = commentLikes.some((likes) =>
-            likes.some((like) => like.id === comment.id)
-        )
-
-        if (hasLikes) {
-            const likes = commentLikes.find(
-                (likes) => !!likes[0] && likes[0].id === comment.id
-            )
-            const idx = serviceResponse.data.findIndex(
-                (c) => c.commentId === comment.id
-            )
-            serviceResponse.data[idx].likes = likes
-        }
+    serviceResponse.data.forEach(({ commentId }, i) => {
+        const commentLikes = likesCollection.find((commentLikes) => {
+            const commentHasLikes = !!commentLikes[0]
+            const likesAreThisComment = commentLikes[0].id === commentId
+            return commentHasLikes && likesAreThisComment
+        })
+        serviceResponse.data[i].likes = commentLikes
     })
 
     serviceResponse.pagination = getClientPaginationFromApi({
