@@ -24,7 +24,7 @@ export interface Props {
 }
 
 export enum InputTypes {
-    USERNAME = 'username',
+    MULTI = 'multi',
     PASSWORD = 'password',
     NUMBER = 'number',
     FILE = 'file',

@@ -40,6 +40,11 @@ import { GroupPage } from '@appTypes/page'
 import { postGroupUserInvite } from '@services/postGroupUserInvite'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getFeatureEnabled } from '@services/getFeatureEnabled'
+import { Input } from '@components/forms/Input'
+import { ValidationMessage } from '@helpers/validation'
+import { ErrorSummary } from '@components/generic/ErrorSummary'
+import classNames from 'classnames'
+import { RemainingCharacterCount } from '@components/forms/RemainingCharacterCount'
 
 export interface Props extends GroupPage {}
 
@@ -53,19 +58,15 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     contentText,
     groupId,
 }) => {
-    const formConfig: FormConfig = useFormConfig(
-        formTypes.INVITE_USER,
-        forms[formTypes.INVITE_USER]
-    )
-    const [errors, setErrors] = useState(formConfig?.errors)
+    const [validationErrors, setValidationErrors] = useState<
+        Array<ValidationMessage>
+    >([])
     const notificationsContext: any = useContext(NotificationsContext)
-
-    const { secondaryHeading } = contentText
 
     /**
      * Client-side submission handler - TODO: Pending API
      */
-    const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
+    const handleSubmit = async (formData: FormData) => {
         const headers = getStandardServiceHeaders({
             csrfToken,
             accessToken: user.accessToken,
@@ -86,19 +87,35 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                     body: `Invite sent to ${emailAddress}`,
                 },
             })
-
-            return Promise.resolve({})
-        } catch (error) {
-            const errors: FormErrors =
-                getServiceErrorDataValidationErrors(error) ||
-                getGenericFormError(error)
-
-            setErrors(errors)
-
-            return Promise.resolve(errors)
-        }
+        } catch (error) {}
+    }
+    const errorClasses: any = {
+        wrapper: 'c-error-summary',
+        list: classNames(
+            'c-error-summary_list',
+            'u-m-0',
+            'u-p-0',
+            'u-list-none'
+        ),
+        listItem: classNames('c-error-summary_list-item'),
+        link: classNames('c-error-summary_link'),
+        item: classNames('c-error-summary_item'),
     }
 
+    const inputClasses: any = {
+        wrapper: classNames('nhsuk-form-group', 'nhsuk-form-group--error'),
+        label: classNames('nhsuk-label'),
+        hint: classNames('nhsuk-hint'),
+        error: classNames('nhsuk-error-message'),
+        input: classNames(
+            'nhsuk-input nhsuk-u-width-full',
+            'nhsuk-input--error'
+        ),
+    }
+
+    const charCountClasses = {
+        wrapper: classNames('nhsuk-hint', 'u-mt-1', 'u-mb-0'),
+    }
     /**
      * Render
      */
@@ -106,20 +123,41 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
         <LayoutColumn className="c-page-body">
             <LayoutColumnContainer>
                 <LayoutColumn tablet={8}>
-                    <FormWithErrorSummary
-                        csrfToken={csrfToken}
-                        formConfig={formConfig}
-                        errors={errors}
-                        text={{
-                            form: {
-                                submitButton: 'Send invite',
-                            },
-                        }}
-                        submitAction={handleSubmit}
-                        shouldClearOnSubmitSuccess={true}
+                    {/* <div
+                        aria-live="assertive"
+                        aria-atomic="true"
+                        aria-relevant="additions"
+                        tabIndex={-1}
                     >
-                        <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
-                    </FormWithErrorSummary>
+                        <div className={errorClasses.wrapper}>
+                            There is a problem
+                            <ul className={errorClasses.list}>
+                                <li className={errorClasses.listItem}>
+                                    <span className={errorClasses.item}>
+                                        Enter a valid email address
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div> */}
+                    <div className={inputClasses.wrapper}>
+                        <label className={inputClasses.label}>
+                            Email address
+                        </label>
+                        {/* <span className={inputClasses.hint}>Test hint</span> */}
+                        <span className={inputClasses.error}>
+                            Enter a valid email address
+                        </span>
+                        <input type="text" className={inputClasses.input} />
+                        {/* <span
+                            aria-live="polite"
+                            className={charCountClasses.wrapper}
+                        >
+                            {true
+                                ? 'characters too many'
+                                : 'characters remaining'}
+                        </span> */}
+                    </div>
                 </LayoutColumn>
             </LayoutColumnContainer>
         </LayoutColumn>
@@ -172,37 +210,6 @@ export const getServerSideProps: GetServerSideProps = async (
             if (!hasPermisson || !groupInviteEnabled) {
                 return {
                     notFound: true,
-                }
-            }
-
-            /**
-             * Handle server-side form post
-             */
-            if (formData && requestMethod === requestMethods.POST) {
-                props.forms[formTypes.INVITE_USER].initialValues = formData
-
-                try {
-                    const emailAddress: string = formData.get('Email')
-                    props.notifications = [
-                        {
-                            heading: notifications.SUCCESS,
-                            main: `Invite sent to ${emailAddress}`,
-                        },
-                    ]
-
-                    return {
-                        props: props,
-                    }
-                } catch (error) {
-                    const validationErrors: FormErrors =
-                        getServiceErrorDataValidationErrors(error)
-
-                    if (validationErrors) {
-                        props.forms[formTypes.INVITE_USER].errors =
-                            validationErrors
-                    } else {
-                        return handleSSRErrorProps({ props, error })
-                    }
                 }
             }
 

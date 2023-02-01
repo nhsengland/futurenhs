@@ -3,7 +3,7 @@ import { RichText } from '@components/generic/RichText'
 import { RemainingCharacterCount } from '@components/forms/RemainingCharacterCount'
 import { getAriaFieldAttributes } from '@helpers/util/form'
 import { InputTypes, Props } from './interfaces'
-import { useRef, useState } from 'react'
+import { MouseEvent, useRef, useState } from 'react'
 
 /**
  * Derived from the NHS Design System Text Input component: https://service-manual.nhs.uk/design-system/components/text-input.
@@ -40,22 +40,18 @@ export const Input: (props: Props) => JSX.Element = ({
         errorLabel: `${id}-error`,
         remainingCharacters: `${id}-remaining-characters`,
     }
-    const onInput = (
-        e: React.KeyboardEvent<HTMLInputElement>,
-        inputType: InputTypes
-    ) => {
-        if (inputType === InputTypes.USERNAME) {
-            const isEmail = new RegExp(
-                /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            )
-            const val = inputRef.current.value
+    const isMulti = inputType === InputTypes.MULTI
+    const onInput = () => {
+        if (isMulti) {
+            const val = inputRef.current.value.replace(/\s/g, '')
             if (val.substr(val.length - 1) === ',') {
-                inputRef.current.value = ''
-                if (!usernames.includes(val))
+                inputRef.current.value = null
+                if (!usernames.includes(val)) {
                     setUsernames([
                         ...usernames,
                         val.substring(0, val.length - 1),
                     ])
+                }
             }
         }
     }
@@ -85,45 +81,65 @@ export const Input: (props: Props) => JSX.Element = ({
         ]
     )
     return (
-        <div className={generatedClasses.wrapper}>
-            <label htmlFor={id} className={generatedClasses.label}>
-                {label}
-            </label>
-            {hint && (
-                <RichText
-                    id={generatedIds.hint}
-                    className={generatedClasses.hint}
-                    bodyHtml={hint}
-                    wrapperElementType="span"
+        <>
+            <div className={generatedClasses.wrapper}>
+                <label htmlFor={id} className={generatedClasses.label}>
+                    {label}
+                </label>
+                {hint && (
+                    <RichText
+                        id={generatedIds.hint}
+                        className={generatedClasses.hint}
+                        bodyHtml={hint}
+                        wrapperElementType="span"
+                    />
+                )}
+                {shouldRenderError && (
+                    <span className={generatedClasses.error}>
+                        {error || submitError || initialError}
+                    </span>
+                )}
+                <input
+                    {...input}
+                    {...ariaInputProps}
+                    id={id}
+                    type={inputType}
+                    className={generatedClasses.input}
+                    autoComplete={autoComplete ? autoComplete : 'off'}
+                    disabled={disabled}
+                    ref={inputRef}
+                    onInput={onInput}
                 />
+                {shouldRenderRemainingCharacterCount && maxLength && (
+                    <RemainingCharacterCount
+                        id={generatedIds.remainingCharacters}
+                        currentCharacterCount={input.value?.length ?? 0}
+                        maxCharacterCount={maxLength}
+                        className="u-float-right"
+                    />
+                )}
+            </div>
+
+            {isMulti && !!usernames.length && (
+                <div className="u-mb-20">
+                    {usernames.map((usr) => {
+                        return (
+                            <button
+                                className="c-button u-mr-2"
+                                onClick={(e) => {
+                                    e.preventDefault()
+
+                                    setUsernames(
+                                        usernames.filter((u) => u !== usr)
+                                    )
+                                }}
+                            >
+                                {usr} X
+                            </button>
+                        )
+                    })}
+                </div>
             )}
-            {shouldRenderError && (
-                <span className={generatedClasses.error}>
-                    {error || submitError || initialError}
-                </span>
-            )}
-            <input
-                {...input}
-                {...ariaInputProps}
-                id={id}
-                type={inputType}
-                className={generatedClasses.input}
-                autoComplete={autoComplete ? autoComplete : 'off'}
-                disabled={disabled}
-                ref={inputRef}
-                onKeyUp={(e) => {
-                    onInput(e, inputType)
-                }}
-            />
-            {usernames}
-            {shouldRenderRemainingCharacterCount && maxLength && (
-                <RemainingCharacterCount
-                    id={generatedIds.remainingCharacters}
-                    currentCharacterCount={input.value?.length ?? 0}
-                    maxCharacterCount={maxLength}
-                    className="u-float-right"
-                />
-            )}
-        </div>
+        </>
     )
 }
