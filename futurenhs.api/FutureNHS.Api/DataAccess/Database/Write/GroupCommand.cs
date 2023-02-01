@@ -177,9 +177,6 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             CancellationToken cancellationToken = default)
         {
             IEnumerable<GroupInvite> invites;
-            
-                        
-            var inviteQuery = "WHERE MembershipUser_Id = @UserId AND IsDeleted = 0";
 
             string query =
                 @$"SELECT 
@@ -190,7 +187,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     [{nameof(GroupInvite.MembershipUser_Id)}]                = MembershipUser_Id
     
                 FROM GroupInvites            
-                {inviteQuery}
+                WHERE MembershipUser_Id = @userId AND IsDeleted = 0
                 ORDER BY CreatedAtUTC";
             
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
@@ -214,22 +211,16 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             uint totalCount;
 
-            var groupQuery =
-                $"WHERE gi.GroupId = '{groupId}' AND gi.IsDeleted = 0";
-            
-            var platformQuery =
-                $"WHERE pi.GroupId = '{groupId}' AND pi.IsDeleted = 0";
-
             string query =
                 @$"
                     SELECT 
-                        [{nameof(PendingGroupMember.Id)}] = results.Id,
-                        [{nameof(PendingGroupMember.UserId)}] = results.UserId,
-                        [{nameof(PendingGroupMember.RowVersion)}] = results.RowVersion,
-                        [{nameof(PendingGroupMember.Email)}] = results.Email,
+                        [{nameof(PendingGroupMember.Id)}]           = results.Id,
+                        [{nameof(PendingGroupMember.UserId)}]       = results.UserId,
+                        [{nameof(PendingGroupMember.RowVersion)}]   = results.RowVersion,
+                        [{nameof(PendingGroupMember.Email)}]        = results.Email,
                         [{nameof(PendingGroupMember.CreatedAtUTC)}] = results.CreatedAtUTC,
-                        [{nameof(PendingGroupMember.InviteType)}] = results.InviteType
-
+                        [{nameof(PendingGroupMember.InviteType)}]   = results.InviteType
+                    
                     FROM   (
                         SELECT 
                             gi.Id,
@@ -241,8 +232,10 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                         FROM GroupInvites AS gi
                         JOIN MembershipUser AS mu
                         ON mu.Id = gi.MembershipUser_Id
-                        {groupQuery}
+                        WHERE gi.GroupId = @groupId AND gi.IsDeleted = 0
+                    
                         UNION ALL
+                    
                         SELECT 
                             pi.Id,
                             UserId = NULL,
@@ -251,8 +244,9 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                             pi.CreatedAtUTC,
                             InviteType = 'platform'
                         FROM PlatformInvite AS pi
-                        {platformQuery}
+                        WHERE pi.GroupId = @groupId AND pi.IsDeleted = 0
                     ) AS results
+                    
                     ORDER BY results.CreatedAtUTC
                     OFFSET @Offset ROWS
                     FETCH NEXT @Limit ROWS ONLY;
@@ -261,11 +255,11 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                     FROM   (
                         SELECT *
                         FROM GroupInvites AS gi
-                        {groupQuery}
+                        WHERE gi.GroupId = @groupId AND gi.IsDeleted = 0
                         UNION ALL
                         SELECT *
                         FROM PlatformInvite AS pi
-                        {platformQuery}
+                        WHERE pi.GroupId = @groupId AND pi.IsDeleted = 0
                     ) AS counted
         ";
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
@@ -273,6 +267,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
                 using var reader = await dbConnection.QueryMultipleAsync(query, new {
                     Offset = Convert.ToInt32(offset),
                     Limit = Convert.ToInt32(limit),
+                    GroupId = groupId,
                 });
                 members = reader.Read<PendingGroupMember>().ToList();
                 totalCount = await reader.ReadFirstAsync<uint>();
