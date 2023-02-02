@@ -4,6 +4,7 @@ export interface Props {
     className?: string
     material?: true
     size?: string
+    color?: string
 }
 
 export interface State {}

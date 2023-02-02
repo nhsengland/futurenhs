@@ -16,7 +16,7 @@ import { Page } from '@appTypes/page'
 import { GenericPageTextContent } from '@appTypes/content'
 import { authOptions } from '@pages/api/auth/[...nextauth].page'
 import { unstable_getServerSession } from 'next-auth'
-import SignInSubmitButton from '@components/forms/SignInSubmitButton'
+import SignInSubmitButton from '@components/old_forms/SignInSubmitButton'
 import { getFeatureEnabled } from '@services/getFeatureEnabled'
 import { features } from '@constants/routes'
 

@@ -1,0 +1,18 @@
+.c-multi-input {
+    &-enter-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        background: rgba(0, 0, 0, 0);
+        background-color: $green;
+        border: none;
+        &--disabled,
+        &--pressed {
+            filter: grayscale(100%) brightness(200%);
+        }
+    }
+}

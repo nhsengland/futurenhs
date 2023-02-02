@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { RichText } from '@components/generic/RichText'
-import { RemainingCharacterCount } from '@components/forms/RemainingCharacterCount'
+import { RemainingCharacterCount } from '@components/old_forms/RemainingCharacterCount'
 import { getAriaFieldAttributes } from '@helpers/util/form'
 import { InputTypes, Props } from './interfaces'
 import { MouseEvent, useRef, useState } from 'react'

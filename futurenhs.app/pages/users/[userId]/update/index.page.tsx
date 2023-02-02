@@ -39,7 +39,7 @@ import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { Avatar } from '@components/generic/Avatar'
 import { initials } from '@helpers/formatters/initials'
-import { Form } from '@components/forms/Form'
+import { Form } from '@components/old_forms/Form'
 import { ErrorSummary } from '@components/generic/ErrorSummary'
 import { getGenericFormError } from '@helpers/util/form'
 import { useFormConfig } from '@helpers/hooks/useForm'

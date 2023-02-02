@@ -4,7 +4,7 @@ import Autocomplete from 'accessible-autocomplete/react'
 
 import { getSiteUsersByTerm } from '@services/getSiteUsersByTerm'
 import { RichText } from '@components/generic/RichText'
-import { RemainingCharacterCount } from '@components/forms/RemainingCharacterCount'
+import { RemainingCharacterCount } from '@components/old_forms/RemainingCharacterCount'
 import { Option } from '@appTypes/option'
 import { Service } from '@appTypes/service'
 

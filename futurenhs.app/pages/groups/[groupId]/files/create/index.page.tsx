@@ -29,7 +29,7 @@ import { User } from '@appTypes/user'
 import { withTextContent } from '@helpers/hofs/withTextContent'
 import { formTypes } from '@constants/forms'
 import { getGenericFormError } from '@helpers/util/form'
-import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { FormWithErrorSummary } from '@components/old_forms/FormWithErrorSummary'
 import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { RichText } from '@components/generic/RichText'
@@ -72,11 +72,10 @@ export const GroupCreateFilePage: (props: Props) => JSX.Element = ({
 
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
         return new Promise((resolve) => {
-            const headers =
-                getStandardServiceHeaders({
-                    csrfToken,
-                    accessToken: user.accessToken,
-                })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                accessToken: user.accessToken,
+            })
             postGroupFile({ groupId, folderId, user, headers, body: formData })
                 .then(() => {
                     router.push(folderHref)

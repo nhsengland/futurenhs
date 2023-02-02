@@ -1,6 +1,10 @@
 .c-button {
     @extend %nhsuk-button;
 
+    &--alt {
+        @extend %nhsuk-button;
+        background-color: $blue;
+    }
     &--outline {
         @extend %toggle-button;
     }
@@ -18,11 +22,6 @@
     }
 
     &--themeable {
-        @extend %nhsuk-button-themeable
+        @extend %nhsuk-button-themeable;
     }
-
-}
-
-.c-button-outline {
-    @extend %toggle-button;
 }

@@ -4,7 +4,7 @@ import { Editor } from '@tinymce/tinymce-react'
 
 import { useAssetPath } from '@helpers/hooks/useAssetPath'
 import { RichText } from '@components/generic/RichText'
-import { RemainingCharacterCount } from '@components/forms/RemainingCharacterCount'
+import { RemainingCharacterCount } from '@components/old_forms/RemainingCharacterCount'
 import { getAriaFieldAttributes } from '@helpers/util/form'
 import { useIntersectionObserver } from '@helpers/hooks/useIntersectionObserver'
 
