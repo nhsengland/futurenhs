@@ -243,12 +243,15 @@ export const GroupMemberListingPage: (props: Props) => JSX.Element = ({
     const pendingMemberColumnList = [
         {
             children: 'User',
+            className: '',
         },
         {
-            children: 'Invited',
+            children: `Invited`,
+            className: 'tablet:u-text-right',
         },
         {
-            children: 'Actions',
+            children: `Actions`,
+            className: 'tablet:u-text-right',
         },
     ]
 
@@ -261,7 +264,7 @@ export const GroupMemberListingPage: (props: Props) => JSX.Element = ({
             },
             {
                 children: <span>{getDateFromUTC(invite.createdAtUTC)}</span>,
-                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
+                className: 'u-w-full tablet:u-w-1/8 u-text-right',
                 headerClassName: 'u-hidden',
             },
             {
@@ -278,7 +281,7 @@ export const GroupMemberListingPage: (props: Props) => JSX.Element = ({
                         material
                     />
                 ),
-                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
+                className: 'u-w-full tablet:u-w-1/8 u-text-right',
                 headerClassName: 'u-hidden',
             },
         ]

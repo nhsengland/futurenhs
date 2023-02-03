@@ -58,6 +58,7 @@ import { mdiCancel } from '@mdi/js'
 import { Dialog } from '@components/generic/Dialog'
 import { deletePlatformInvite } from '@services/deletePlatformInvite'
 import { deleteGroupInvite } from '@services/deleteGroupInvite'
+import { LayoutWidthContainer } from '@components/layouts/LayoutWidthContainer'
 
 declare interface ContentText extends GenericPageTextContent {
     noPendingInvites: string
@@ -262,7 +263,7 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
      * Render
      */
     return (
-        <LayoutColumn className="c-page-body">
+        <>
             <Dialog
                 id="dialog-delete-domain"
                 isOpen={isDeleteInviteOpen}
@@ -283,8 +284,8 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                     {`Are you sure you would like to cancel the invite for ${inviteToDelete?.email}?`}
                 </p>
             </Dialog>
-            <LayoutColumnContainer>
-                <LayoutColumn tablet={8}>
+            <LayoutColumn className="c-page-body">
+                <div className="u-mb-12">
                     <FormWithErrorSummary
                         csrfToken={csrfToken}
                         formConfig={formConfig}
@@ -299,36 +300,39 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                     >
                         <h2 className="nhsuk-heading-l">{mainHeading}</h2>
                     </FormWithErrorSummary>
-                </LayoutColumn>
-            </LayoutColumnContainer>
-            <LayoutColumnContainer className="c-page-body">
-                <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
-            </LayoutColumnContainer>
-            {hasPendingInvites ? (
-                <DynamicListContainer
-                    containerElementType="div"
-                    shouldEnableLoadMore
-                    className="u-list-none u-p-0"
-                >
-                    <DataGrid
-                        id="admin-table-pending-invites"
-                        columnList={columnList}
-                        rowList={rowList}
-                        text={{
-                            caption: 'Pending invites',
-                        }}
-                    />
-                </DynamicListContainer>
-            ) : (
-                <p>{noPendingInvites}</p>
-            )}
-            <PaginationWithStatus
-                id="group-list-pagination"
-                shouldEnableLoadMore
-                getPageAction={handleGetPage}
-                {...dynamicPagination}
-            />
-        </LayoutColumn>
+                </div>
+                <div>
+                    <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
+                    {hasPendingInvites ? (
+                        <DynamicListContainer
+                            containerElementType="div"
+                            shouldEnableLoadMore
+                            className="u-list-none u-p-0"
+                        >
+                            <DataGrid
+                                id="admin-table-pending-invites"
+                                columnList={columnList}
+                                rowList={rowList}
+                                text={{
+                                    caption: 'Pending invites',
+                                }}
+                            />
+
+                            <PaginationWithStatus
+                                id="group-list-pagination"
+                                shouldEnableLoadMore
+                                getPageAction={handleGetPage}
+                                {...dynamicPagination}
+                            />
+                        </DynamicListContainer>
+                    ) : (
+                        <div>
+                            <p>{noPendingInvites}</p>
+                        </div>
+                    )}
+                </div>
+            </LayoutColumn>
+        </>
     )
 }
 
