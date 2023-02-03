@@ -16,15 +16,11 @@ const ruleSet = {
     isRequired,
 }
 
-export const validate = (value: string, rules: Array<VRules>) => {
-    console.log(rules)
-    const ret = rules.map((rule) => {
+export const validate = (value: string, rules: Array<VRules>) =>
+    rules.map((rule) => {
         const testRule = ruleSet[rule]
         return testRule(value)
     })
-    console.log(ret)
-    return ret
-}
 
 export const approve = (rule: VRules): VMessage => ({
     error: false,

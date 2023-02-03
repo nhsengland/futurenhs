@@ -5,6 +5,10 @@
         @extend %nhsuk-button;
         background-color: $blue;
     }
+    &--disabled {
+        @extend %nhsuk-button;
+        filter: grayscale(100%);
+    }
     &--outline {
         @extend %toggle-button;
     }

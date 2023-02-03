@@ -37,7 +37,6 @@ export interface Props extends GroupPage {}
 export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     csrfToken,
     user,
-    contentText,
     groupId,
 }) => {
     const [validation, setValidation] = useState<Array<VMessage>>([])
@@ -83,10 +82,16 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                         type="text"
                         validation={validation}
                         onChange={onChange}
-                        getMulti={(multi) => {
-                            setEmails(multi)
-                        }}
+                        getMulti={setEmails}
                     />
+                    <button
+                        className={`c-button u-mt-10 ${
+                            !emails.length ? 'c-button--disabled' : null
+                        }`}
+                        disabled={!emails.length}
+                    >
+                        Send invite
+                    </button>
                 </LayoutColumn>
             </LayoutColumnContainer>
         </LayoutColumn>
