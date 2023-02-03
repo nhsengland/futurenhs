@@ -49,7 +49,7 @@ export const getGroupInvites: Service = async (
             pageSize: 10,
         },
     })
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.USER_GROUP_INVITES}?${paginationQueryParams}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.GROUP_INVITES}?${paginationQueryParams}`
     const authHeader = jwtHeader(user.accessToken)
     const apiHeaders = setFetchOptions({
         method: requestMethods.GET,

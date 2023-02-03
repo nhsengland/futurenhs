@@ -1,4 +1,4 @@
-import { GroupInvite } from '@appTypes/group'
+import { InviteDetails } from '@appTypes/group'
 import { Image } from '@appTypes/image'
 import { User } from '@appTypes/user'
 
@@ -8,7 +8,7 @@ export interface Props {
         strapLine?: string
     }
     groupId?: string
-    groupInvite?: GroupInvite
+    groupInvite?: InviteDetails
     refreshGroupInvites?: () => void
     themeId?: string
     totalDiscussionCount?: number

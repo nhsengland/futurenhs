@@ -53,7 +53,7 @@ namespace FutureNHS.Api.Services
             IGroupImageService imageService,
             IGroupCommand groupCommand,
             IHtmlSanitizer htmlSanitizer, 
-            IGroupDataProvider groupDataProvider, 
+            IGroupDataProvider groupDataProvider,
             IContentService contentService)
         {
             _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
@@ -121,7 +121,7 @@ namespace FutureNHS.Api.Services
             //     throw new SecurityException($"Error: User does not have access");
             // }
             
-            var groupInvite = await _groupCommand.GetGroupInviteAsync(groupInviteId, userId, cancellationToken);
+            var groupInvite = await _groupCommand.GetGroupInviteByIdAsync(groupInviteId, cancellationToken);
             if (!groupInvite.RowVersion.SequenceEqual(rowVersion))
             {
                 _logger.LogError($"Precondition Failed: DeleteGroupInviteAsync - GroupInvite:{0} has changed prior to submission ", groupInviteId);
@@ -411,7 +411,7 @@ namespace FutureNHS.Api.Services
             return await _groupDataProvider.GetGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
         }
 
-        public async Task<(uint, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken)
+        public async Task<(uint totalPending, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid userId, string slug, uint offset, uint limit, string sort, CancellationToken cancellationToken)
         {
             if (Guid.Empty == userId) throw new ArgumentOutOfRangeException(nameof(userId));
             if (string.IsNullOrWhiteSpace(slug)) throw new ArgumentOutOfRangeException(nameof(slug));
@@ -422,8 +422,10 @@ namespace FutureNHS.Api.Services
                 _logger.LogError($"Error: GetPendingGroupMembersAsync - User:{0} does not have permission to get pending group members of this group:{1}(slug)", userId, slug);
                 throw new ForbiddenException($"Error: User does not have access");
             }
+            
+            var groupDto = await _groupCommand.GetGroupAsync(slug, cancellationToken);
 
-            return await _groupDataProvider.GetPendingGroupMembersAsync(slug, offset, limit, sort, cancellationToken);
+            return await _groupCommand.GetPendingGroupMembersAsync(groupDto.Id, offset, limit, cancellationToken);
         }
 
         public async Task<Group?> GetGroupAsync(string slug, Guid userId, CancellationToken cancellationToken)
@@ -521,7 +523,7 @@ namespace FutureNHS.Api.Services
                 throw new ForbiddenException($"Error: User does not have access");
             }
 
-            var invitesForUser = await _groupCommand.GetInvitesAsync(userId, cancellationToken);
+            var invitesForUser = await _groupCommand.GetGroupInvitesByUserIdAsync(userId, cancellationToken);
 
             return await _groupDataProvider.GetGroupInvitesForUserAsync(userId, invitesForUser, offset, limit, cancellationToken);
             

@@ -1,6 +1,8 @@
 import { GenericPageTextContent } from '@appTypes/content'
 
 export default {
-    secondaryHeading: 'Invite group member',
+    mainHeading: 'Invite group member',
+    secondaryHeading: 'Pending members',
     subTitle: 'Invite',
+    noPendingInvites: 'No pending invites',
 } as GenericPageTextContent

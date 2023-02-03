@@ -173,23 +173,21 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             return group.SingleOrDefault() ?? throw new NotFoundException("Group not found.");
         }
 
-        public async Task<IEnumerable<GroupInvite>> GetInvitesAsync(Guid userId,
+        public async Task<IEnumerable<GroupInvite>> GetGroupInvitesByUserIdAsync(Guid userId,
             CancellationToken cancellationToken = default)
         {
             IEnumerable<GroupInvite> invites;
-            
-                        
-            var inviteQuery = "WHERE MembershipUser_Id = @UserId AND IsDeleted = 0";
 
             string query =
                 @$"SELECT 
                     [{nameof(GroupInvite.Id)}]                               = Id,
                     [{nameof(GroupInvite.GroupId)}]                          = GroupId,
                     [{nameof(GroupInvite.RowVersion)}]                       = RowVersion,
+                    [{nameof(GroupInvite.CreatedAtUTC)}]                     = CreatedAtUTC,
                     [{nameof(GroupInvite.MembershipUser_Id)}]                = MembershipUser_Id
     
                 FROM GroupInvites            
-                {inviteQuery}
+                WHERE MembershipUser_Id = @userId AND IsDeleted = 0
                 ORDER BY CreatedAtUTC";
             
             using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
@@ -205,6 +203,79 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             return invites;
         }
+
+        public async Task<(uint totalCount, IEnumerable<PendingGroupMember>)> GetPendingGroupMembersAsync(Guid groupId, uint offset, uint limit, CancellationToken cancellationToken = default)
+        {
+
+            IEnumerable<PendingGroupMember> members;
+
+            uint totalCount;
+
+            string query =
+                @$"
+                    SELECT 
+                        [{nameof(PendingGroupMember.Id)}]           = results.Id,
+                        [{nameof(PendingGroupMember.UserId)}]       = results.UserId,
+                        [{nameof(PendingGroupMember.RowVersion)}]   = results.RowVersion,
+                        [{nameof(PendingGroupMember.Email)}]        = results.Email,
+                        [{nameof(PendingGroupMember.CreatedAtUTC)}] = results.CreatedAtUTC,
+                        [{nameof(PendingGroupMember.InviteType)}]   = results.InviteType
+                    
+                    FROM   (
+                        SELECT 
+                            gi.Id,
+                            UserId = mu.Id,
+                            gi.RowVersion,
+                            mu.Email,
+                            gi.CreatedAtUTC,
+                            InviteType = 'group'
+                        FROM GroupInvites AS gi
+                        JOIN MembershipUser AS mu
+                        ON mu.Id = gi.MembershipUser_Id
+                        WHERE gi.GroupId = @groupId AND gi.IsDeleted = 0
+                    
+                        UNION ALL
+                    
+                        SELECT 
+                            pi.Id,
+                            UserId = NULL,
+                            pi.RowVersion,
+                            Email = pi.EmailAddress,
+                            pi.CreatedAtUTC,
+                            InviteType = 'platform'
+                        FROM PlatformInvite AS pi
+                        WHERE pi.GroupId = @groupId AND pi.IsDeleted = 0
+                    ) AS results
+                    
+                    ORDER BY results.CreatedAtUTC
+                    OFFSET @Offset ROWS
+                    FETCH NEXT @Limit ROWS ONLY;
+           
+                    SELECT COUNT(*)
+                    FROM   (
+                        SELECT *
+                        FROM GroupInvites AS gi
+                        WHERE gi.GroupId = @groupId AND gi.IsDeleted = 0
+                        UNION ALL
+                        SELECT *
+                        FROM PlatformInvite AS pi
+                        WHERE pi.GroupId = @groupId AND pi.IsDeleted = 0
+                    ) AS counted
+        ";
+            using (var dbConnection = await _connectionFactory.GetReadOnlyConnectionAsync(cancellationToken))
+            {
+                using var reader = await dbConnection.QueryMultipleAsync(query, new {
+                    Offset = Convert.ToInt32(offset),
+                    Limit = Convert.ToInt32(limit),
+                    GroupId = groupId,
+                });
+                members = reader.Read<PendingGroupMember>().ToList();
+                totalCount = await reader.ReadFirstAsync<uint>();
+            }
+
+            return (totalCount, members);
+        }
+
 
         public async Task DeleteGroupInviteAsync(Guid groupInviteId, byte[] rowVersion, CancellationToken cancellationToken = default)
         {
@@ -619,31 +690,28 @@ namespace FutureNHS.Api.DataAccess.Database.Write
             await dbConnection.ExecuteAsync(commandDefinition);
         }
         
-        public async Task<GroupInvite> GetGroupInviteAsync(Guid groupInviteId, Guid userId, CancellationToken cancellationToken = default)
+        public async Task<GroupInvite> GetGroupInviteByIdAsync(Guid groupInviteId, CancellationToken cancellationToken = default)
         {
             const string query =
                 @$" SELECT
                                 [{nameof(GroupInviteDto.Id)}]                            = Id,
-                                [{nameof(GroupInviteDto.MembershipUser_Id)}]             = MembershipUser_Id,
                                 [{nameof(GroupInviteDto.RowVersion)}]                    = RowVersion
 
 
                     FROM        [GroupInvites] gi
-                    WHERE       gi.MembershipUser_Id = @MembershipUserId
-                    AND         gi.Id = @Id;";
+                    WHERE       gi.Id = @Id AND gi.IsDeleted = 0;";
 
             using var dbConnection = await _connectionFactory.GetReadWriteConnectionAsync(cancellationToken);
 
             var commandDefinition = new CommandDefinition(query, new
             {
                 Id = groupInviteId,
-                MembershipUserId = userId
             }, cancellationToken: cancellationToken);
 
             return await dbConnection.QuerySingleOrDefaultAsync<GroupInvite>(commandDefinition);
         }
         
-        public async Task<GroupInvite> GetInviteToGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default)
+        public async Task<GroupInvite> GetGroupInviteForUserIdAsync(Guid userId, Guid groupId, CancellationToken cancellationToken = default)
         {
             const string query =
                 @$" SELECT
@@ -676,7 +744,7 @@ namespace FutureNHS.Api.DataAccess.Database.Write
 
             await using var connection = new SqlConnection(dbConnection.ConnectionString);
 
-            var invite = await GetInviteToGroupAsync(userId, groupId, cancellationToken);
+            var invite = await GetGroupInviteForUserIdAsync(userId, groupId, cancellationToken);
             
             await connection.OpenAsync(cancellationToken);
            

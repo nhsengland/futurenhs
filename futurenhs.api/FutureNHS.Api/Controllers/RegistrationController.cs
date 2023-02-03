@@ -136,6 +136,17 @@ namespace FutureNHS.Api.Controllers
             return Ok(invite);
         }
         
+        [HttpDelete]
+        [Route("registration/invite/{inviteId}")]
+        public async Task<IActionResult> DeleteDomainAsync(Guid inviteId, CancellationToken cancellationToken)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var rowVersion = _etagService.GetIfMatch();
+            await _registrationService.DeletePlatformInviteAsync(identity.MembershipUserId, inviteId, rowVersion, cancellationToken);
+
+            return Ok();
+        }
+        
         [HttpGet]
         [Route("registration/register/{emailAddress}")]
         public async Task<IActionResult> RegisterMemberAsync(string emailAddress, CancellationToken cancellationToken)

@@ -203,9 +203,8 @@ namespace FutureNHS.Api.Controllers
             var route = Request.Path.Value;
 
             var (total, pendingGroupMembers) = await _groupService.GetPendingGroupMembersAsync(identity.MembershipUserId, slug, filter.Offset, filter.Limit, filter.Sort, cancellationToken);
-
+            
             var pagedResponse = PaginationHelper.CreatePagedResponse(pendingGroupMembers, filter, total, route);
-
             return Ok(pagedResponse);
         }
 

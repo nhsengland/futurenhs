@@ -3,6 +3,7 @@ import { useContext, useState } from 'react'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { actions as actionConstants } from '@constants/actions'
+import classNames from 'classnames'
 import {
     features,
     groupTabIds,
@@ -22,6 +23,7 @@ import {
     selectRequestMethod,
     selectUser,
     selectPageProps,
+    selectPagination,
 } from '@helpers/selectors/context'
 import { User } from '@appTypes/user'
 import { getGenericFormError, ServerSideFormData } from '@helpers/util/form'
@@ -40,8 +42,33 @@ import { GroupPage } from '@appTypes/page'
 import { postGroupUserInvite } from '@services/postGroupUserInvite'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getFeatureEnabled } from '@services/getFeatureEnabled'
+import { GenericPageTextContent } from '@appTypes/content'
+import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
+import { DataGrid } from '@components/layouts/DataGrid'
+import {
+    getPendingGroupMembers,
+    InviteType,
+    PendingMember,
+} from '@services/getPendingGroupMembers'
+import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
+import { Pagination } from '@appTypes/pagination'
+import { getDateFromUTC } from '@helpers/util/date'
+import { ClickLink } from '@components/generic/ClickLink'
+import { mdiCancel } from '@mdi/js'
+import { Dialog } from '@components/generic/Dialog'
+import { deletePlatformInvite } from '@services/deletePlatformInvite'
+import { deleteGroupInvite } from '@services/deleteGroupInvite'
+import { LayoutWidthContainer } from '@components/layouts/LayoutWidthContainer'
 
-export interface Props extends GroupPage {}
+declare interface ContentText extends GenericPageTextContent {
+    noPendingInvites: string
+}
+
+export interface Props extends GroupPage {
+    noUsers: string
+    contentText: ContentText
+    pendingList: Array<PendingMember>
+}
 
 /**
  * Group member invite template
@@ -52,15 +79,118 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     user,
     contentText,
     groupId,
+    pagination,
+    pendingList,
 }) => {
     const formConfig: FormConfig = useFormConfig(
         formTypes.INVITE_USER,
         forms[formTypes.INVITE_USER]
     )
+    const [dynamicPendingList, setPendingList] = useState(pendingList)
+    const [dynamicPagination, setPagination] = useState(pagination)
     const [errors, setErrors] = useState(formConfig?.errors)
     const notificationsContext: any = useContext(NotificationsContext)
+    const [inviteToDelete, setInviteToDelete] = useState<PendingMember | null>(
+        null
+    )
+    const isDeleteInviteOpen = !!inviteToDelete
 
-    const { secondaryHeading } = contentText
+    const handleDeleteInvite = async () => {
+        if (!inviteToDelete) return
+        const { id, email, rowVersion: etag, inviteType } = inviteToDelete
+        try {
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                etag,
+            })
+            try {
+                if (inviteType === InviteType.GROUP) {
+                    await deleteGroupInvite({
+                        inviteId: id,
+                        user,
+                        headers,
+                    })
+                } else if (inviteType === InviteType.PLATFORM) {
+                    await deletePlatformInvite({
+                        inviteId: id,
+                        user,
+                        headers,
+                    })
+                }
+            } catch (e) {
+                console.log(e)
+                return
+            }
+            handleGetPage({
+                pageNumber: pagination.pageNumber,
+                pageSize: pagination.pageSize,
+                refresh: true,
+            })
+            useNotification({
+                notificationsContext,
+                text: {
+                    heading: notifications.SUCCESS,
+                    body: `Cancelled invite to ${email}.`,
+                },
+            })
+            return Promise.resolve({})
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const { mainHeading, secondaryHeading, noPendingInvites } = contentText
+
+    const columnList = [
+        {
+            children: 'User',
+            className: '',
+        },
+        {
+            children: `Invited`,
+            className: 'tablet:u-text-right',
+        },
+        {
+            children: `Actions`,
+            className: 'tablet:u-text-right',
+        },
+    ]
+
+    const rowList = dynamicPendingList?.map((invite) => {
+        const rows = [
+            {
+                children: <span>{invite.email}</span>,
+                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-left',
+                headerClassName: 'u-hidden',
+            },
+            {
+                children: <span>{getDateFromUTC(invite.createdAtUTC)}</span>,
+                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
+                headerClassName: 'u-hidden',
+            },
+            {
+                children: (
+                    <ClickLink
+                        onClick={() => {
+                            setInviteToDelete(invite)
+                        }}
+                        text={{
+                            body: 'Cancel',
+                            ariaLabel: `Cancel invite to user ${invite.email}`,
+                        }}
+                        iconName={mdiCancel}
+                        material
+                    />
+                ),
+                className: 'u-w-full tablet:u-w-1/8 tablet:u-text-right',
+                headerClassName: 'u-hidden',
+            },
+        ]
+
+        return rows
+    })
+
+    const hasPendingInvites = !!dynamicPendingList?.length
 
     /**
      * Client-side submission handler - TODO: Pending API
@@ -86,7 +216,11 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                     body: `Invite sent to ${emailAddress}`,
                 },
             })
-
+            handleGetPage({
+                pageNumber: pagination.pageNumber,
+                pageSize: pagination.pageSize,
+                refresh: true,
+            })
             return Promise.resolve({})
         } catch (error) {
             const errors: FormErrors =
@@ -100,12 +234,58 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     }
 
     /**
+     * Handle client-side pagination
+     */
+    const handleGetPage = async ({
+        pageNumber: requestedPageNumber,
+        pageSize: requestedPageSize,
+        refresh = false,
+    }) => {
+        const { data: additionalPending, pagination } =
+            await getPendingGroupMembers({
+                user,
+                slug: groupId,
+                pagination: {
+                    pageNumber: requestedPageNumber,
+                    pageSize: requestedPageSize,
+                },
+            })
+
+        setPendingList(
+            refresh
+                ? additionalPending
+                : [...dynamicPendingList, ...additionalPending]
+        )
+        setPagination(pagination)
+    }
+
+    /**
      * Render
      */
     return (
-        <LayoutColumn className="c-page-body">
-            <LayoutColumnContainer>
-                <LayoutColumn tablet={8}>
+        <>
+            <Dialog
+                id="dialog-delete-domain"
+                isOpen={isDeleteInviteOpen}
+                text={{
+                    cancelButton: 'Cancel',
+                    confirmButton: 'Yes, cancel invite',
+                    heading: 'Cancel invite',
+                }}
+                cancelAction={() => {
+                    setInviteToDelete(null)
+                }}
+                confirmAction={() => {
+                    handleDeleteInvite()
+                    setInviteToDelete(null)
+                }}
+            >
+                <p className="u-text-bold">
+                    {`Are you sure you would like to cancel the invite for ${inviteToDelete?.email}?`}
+                </p>
+            </Dialog>
+            <LayoutColumn className="c-page-body">
+                <div className="u-mb-12">
                     <FormWithErrorSummary
                         csrfToken={csrfToken}
                         formConfig={formConfig}
@@ -118,11 +298,41 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                         submitAction={handleSubmit}
                         shouldClearOnSubmitSuccess={true}
                     >
-                        <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
+                        <h2 className="nhsuk-heading-l">{mainHeading}</h2>
                     </FormWithErrorSummary>
-                </LayoutColumn>
-            </LayoutColumnContainer>
-        </LayoutColumn>
+                </div>
+                <div>
+                    <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
+                    {hasPendingInvites ? (
+                        <DynamicListContainer
+                            containerElementType="div"
+                            shouldEnableLoadMore
+                            className="u-list-none u-p-0"
+                        >
+                            <DataGrid
+                                id="admin-table-pending-invites"
+                                columnList={columnList}
+                                rowList={rowList}
+                                text={{
+                                    caption: 'Pending invites',
+                                }}
+                            />
+
+                            <PaginationWithStatus
+                                id="group-list-pagination"
+                                shouldEnableLoadMore
+                                getPageAction={handleGetPage}
+                                {...dynamicPagination}
+                            />
+                        </DynamicListContainer>
+                    ) : (
+                        <div>
+                            <p>{noPendingInvites}</p>
+                        </div>
+                    )}
+                </div>
+            </LayoutColumn>
+        </>
     )
 }
 
@@ -145,6 +355,7 @@ export const getServerSideProps: GetServerSideProps = async (
             const props: Partial<Props> = selectPageProps(context)
             const formData: ServerSideFormData = selectFormData(context)
             const requestMethod: requestMethods = selectRequestMethod(context)
+            const user: User = selectUser(context)
 
             props.layoutId = layoutIds.GROUP
             props.tabId = groupTabIds.MEMBERS
@@ -175,6 +386,23 @@ export const getServerSideProps: GetServerSideProps = async (
                 }
             }
 
+            try {
+                const pagination: Pagination = {
+                    pageNumber: selectPagination(context).pageNumber ?? 1,
+                    pageSize: selectPagination(context).pageSize ?? 20,
+                }
+
+                const result = await getPendingGroupMembers({
+                    user: user,
+                    slug: props.groupId,
+                    pagination,
+                })
+
+                props.pagination = result.pagination
+
+                props.pendingList = result.data
+            } catch (e) {}
+
             /**
              * Handle server-side form post
              */
@@ -189,7 +417,6 @@ export const getServerSideProps: GetServerSideProps = async (
                             main: `Invite sent to ${emailAddress}`,
                         },
                     ]
-
                     return {
                         props: props,
                     }

@@ -31,6 +31,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/delete");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/view");
                     permissions.Add($"{Schema}/platform/{DefaultApiVerison}/search");
+                    permissions.Add($"{Schema}/platform/{DefaultApiVerison}/invite");
                     permissions.Add($"{Schema}/domain/{DefaultApiVerison}/add");
                     permissions.Add($"{Schema}/domain/{DefaultApiVerison}/edit");
                     permissions.Add($"{Schema}/domain/{DefaultApiVerison}/delete");
@@ -82,6 +83,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/invite");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
+                    permissions.Add($"{Schema}/platform/{DefaultApiVerison}/invite");
+
                     break;
                 case "Standard Members":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/folders/files/download");
@@ -127,6 +130,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/invite");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
+                    permissions.Add($"{Schema}/platform/{DefaultApiVerison}/invite");
+
                     break;
                 case "Standard Members":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/leave");
@@ -192,6 +197,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/members/pending/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
+                    permissions.Add($"{Schema}/platform/{DefaultApiVerison}/invite");
+
                     break;
                 case "Standard Members":
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/view");

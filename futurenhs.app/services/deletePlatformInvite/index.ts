@@ -21,14 +21,14 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export const deleteGroupInvite = async (
+export const deletePlatformInvite = async (
     { headers, user, inviteId }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const invitePath = api.GROUP_INVITE_ID.replace('%INVITE_ID%', inviteId)
+    const invitePath = api.SITE_INVITE_ID.replace('%INVITE_ID%', inviteId)
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${invitePath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,
@@ -37,7 +37,7 @@ export const deleteGroupInvite = async (
                 ...headers,
                 ...jwtHeader(user.accessToken),
             },
-            method: requestMethods.PUT,
+            method: requestMethods.DELETE,
             body: {},
         }),
         defaultTimeOutMillis
@@ -48,9 +48,9 @@ export const deleteGroupInvite = async (
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to delete group invite',
+            'An unexpected error occurred when attempting to delete platform invite',
             {
-                serviceId: services.DELETE_GROUP_INVITE,
+                serviceId: services.DELETE_PLATFORM_INVITE,
                 status: status,
                 statusText: statusText,
                 body: apiData,

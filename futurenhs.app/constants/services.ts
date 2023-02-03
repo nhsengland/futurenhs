@@ -64,5 +64,6 @@ export const enum services {
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
     DELETE_GROUP_FOLDER = 'deleteGroupFolder',
     DELETE_GROUP_INVITE = 'deleteGroupInvite',
+    DELETE_PLATFORM_INVITE = 'deletePlatformInvite',
     DELETE_DOMAIN = 'deleteDomain',
 }
