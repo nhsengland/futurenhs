@@ -22,6 +22,12 @@ describe('Group file detail template', () => {
             id: 'mockId',
             type: 'file',
             name: 'Mock file name',
+            modifiedBy: {
+                id: '1',
+                text: {
+                    userName: 'Mock username',
+                },
+            },
             createdBy: {
                 id: '1',
                 text: {
@@ -62,13 +68,13 @@ describe('Group file detail template', () => {
 
         cleanup()
 
-        const propsCopy: Props = Object.assign({}, props, {
+        const propsCopy: Props = {
+            ...props,
             file: {
-                id: 'mockId',
-                type: 'file',
-                name: 'Mock file name',
+                ...props.file,
+                path: undefined,
             },
-        })
+        }
 
         render(<GroupFileDetailPage {...propsCopy} />)
 
@@ -78,17 +84,18 @@ describe('Group file detail template', () => {
     it('conditionally renders username if createdBy is included in props.file', () => {
         render(<GroupFileDetailPage {...props} />)
 
-        expect(screen.getAllByText('Mock username').length).toBe(1)
+        expect(screen.getAllByText('Mock username').length).toBe(2)
 
         cleanup()
 
-        const propsCopy: Props = Object.assign({}, props, {
+        const propsCopy: Props = {
+            ...props,
             file: {
-                id: 'mockId',
-                type: 'file',
-                name: 'Mock file name',
+                ...props.file,
+                modifiedBy: undefined,
+                createdBy: undefined,
             },
-        })
+        }
 
         render(<GroupFileDetailPage {...propsCopy} />)
 

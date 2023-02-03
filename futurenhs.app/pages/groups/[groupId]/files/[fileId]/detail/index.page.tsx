@@ -61,35 +61,37 @@ export const GroupFileDetailPage: (props: Props) => JSX.Element = ({
         text: fileText,
     } = file ?? {}
 
-const readableFileSize = (bytes, si=true, dp=2) => {
-    const thresh = si ? 1000 : 1024;
-  
-    if (Math.abs(bytes) < thresh) {
-      return bytes + ' B';
+    const readableFileSize = (bytes, si = true, dp = 2) => {
+        const thresh = si ? 1000 : 1024
+
+        if (Math.abs(bytes) < thresh) {
+            return bytes + ' B'
+        }
+
+        const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+        let u = -1
+        const r = 10 ** dp
+
+        do {
+            bytes /= thresh
+            ++u
+        } while (
+            Math.round(Math.abs(bytes) * r) / r >= thresh &&
+            u < units.length - 1
+        )
+
+        return bytes.toFixed(dp) + ' ' + units[u]
     }
-  
-    const units = ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    let u = -1;
-    const r = 10**dp;
-  
-    do {
-      bytes /= thresh;
-      ++u;
-    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-  
-  
-    return bytes.toFixed(dp) + ' ' + units[u];
-  }
 
     const { body } = fileText ?? {}
-   
+
     const fileDownloadPath: string = `${
         routes.groupFilesRoot
-    }/${encodeURIComponent(id)}/download`;
+    }/${encodeURIComponent(id)}/download`
 
-    const fileViewPath: string = `${
-        routes.groupFilesRoot
-    }/${encodeURIComponent(id)}`
+    const fileViewPath: string = `${routes.groupFilesRoot}/${encodeURIComponent(
+        id
+    )}`
     const breadCrumbList: BreadCrumbList = []
 
     if (path?.length > 0) {
@@ -141,10 +143,10 @@ const readableFileSize = (bytes, si=true, dp=2) => {
 
     let versionRows = []
     for (let i = 0; i < versions?.length; i++) {
-            const versionPath: string = `${
-                routes.groupFilesRoot
-                }/${encodeURIComponent(versions[i].id)}`
-            versionRows.push([
+        const versionPath: string = `${
+            routes.groupFilesRoot
+        }/${encodeURIComponent(versions[i].id)}`
+        versionRows.push([
             {
                 children: readableFileSize(versions[i].size),
                 // children: sizeInKb,
@@ -211,7 +213,7 @@ const readableFileSize = (bytes, si=true, dp=2) => {
                         <Link
                             href={`${routes.groupMembersRoot}/${createdBy.id}`}
                         >
-                            {createdBy.text.userName}
+                            {createdBy?.text?.userName}
                         </Link>
                     </p>
                 )}
@@ -246,7 +248,7 @@ const readableFileSize = (bytes, si=true, dp=2) => {
                                     generatedHeaderCellClasses.name,
                             },
                             {
-                                children: modifiedBy.text.userName ?? '',
+                                children: modifiedBy?.text?.userName ?? '',
                                 shouldRenderCellHeader: true,
                                 className: generatedCellClasses.modifiedBy,
                                 headerClassName:
@@ -264,22 +266,22 @@ const readableFileSize = (bytes, si=true, dp=2) => {
                             {
                                 children: (
                                     <p>
-                                    <ActionLink
-                                        href={fileViewPath}
-                                        text={{
-                                            body: 'View',
-                                            ariaLabel: `View ${name}`,
-                                        }}
-                                        iconName="icon-view"
-                                    />
-                                    <ActionLink
-                                        href={fileDownloadPath}
-                                        text={{
-                                            body: 'Download',
-                                            ariaLabel: `Download ${name}/download`,
-                                        }}
-                                        iconName="icon-download"
-                                    />
+                                        <ActionLink
+                                            href={fileViewPath}
+                                            text={{
+                                                body: 'View',
+                                                ariaLabel: `View ${name}`,
+                                            }}
+                                            iconName="icon-view"
+                                        />
+                                        <ActionLink
+                                            href={fileDownloadPath}
+                                            text={{
+                                                body: 'Download',
+                                                ariaLabel: `Download ${name}/download`,
+                                            }}
+                                            iconName="icon-download"
+                                        />
                                     </p>
                                 ),
                                 shouldRenderCellHeader: false,
