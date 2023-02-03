@@ -12,7 +12,7 @@ export const mockUser: User = {
         userName: 'John Jones',
     },
     image: null,
-    accessToken: '4a8ccca1-e89d-4698-b6d7-dd6a97655e9a',
+    accessToken: '4228ccca1-e229d-2298-22d7-226a97655e9a',
 }
 beforeEach(() => {
     fetch.resetMocks()
