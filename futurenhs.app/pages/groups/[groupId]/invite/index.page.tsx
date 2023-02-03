@@ -303,31 +303,31 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
             </LayoutColumnContainer>
             <LayoutColumnContainer className="c-page-body">
                 <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
-                {hasPendingInvites ? (
-                    <DynamicListContainer
-                        containerElementType="div"
-                        shouldEnableLoadMore
-                        className="u-list-none u-p-0"
-                    >
-                        <DataGrid
-                            id="admin-table-domains"
-                            columnList={columnList}
-                            rowList={rowList}
-                            text={{
-                                caption: 'Allowed domains',
-                            }}
-                        />
-                    </DynamicListContainer>
-                ) : (
-                    <p>{noPendingInvites}</p>
-                )}
-                <PaginationWithStatus
-                    id="group-list-pagination"
-                    shouldEnableLoadMore
-                    getPageAction={handleGetPage}
-                    {...dynamicPagination}
-                />
             </LayoutColumnContainer>
+            {hasPendingInvites ? (
+                <DynamicListContainer
+                    containerElementType="div"
+                    shouldEnableLoadMore
+                    className="u-list-none u-p-0"
+                >
+                    <DataGrid
+                        id="admin-table-pending-invites"
+                        columnList={columnList}
+                        rowList={rowList}
+                        text={{
+                            caption: 'Pending invites',
+                        }}
+                    />
+                </DynamicListContainer>
+            ) : (
+                <p>{noPendingInvites}</p>
+            )}
+            <PaginationWithStatus
+                id="group-list-pagination"
+                shouldEnableLoadMore
+                getPageAction={handleGetPage}
+                {...dynamicPagination}
+            />
         </LayoutColumn>
     )
 }
