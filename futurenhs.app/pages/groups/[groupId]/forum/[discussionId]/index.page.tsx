@@ -407,7 +407,6 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                             replyValidationFailAction={handleValidationFailure}
                             replySubmitAction={handleCommentReplySubmit}
                             shouldEnableLikes={shouldEnableLikes}
-                            likeCount={likeCount}
                             likes={likes}
                             isLiked={isLiked}
                             likeAction={handleLike}
@@ -626,7 +625,6 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 shouldEnableLikes={
                                                     shouldEnableLikes
                                                 }
-                                                likeCount={likeCount}
                                                 isLiked={isLiked}
                                                 likeAction={handleLike}
                                                 likes={likes}

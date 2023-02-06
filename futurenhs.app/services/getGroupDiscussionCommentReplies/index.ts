@@ -86,36 +86,38 @@ export const getGroupDiscussionCommentReplies = async (
     const commentLikeRequests: Array<Promise<ServiceResponse<CommentLike[]>>> =
         []
     apiData.data?.forEach((datum) => {
-        serviceResponse.data.push({
-            commentId: datum.id,
-            originCommentId: datum.inReplyTo,
-            text: {
-                body: datum.content,
-            },
-            createdBy: {
-                id: datum.firstRegistered?.by?.id ?? '',
-                text: {
-                    userName: datum.firstRegistered?.by?.name ?? '',
-                },
-                image: mapToProfileImageObject(
-                    datum.firstRegistered?.by?.image,
-                    'Profile image'
-                ),
-            },
-            created: datum.firstRegistered?.atUtc ?? '',
-            likeCount: datum.likesCount ?? 0,
-            isLiked: datum.currentUser?.liked,
-            likes: [],
-        })
-        commentLikeRequests.push(
-            getGroupDiscussionCommentLikes({
-                groupId,
-                discussionId,
+        if (datum.id) {
+            serviceResponse.data.push({
                 commentId: datum.id,
-                user,
-                pagination,
+                originCommentId: datum.inReplyTo,
+                text: {
+                    body: datum.content,
+                },
+                createdBy: {
+                    id: datum.firstRegistered?.by?.id ?? '',
+                    text: {
+                        userName: datum.firstRegistered?.by?.name ?? '',
+                    },
+                    image: mapToProfileImageObject(
+                        datum.firstRegistered?.by?.image,
+                        'Profile image'
+                    ),
+                },
+                created: datum.firstRegistered?.atUtc ?? '',
+                likeCount: datum.likesCount ?? 0,
+                isLiked: datum.currentUser?.liked,
+                likes: [],
             })
-        )
+            commentLikeRequests.push(
+                getGroupDiscussionCommentLikes({
+                    groupId,
+                    discussionId,
+                    commentId: datum.id,
+                    user,
+                    pagination,
+                })
+            )
+        }
     })
     const getAllLikes = await Promise.all(commentLikeRequests)
     const likesCollection = getAllLikes.map(
@@ -125,7 +127,9 @@ export const getGroupDiscussionCommentReplies = async (
     serviceResponse.data.forEach(({ commentId }, i) => {
         const commentLikes = likesCollection.find((commentLikes) => {
             const commentHasLikes = !!commentLikes[0]
-            const likesAreThisComment = commentLikes[0].id === commentId
+            const likesAreThisComment = commentHasLikes
+                ? commentLikes[0].id === commentId
+                : false
             return commentHasLikes && likesAreThisComment
         })
         serviceResponse.data[i].likes = commentLikes

@@ -30,7 +30,6 @@ export const Comment: (props: Props) => JSX.Element = ({
     replySubmitAction,
     shouldEnableLikes,
     likeAction,
-    likeCount,
     isLiked,
     likes,
     children,
@@ -101,7 +100,7 @@ export const Comment: (props: Props) => JSX.Element = ({
             <footer className="u-flex u-flex-col tablet:u-flex-row u-items-start">
                 <Like
                     targetId={commentId}
-                    likeCount={likeCount}
+                    likeCount={likes?.length ?? 0}
                     isLiked={isLiked}
                     shouldEnable={shouldEnableLikes}
                     likeAction={likeAction}

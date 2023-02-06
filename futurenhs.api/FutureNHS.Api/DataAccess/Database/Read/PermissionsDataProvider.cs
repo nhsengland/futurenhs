@@ -41,6 +41,7 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/members/{DefaultApiVerison}/view");
                     permissions.Add($"{Schema}/groups/{DefaultApiVerison}/view");
                     permissions.Add($"{Schema}/platform/{DefaultApiVerison}/search");
+                    
                     break;
                 case "Guest":
                     break;
@@ -87,6 +88,8 @@ namespace FutureNHS.Api.DataAccess.Database.Read
                     permissions.Add($"{Schema}/platform/{DefaultApiVerison}/invite");
                     break;
                 case "Standard Members":
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like");
+                    permissions.Add($"{Schema}/groups/{DefaultApiVerison}/like/view");
                     break;
                 case "Guest":
                     break;
