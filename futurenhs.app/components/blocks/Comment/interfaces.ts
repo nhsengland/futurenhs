@@ -55,6 +55,10 @@ export interface Props {
      */
     likeAction?: any
     /**
+     * How many likes the comment has
+     */
+    likeCount?: number
+    /**
      * Determines whether the user has liked the comment already
      */
     isLiked?: boolean

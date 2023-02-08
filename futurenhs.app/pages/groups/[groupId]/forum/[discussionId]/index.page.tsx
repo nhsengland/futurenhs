@@ -407,6 +407,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                             replyValidationFailAction={handleValidationFailure}
                             replySubmitAction={handleCommentReplySubmit}
                             shouldEnableLikes={shouldEnableLikes}
+                            likeCount={likeCount}
                             likes={likes}
                             isLiked={isLiked}
                             likeAction={handleLike}
@@ -414,6 +415,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                         />
                     </li>
                 )
+        
             }
         )
     }
@@ -625,6 +627,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 shouldEnableLikes={
                                                     shouldEnableLikes
                                                 }
+                                                likeCount={likeCount}
                                                 isLiked={isLiked}
                                                 likeAction={handleLike}
                                                 likes={likes}
@@ -707,6 +710,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
         </>
     )
 }
+
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -834,6 +838,7 @@ export const getServerSideProps: GetServerSideProps = async (
             return handleSSRSuccessProps({ props, context })
         }
     )
+    
 
 /**
  * Export page template

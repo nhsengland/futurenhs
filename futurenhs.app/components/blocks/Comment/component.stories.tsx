@@ -35,22 +35,7 @@ const basicArgs: Props = {
     date: '9 May 2022',
     shouldEnableReplies: false,
     shouldEnableLikes: true,
-    likes: [
-        {
-            id: '1',
-            createdByThisUser: undefined,
-            createdAtUtc: undefined,
-            firstRegistered: {
-                atUtc: undefined,
-                by: {
-                    id: undefined,
-                    name: undefined,
-                    slug: undefined,
-                    image: undefined,
-                },
-            },
-        },
-    ],
+    likeCount: 5,
     isLiked: false,
 }
 

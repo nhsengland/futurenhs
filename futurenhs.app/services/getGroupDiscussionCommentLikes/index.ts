@@ -82,6 +82,8 @@ export const getGroupDiscussionCommentLikes = async (
             }
         )
     }
+    
     serviceResponse.data = apiData
     return serviceResponse
 }
+

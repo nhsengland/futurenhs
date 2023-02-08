@@ -30,13 +30,13 @@ export const Comment: (props: Props) => JSX.Element = ({
     replySubmitAction,
     shouldEnableLikes,
     likeAction,
+    likeCount,
     isLiked,
     likes,
     children,
     className,
 }) => {
     const { userName, initials, body } = text
-
     const parentCommentUserName: string =
         originComment?.createdBy?.text?.userName
     const parentCommentTeaserText: string = truncate({
@@ -100,7 +100,7 @@ export const Comment: (props: Props) => JSX.Element = ({
             <footer className="u-flex u-flex-col tablet:u-flex-row u-items-start">
                 <Like
                     targetId={commentId}
-                    likeCount={likes?.length ?? 0}
+                    likeCount={likeCount}
                     isLiked={isLiked}
                     shouldEnable={shouldEnableLikes}
                     likeAction={likeAction}

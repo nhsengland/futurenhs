@@ -110,6 +110,9 @@ export const getGroupDiscussionCommentsWithReplies = async (
                     },
                 })
             )
+            
+        }
+        if(datum?.likesCount > 0) {
             commentLikeRequests.push(
                 getGroupDiscussionCommentLikes({
                     groupId,
@@ -144,7 +147,7 @@ export const getGroupDiscussionCommentsWithReplies = async (
             likes: [],
         })
     })
-
+ 
     const [...commentReplies] = await Promise.all(commentRepliesRequests)
     const getAllLikes = await Promise.all(commentLikeRequests)
     const likesCollection = getAllLikes.map(

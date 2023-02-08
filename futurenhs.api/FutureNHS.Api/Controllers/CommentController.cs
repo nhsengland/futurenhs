@@ -55,7 +55,6 @@ namespace FutureNHS.Api.Controllers
         {
             var identity = await GetUserIdentityAsync(cancellationToken);
             var likes = await _likeService.GetLikesForEntityAsync(identity.MembershipUserId, slug, commentId, cancellationToken);
-
             return Ok(likes);
         }
 

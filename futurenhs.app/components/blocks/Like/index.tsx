@@ -82,7 +82,6 @@ export const Like: (props: Props) => JSX.Element = ({
     if (isActive) {
         return (
             <div>
-                {JSON.stringify(likes)}
                 <button
                     aria-label={ariaLabelToUse}
                     className={generatedClasses.wrapper}
@@ -98,14 +97,13 @@ export const Like: (props: Props) => JSX.Element = ({
                         {dynamicLikeCount === 1 ? countSingular : countPlural}
                     </span>
                 </button>
-                {names ? <p>Liked by: {names}</p> : null}
+                {names ? <p>Liked by: {names.join(', ')}</p> : null}
             </div>
         )
     }
 
     return (
         <div>
-            {JSON.stringify(likes)}
             <span className={generatedClasses.wrapper}>
                 <SVGIcon name={iconName} className={generatedClasses.icon} />
                 <span>
