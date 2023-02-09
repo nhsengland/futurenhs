@@ -35,6 +35,8 @@ export const Comment: (props: Props) => JSX.Element = ({
     likes,
     children,
     className,
+    refreshLikes,
+    likeIsDisabled
 }) => {
     const { userName, initials, body } = text
     const parentCommentUserName: string =
@@ -112,6 +114,8 @@ export const Comment: (props: Props) => JSX.Element = ({
                     }}
                     likes={likes}
                     className="u-mr-6"
+                    refreshLikes={refreshLikes}
+                    likeIsDisabled={likeIsDisabled}
                 />
                 {shouldEnableReplies && (
                     <Reply

@@ -123,6 +123,8 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
 
     const [dynamicPagination, setPagination] = useState(pagination)
     const [newReplyId, setNewReplyId] = useState(null)
+    const [dynamicDiscussion, setDiscussion] = useState(discussion)
+    const [likeIsDisabled, setLikeIsDisabled] = useState(false)
 
     const backLinkHref: string = getRouteToParam({
         router: router,
@@ -150,7 +152,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
         modified,
         modifiedBy,
         viewCount,
-    } = discussion ?? {}
+    } = dynamicDiscussion ?? {}
     const { title, body: discussionBody } = discussionText ?? {}
 
     const formattedDiscussionid: string = getFormattedCommentId(discussionId)
@@ -203,6 +205,29 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
      */
     const handleAddCommentClick = () => {
         commentButtonRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    const refreshLikes = async () => {
+        setLikeIsDisabled(true)
+        try{
+        const [groupDiscussion, groupDiscussionComments] = await Promise.all([
+            getGroupDiscussion({
+                user,
+                groupId,
+                discussionId,
+            }),
+            getGroupDiscussionCommentsWithReplies({
+                user,
+                groupId,
+                discussionId,
+                pagination,
+            }),
+        ])
+        setDiscussion(groupDiscussion.data)
+        setDiscussionsList(groupDiscussionComments.data)
+    }
+        catch(e){}
+        setLikeIsDisabled(false)
     }
 
     /**
@@ -412,10 +437,11 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                             isLiked={isLiked}
                             likeAction={handleLike}
                             className="c-comment--reply u-border-l-theme-8"
+                            refreshLikes={refreshLikes}
+                            likeIsDisabled={likeIsDisabled}
                         />
                     </li>
                 )
-        
             }
         )
     }
@@ -632,6 +658,8 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 likeAction={handleLike}
                                                 likes={likes}
                                                 className="u-border-l-theme-8"
+                                                refreshLikes={refreshLikes}
+                                                likeIsDisabled={likeIsDisabled}
                                             >
                                                 {hasReply && (
                                                     <ul className="u-list-none c-comment_replies-list u-p-0">
@@ -710,7 +738,6 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
         </>
     )
 }
-
 
 /**
  * Get props to inject into page on the initial server-side request
@@ -838,7 +865,6 @@ export const getServerSideProps: GetServerSideProps = async (
             return handleSSRSuccessProps({ props, context })
         }
     )
-    
 
 /**
  * Export page template

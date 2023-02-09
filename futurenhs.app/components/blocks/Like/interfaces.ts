@@ -36,4 +36,6 @@ export interface Props {
     }
     likes: Array<CommentLike>
     className?: string
+    refreshLikes(): any
+    likeIsDisabled: boolean
 }

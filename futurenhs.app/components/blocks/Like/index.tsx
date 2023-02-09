@@ -16,6 +16,8 @@ export const Like: (props: Props) => JSX.Element = ({
     text,
     likes,
     className,
+    refreshLikes,
+    likeIsDisabled,
 }) => {
     const [isActive, setIsActive] = useState(false)
     const [dynamicLikeCount, setDynamicLikeCount] = useState(likeCount)
@@ -44,7 +46,7 @@ export const Like: (props: Props) => JSX.Element = ({
     }
 
     const handleLikeToggle = () => {
-        if (!isProcessing) {
+        if (!isProcessing && !likeIsDisabled) {
             window.clearTimeout(likeTimeOut.current)
 
             const updatedLikeCount: number = hasLiked
@@ -56,8 +58,8 @@ export const Like: (props: Props) => JSX.Element = ({
 
             likeTimeOut.current = window.setTimeout(() => {
                 const actionToSet: boolean = !hasLiked
-
                 likeAction?.(targetId, actionToSet)
+                refreshLikes()
             }, 1000)
         }
     }
@@ -87,6 +89,7 @@ export const Like: (props: Props) => JSX.Element = ({
                     className={generatedClasses.wrapper}
                     aria-disabled={isProcessing}
                     onClick={handleLikeToggle}
+                    disabled={isProcessing}
                 >
                     <SVGIcon
                         name={iconName}
@@ -97,7 +100,21 @@ export const Like: (props: Props) => JSX.Element = ({
                         {dynamicLikeCount === 1 ? countSingular : countPlural}
                     </span>
                 </button>
-                {names ? <p>Liked by: {names.join(', ')}</p> : null}
+                {names ? (
+                    <p className="nhsuk-body-s u-mt-3 u-text-theme-6">
+                        {'Liked by: '}
+                        {names
+                            .filter((name, i) => {
+                                if (i <= 1) {
+                                    return name
+                                }
+                            })
+                            .join(', ')}
+                        {names.length >= 3
+                            ? ` and ${names.length - 2} more`
+                            : null}
+                    </p>
+                ) : null}
             </div>
         )
     }

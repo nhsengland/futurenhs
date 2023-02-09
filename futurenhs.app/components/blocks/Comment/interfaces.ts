@@ -64,4 +64,7 @@ export interface Props {
     isLiked?: boolean
     likes: Array<CommentLike>
     className?: string
+
+    refreshLikes: () => void
+    likeIsDisabled: boolean
 }

@@ -37,6 +37,7 @@ const basicArgs: Props = {
     shouldEnableLikes: true,
     likeCount: 5,
     isLiked: false,
+    likes: []
 }
 
 export const Basic = Template.bind({})
