@@ -5,6 +5,7 @@ import { SVGIcon } from '@components/generic/SVGIcon'
 
 import { Props } from './interfaces'
 import { CommentLike } from '@services/getGroupDiscussionCommentLikes'
+import { setDateTimeForTests } from 'public/js/excalidraw/types/utils'
 
 export const Like: (props: Props) => JSX.Element = ({
     targetId,
@@ -18,11 +19,14 @@ export const Like: (props: Props) => JSX.Element = ({
     className,
     refreshLikes,
     likeIsDisabled,
+    openMoreLikes,
+    moreLikesIsOpen,
 }) => {
     const [isActive, setIsActive] = useState(false)
     const [dynamicLikeCount, setDynamicLikeCount] = useState(likeCount)
     const [isProcessing, setisProcessing] = useState(false)
     const [hasLiked, setHasLiked] = useState(isLiked)
+    const [isMoreLikesOpen, setIsMoreLikesOpen] = useState(moreLikesIsOpen)
     const names: Array<string> = likes?.map(
         (like) => like.firstRegistered.by.name
     )
@@ -81,6 +85,7 @@ export const Like: (props: Props) => JSX.Element = ({
         window.clearTimeout(processingTimeOut?.current)
     }, [isLiked, likeCount])
 
+
     if (isActive) {
         return (
             <div>
@@ -110,9 +115,19 @@ export const Like: (props: Props) => JSX.Element = ({
                                 }
                             })
                             .join(', ')}
-                        {names.length >= 3
-                            ? ` and ${names.length - 2} more`
-                            : null}
+                        {names.length >= 3 ? (
+                            <text>
+                                {' '}
+                                and{' '}
+                                <a
+                                    className="u-cursor-hover"
+                                    onClick={()=>{openMoreLikes(names)}}
+                                >
+                                    {' '}
+                                    {names?.length - 2} more
+                                </a>
+                            </text>
+                        ) : null}
                     </p>
                 ) : null}
             </div>

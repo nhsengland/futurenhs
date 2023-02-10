@@ -67,4 +67,6 @@ export interface Props {
 
     refreshLikes: () => void
     likeIsDisabled: boolean
+    moreLikesIsOpen: boolean
+    openMoreLikes: (names: string[]) => void
 }

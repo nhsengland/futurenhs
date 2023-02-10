@@ -36,6 +36,8 @@ export interface Props {
     }
     likes: Array<CommentLike>
     className?: string
-    refreshLikes(): any
+    refreshLikes: () => void
     likeIsDisabled: boolean
+    moreLikesIsOpen: boolean
+    openMoreLikes: (names:string[]) => void
 }

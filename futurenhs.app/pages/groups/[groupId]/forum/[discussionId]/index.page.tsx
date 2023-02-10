@@ -60,6 +60,7 @@ import { ActionLink } from '@components/generic/ActionLink'
 import { GroupPage } from '@appTypes/page'
 import { Discussion, DiscussionComment } from '@appTypes/discussion'
 import { GroupsPageTextContent } from '@appTypes/content'
+import { Dialog } from '@components/generic/Dialog'
 
 declare interface ContentText extends GroupsPageTextContent {
     createdByLabel?: string
@@ -125,7 +126,9 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     const [newReplyId, setNewReplyId] = useState(null)
     const [dynamicDiscussion, setDiscussion] = useState(discussion)
     const [likeIsDisabled, setLikeIsDisabled] = useState(false)
-
+    const [moreLikes, setMoreLikes] = useState<null|string[]>(null)
+    const moreLikesIsOpen = Array.isArray(moreLikes) && !!moreLikes.length
+    
     const backLinkHref: string = getRouteToParam({
         router: router,
         paramName: routeParams.DISCUSSIONID,
@@ -228,6 +231,14 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     }
         catch(e){}
         setLikeIsDisabled(false)
+    }
+    const openMoreLikes = (names) => {
+        
+        setMoreLikes(names)
+    }
+
+    const closeMoreLikes = () => {
+        setMoreLikes(null)
     }
 
     /**
@@ -439,6 +450,8 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                             className="c-comment--reply u-border-l-theme-8"
                             refreshLikes={refreshLikes}
                             likeIsDisabled={likeIsDisabled}
+                            moreLikesIsOpen={moreLikesIsOpen}
+                            openMoreLikes={openMoreLikes}
                         />
                     </li>
                 )
@@ -625,6 +638,21 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                     const { body: commentBody } = text ?? {}
 
                                     return (
+                                        <div>
+                                        <Dialog
+                                        id="more-likes-modal"
+                                        isOpen={moreLikesIsOpen}
+                                        text={{
+                                            confirmButton: 'OK',
+                                            heading:
+                                                'Liked By:',
+                                        }}
+                                        confirmAction={closeMoreLikes}
+                                    >
+                                        <p className="u-text">
+                                            {moreLikes?.join(', ')}
+                                        </p>
+                                        </Dialog>
                                         <li key={index}>
                                             <Comment
                                                 id={formattedCommentId}
@@ -660,6 +688,8 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 className="u-border-l-theme-8"
                                                 refreshLikes={refreshLikes}
                                                 likeIsDisabled={likeIsDisabled}
+                                                openMoreLikes={openMoreLikes}
+                                                moreLikesIsOpen={moreLikesIsOpen}
                                             >
                                                 {hasReply && (
                                                     <ul className="u-list-none c-comment_replies-list u-p-0">
@@ -697,7 +727,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                                 )}
                                             </Comment>
                                         </li>
-                                    )
+                                        </div>)
                                 }
                             )}
                         </DynamicListContainer>
