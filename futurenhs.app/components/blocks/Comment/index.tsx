@@ -32,11 +32,15 @@ export const Comment: (props: Props) => JSX.Element = ({
     likeAction,
     likeCount,
     isLiked,
+    likes,
     children,
     className,
+    refreshLikes,
+    likeIsDisabled,
+    openMoreLikes,
+    moreLikesIsOpen
 }) => {
     const { userName, initials, body } = text
-
     const parentCommentUserName: string =
         originComment?.createdBy?.text?.userName
     const parentCommentTeaserText: string = truncate({
@@ -110,7 +114,12 @@ export const Comment: (props: Props) => JSX.Element = ({
                         like: 'like',
                         removeLike: 'Remove like',
                     }}
+                    likes={likes}
                     className="u-mr-6"
+                    refreshLikes={refreshLikes}
+                    likeIsDisabled={likeIsDisabled}
+                    moreLikesIsOpen={moreLikesIsOpen}
+                    openMoreLikes={openMoreLikes}
                 />
                 {shouldEnableReplies && (
                     <Reply

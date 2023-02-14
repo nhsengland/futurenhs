@@ -50,6 +50,7 @@ import { ErrorBoundary } from '@components/layouts/ErrorBoundary'
 import { PaginationWithStatus } from '@components/generic/PaginationWithStatus'
 import { UserMeta } from '@components/blocks/UserMeta'
 import { getGroupDiscussionCommentsWithReplies } from '@services/getGroupDiscussionCommentsWithReplies'
+import { getGroupDiscussionCommentLikes } from '@services/getGroupDiscussionCommentLikes'
 import { getRouteToParam } from '@helpers/routing/getRouteToParam'
 import { FormErrors, FormConfig } from '@appTypes/form'
 import { getStandardServiceHeaders } from '@helpers/fetch'
@@ -59,6 +60,7 @@ import { ActionLink } from '@components/generic/ActionLink'
 import { GroupPage } from '@appTypes/page'
 import { Discussion, DiscussionComment } from '@appTypes/discussion'
 import { GroupsPageTextContent } from '@appTypes/content'
+import { Dialog } from '@components/generic/Dialog'
 
 declare interface ContentText extends GroupsPageTextContent {
     createdByLabel?: string
@@ -95,6 +97,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     services = {
         getGroupDiscussionCommentsWithReplies:
             getGroupDiscussionCommentsWithReplies,
+        getGroupDiscussionCommentLikes: getGroupDiscussionCommentLikes,
         postGroupDiscussionComment: postGroupDiscussionComment,
         postGroupDiscussionCommentReply: postGroupDiscussionCommentReply,
         putGroupDiscussionCommentLike: putGroupDiscussionCommentLike,
@@ -118,9 +121,16 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
     const [dynamicDiscussionCommentsList, setDiscussionsList] = useState(
         discussionCommentsList
     )
+
     const [dynamicPagination, setPagination] = useState(pagination)
     const [newReplyId, setNewReplyId] = useState(null)
-
+    const [dynamicDiscussion, setDiscussion] = useState(discussion)
+    const [likeIsDisabled, setLikeIsDisabled] = useState(false)
+    const [moreLikes, setMoreLikes] = useState<null | string[]>(null)
+    const moreLikesIsOpen = Array.isArray(moreLikes) && !!moreLikes.length
+    const moreLikesList = moreLikes?.map((like)=>
+    <li>{like}</li>
+    );
     const backLinkHref: string = getRouteToParam({
         router: router,
         paramName: routeParams.DISCUSSIONID,
@@ -147,7 +157,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
         modified,
         modifiedBy,
         viewCount,
-    } = discussion ?? {}
+    } = dynamicDiscussion ?? {}
     const { title, body: discussionBody } = discussionText ?? {}
 
     const formattedDiscussionid: string = getFormattedCommentId(discussionId)
@@ -200,6 +210,36 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
      */
     const handleAddCommentClick = () => {
         commentButtonRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    const refreshLikes = async () => {
+        setLikeIsDisabled(true)
+        try {
+            const [groupDiscussion, groupDiscussionComments] =
+                await Promise.all([
+                    getGroupDiscussion({
+                        user,
+                        groupId,
+                        discussionId,
+                    }),
+                    getGroupDiscussionCommentsWithReplies({
+                        user,
+                        groupId,
+                        discussionId,
+                        pagination,
+                    }),
+                ])
+            setDiscussion(groupDiscussion.data)
+            setDiscussionsList(groupDiscussionComments.data)
+        } catch (e) {}
+        setLikeIsDisabled(false)
+    }
+    const openMoreLikes = (names) => {
+        setMoreLikes(names)
+    }
+
+    const closeMoreLikes = () => {
+        setMoreLikes(null)
     }
 
     /**
@@ -349,6 +389,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                 text,
                 likeCount,
                 isLiked,
+                likes,
             }) => {
                 const formattedCommentId: string =
                     getFormattedCommentId(commentId)
@@ -404,9 +445,14 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                             replySubmitAction={handleCommentReplySubmit}
                             shouldEnableLikes={shouldEnableLikes}
                             likeCount={likeCount}
+                            likes={likes}
                             isLiked={isLiked}
                             likeAction={handleLike}
                             className="c-comment--reply u-border-l-theme-8"
+                            refreshLikes={refreshLikes}
+                            likeIsDisabled={likeIsDisabled}
+                            moreLikesIsOpen={moreLikesIsOpen}
+                            openMoreLikes={openMoreLikes}
                         />
                     </li>
                 )
@@ -419,6 +465,18 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
      */
     return (
         <>
+            <Dialog
+                className="c-comment_modal"
+                id="more-likes-modal"
+                isOpen={moreLikesIsOpen}
+                text={{
+                    confirmButton: 'OK',
+                    heading: 'Liked By:',
+                }}
+                confirmAction={closeMoreLikes}
+            >
+                <p className="c-comment_modal-text"><ul>{moreLikesList}</ul></p>
+            </Dialog>
             <LayoutColumn className="c-page-body">
                 {shouldRenderCommentAndReplyForms && (
                     <ErrorSummary
@@ -543,6 +601,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                         likeCount,
                                         isLiked,
                                         replies,
+                                        likes,
                                     },
                                     index
                                 ) => {
@@ -559,6 +618,7 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                             text: {
                                                 body: discussionBody,
                                             },
+                                            likes,
                                         }
                                     const commenterUserInitials: string =
                                         initials({
@@ -591,75 +651,95 @@ export const GroupDiscussionPage: (props: Props) => JSX.Element = ({
                                     const { body: commentBody } = text ?? {}
 
                                     return (
-                                        <li key={index}>
-                                            <Comment
-                                                id={formattedCommentId}
-                                                commentId={commentId}
-                                                originComment={originDiscussion}
-                                                csrfToken={csrfToken}
-                                                initialErrors={errors}
-                                                image={commenterProfileImage}
-                                                text={{
-                                                    userName: commenterUserName,
-                                                    initials:
-                                                        commenterUserInitials,
-                                                    body: commentBody,
-                                                }}
-                                                userProfileLink={`${routes.groupMembersRoot}/${commenterUserId}`}
-                                                date={commentCreatedDate}
-                                                shouldEnableReplies={
-                                                    shouldRenderCommentAndReplyForms
-                                                }
-                                                replyValidationFailAction={
-                                                    handleValidationFailure
-                                                }
-                                                replySubmitAction={
-                                                    handleCommentReplySubmit
-                                                }
-                                                shouldEnableLikes={
-                                                    shouldEnableLikes
-                                                }
-                                                likeCount={likeCount}
-                                                isLiked={isLiked}
-                                                likeAction={handleLike}
-                                                className="u-border-l-theme-8"
-                                            >
-                                                {hasReply && (
-                                                    <ul className="u-list-none c-comment_replies-list u-p-0">
-                                                        {repliesComponents[0]}
-                                                    </ul>
-                                                )}
-                                                {hasReplies && (
-                                                    <Accordion
-                                                        id={
-                                                            additionalRepliesAccordionId
-                                                        }
-                                                        isOpen={hasNewReply}
-                                                        toggleOpenChildren={
-                                                            <span>
-                                                                {
-                                                                    fewerRepliesLabel
-                                                                }
-                                                            </span>
-                                                        }
-                                                        toggleClosedChildren={
-                                                            <span>
-                                                                {
-                                                                    moreRepliesLabel
-                                                                }
-                                                            </span>
-                                                        }
-                                                        toggleClassName="c-comment_replies-toggle u-text-bold"
-                                                    >
-                                                        <ul className="u-list-none u-m-0 u-p-0">
-                                                            {repliesComponents.splice(
-                                                                1
-                                                            )}
+                                        <div>
+                                            <li key={index}>
+                                                <Comment
+                                                    id={formattedCommentId}
+                                                    commentId={commentId}
+                                                    originComment={
+                                                        originDiscussion
+                                                    }
+                                                    csrfToken={csrfToken}
+                                                    initialErrors={errors}
+                                                    image={
+                                                        commenterProfileImage
+                                                    }
+                                                    text={{
+                                                        userName:
+                                                            commenterUserName,
+                                                        initials:
+                                                            commenterUserInitials,
+                                                        body: commentBody,
+                                                    }}
+                                                    userProfileLink={`${routes.groupMembersRoot}/${commenterUserId}`}
+                                                    date={commentCreatedDate}
+                                                    shouldEnableReplies={
+                                                        shouldRenderCommentAndReplyForms
+                                                    }
+                                                    replyValidationFailAction={
+                                                        handleValidationFailure
+                                                    }
+                                                    replySubmitAction={
+                                                        handleCommentReplySubmit
+                                                    }
+                                                    shouldEnableLikes={
+                                                        shouldEnableLikes
+                                                    }
+                                                    likeCount={likeCount}
+                                                    isLiked={isLiked}
+                                                    likeAction={handleLike}
+                                                    likes={likes}
+                                                    className="u-border-l-theme-8"
+                                                    refreshLikes={refreshLikes}
+                                                    likeIsDisabled={
+                                                        likeIsDisabled
+                                                    }
+                                                    openMoreLikes={
+                                                        openMoreLikes
+                                                    }
+                                                    moreLikesIsOpen={
+                                                        moreLikesIsOpen
+                                                    }
+                                                >
+                                                    {hasReply && (
+                                                        <ul className="u-list-none c-comment_replies-list u-p-0">
+                                                            {
+                                                                repliesComponents[0]
+                                                            }
                                                         </ul>
-                                                    </Accordion>
-                                                )}
-                                            </Comment>
-                                        </li>
+                                                    )}
+                                                    {hasReplies && (
+                                                        <Accordion
+                                                            id={
+                                                                additionalRepliesAccordionId
+                                                            }
+                                                            isOpen={hasNewReply}
+                                                            toggleOpenChildren={
+                                                                <span>
+                                                                    {
+                                                                        fewerRepliesLabel
+                                                                    }
+                                                                </span>
+                                                            }
+                                                            toggleClosedChildren={
+                                                                <span>
+                                                                    {
+                                                                        moreRepliesLabel
+                                                                    }
+                                                                </span>
+                                                            }
+                                                            toggleClassName="c-comment_replies-toggle u-text-bold"
+                                                        >
+                                                            <ul className="u-list-none u-m-0 u-p-0">
+                                                                {repliesComponents.splice(
+                                                                    1
+                                                                )}
+                                                            </ul>
+                                                        </Accordion>
+                                                    )}
+                                                </Comment>
+                                            </li>
+                                        </div>
                                     )
                                 }
                             )}

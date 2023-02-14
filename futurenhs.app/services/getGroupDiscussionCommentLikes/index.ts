@@ -14,12 +14,12 @@ import {
 } from '@appTypes/service'
 import { Pagination } from '@appTypes/pagination'
 import { User } from '@appTypes/user'
-import { Domain } from '@appTypes/domain'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
-import { api } from '@constants/routes'
-import { getLastMonthDate } from '@helpers/util/date'
 
 declare type Options = {
+    groupId: string
+    discussionId: string
+    commentId: string
     user: User
     pagination?: Pagination
 }
@@ -29,30 +29,34 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
-export type ActiveUsers = {
-    daily?: ActiveUsersResult
-    weekly?: ActiveUsersResult
-    monthly?: ActiveUsersResult
+export interface CommentLike {
+    id: string
+    createdByThisUser?: boolean
+    createdAtUtc?: string
+    firstRegistered?: {
+        atUtc?: string
+        by?: {
+            id?: string
+            name?: string
+            slug?: string
+            image?: ImageData
+        }
+    }
 }
 
-declare type ActiveUsersResult = {
-    result: number
-    label: string
-}
-
-export const getActiveUsers = async (
-    { user, pagination }: Options,
+export const getGroupDiscussionCommentLikes = async (
+    { groupId, discussionId, commentId, user, pagination }: Options,
     dependencies?: Dependencies
-): Promise<ServiceResponse<ActiveUsers>> => {
-    const serviceResponse: ServiceResponse<ActiveUsers> = {
-        data: { daily: undefined, weekly: undefined, monthly: undefined },
+): Promise<ServiceResponse<Array<CommentLike>>> => {
+    const serviceResponse: ServiceResponse<Array<CommentLike>> = {
+        data: [],
     }
 
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${api.ADMIN_ANALYTICS}`
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/discussions/${discussionId}/comments/${commentId}/likes`
     const apiResponse: any = await fetchJSON(
         apiUrl,
         setFetchOptions({
@@ -69,41 +73,17 @@ export const getActiveUsers = async (
     const { ok, status, statusText } = apiMeta
     if (!ok) {
         throw new ServiceError(
-            'An unexpected error occurred when attempting to get the number of active users',
+            'An unexpected error occurred when attempting to get the list of users who have liked the comment',
             {
-                serviceId: services.GET_ACTIVE_USERS,
+                serviceId: services.GET_GROUP_DISCUSSION_COMMENT_LIKES,
                 status: status,
                 statusText: statusText,
                 body: apiData,
             }
         )
     }
-
-    serviceResponse.data = Object.entries(apiData).reduce(
-        (acc, [key, value]) => {
-            let label = ''
-            var dateLastMonth = getLastMonthDate()
-            switch (key) {
-                case 'daily':
-                    label = 'Daily (last 24 hours)'
-                    break
-                case 'weekly':
-                    label = 'Weekly (last 7 days)'
-                    break
-                case 'monthly':
-                    label = `Monthly (from ${dateLastMonth})`
-                    break
-            }
-            return {
-                ...acc,
-                [key]: {
-                    result: value,
-                    label,
-                },
-            }
-        },
-        serviceResponse.data
-    )
-
+    
+    serviceResponse.data = apiData
     return serviceResponse
 }
+
