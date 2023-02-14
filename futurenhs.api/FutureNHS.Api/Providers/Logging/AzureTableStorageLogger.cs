@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Azure;
+﻿using Azure;
 using Azure.Data.Tables;
 
 namespace FutureNHS.Api.Providers.Logging

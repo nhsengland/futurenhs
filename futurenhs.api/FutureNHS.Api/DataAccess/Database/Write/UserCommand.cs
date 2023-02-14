@@ -12,7 +12,6 @@ using FutureNHS.Api.Models.Member;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using System.Data;
-using System.Net.Mail;
 
 namespace FutureNHS.Api.DataAccess.Database.Write
 {

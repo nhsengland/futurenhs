@@ -1,5 +1,4 @@
-﻿using System.Net.Mail;
-using FutureNHS.Api.DataAccess.DTOs;
+﻿using FutureNHS.Api.DataAccess.DTOs;
 using FutureNHS.Api.DataAccess.Models.Domain;
 using FutureNHS.Api.DataAccess.Models.Registration;
 using FutureNHS.Api.Models.Domain.Request;

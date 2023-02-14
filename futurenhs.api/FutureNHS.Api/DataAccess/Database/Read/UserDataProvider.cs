@@ -5,11 +5,9 @@ using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models;
 using FutureNHS.Api.DataAccess.Models.User;
-using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Models.Member;
 using Microsoft.Extensions.Options;
-using FutureNHS.Api.DataAccess.Models.Identity;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
 {

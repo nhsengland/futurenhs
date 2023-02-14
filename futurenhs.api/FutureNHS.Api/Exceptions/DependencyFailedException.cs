@@ -1,6 +1,4 @@
-﻿using FluentValidation.Results;
-
-namespace FutureNHS.Api.Exceptions
+﻿namespace FutureNHS.Api.Exceptions
 {
     public sealed class DependencyFailedException : ApplicationException
     {

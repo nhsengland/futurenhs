@@ -1,5 +1,4 @@
 ﻿using FutureNHS.Api.DataAccess.Models.FileAndFolder;
-using FutureNHS.Api.Models.File;
 
 namespace FutureNHS.Api.Services.Interfaces
 {

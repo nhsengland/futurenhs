@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace FutureNHS.Api.DataAccess.DTOs
+﻿namespace FutureNHS.Api.DataAccess.DTOs
 {
     public sealed class PlatformInviteDto
     {

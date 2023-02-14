@@ -1,20 +1,9 @@
-﻿using FutureNHS.Api.Application.Application.HardCodedSettings;
-using FutureNHS.Api.Configuration;
-using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Database.Write.Interfaces;
-using FutureNHS.Api.DataAccess.DTOs;
+﻿using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
 using FutureNHS.Api.DataAccess.Models.User;
-using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
-using FutureNHS.Api.Exceptions;
-using FutureNHS.Api.Models.Member;
 using FutureNHS.Api.Services.Admin.Interfaces;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Options;
-using System.Net.Mail;
 using System.Security;
-using FutureNHS.Application.Application;
-using Microsoft.FeatureManagement;
 
 namespace FutureNHS.Api.Services.Admin
 {

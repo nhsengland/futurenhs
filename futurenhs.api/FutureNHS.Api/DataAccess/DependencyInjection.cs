@@ -8,8 +8,6 @@ using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProvider;
 using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Write;
 using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
-using FutureNHS.Api.Services.Admin;
-using FutureNHS.Api.Services.Admin.Interfaces;
 
 namespace FutureNHS.Api.DataAccess
 {

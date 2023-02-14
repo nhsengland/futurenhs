@@ -1,16 +1,6 @@
 ﻿using Dapper;
-using FutureNHS.Api.Application.Application.HardCodedSettings;
-using FutureNHS.Api.Configuration;
 using FutureNHS.Api.DataAccess.Database.Providers.Interfaces;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Models;
-using FutureNHS.Api.DataAccess.Models.User;
-using FutureNHS.Api.Models.Identity.Response;
-using FutureNHS.Api.Exceptions;
-using FutureNHS.Api.Models.Member;
-using Microsoft.Extensions.Options;
-using FutureNHS.Api.DataAccess.Models.Identity;
-using MimeDetective.Storage.Xml.v2;
 
 namespace FutureNHS.Api.DataAccess.Database.Read
 {

@@ -1,6 +1,3 @@
-using MimeDetective.Storage.Xml.v2;
-using Newtonsoft.Json;
-
 namespace FutureNHS.Api.DataAccess.Models.User;
 
 public record ActiveUsers

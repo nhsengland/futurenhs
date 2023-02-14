@@ -1,7 +1,4 @@
-﻿using FutureNHS.Api.DataAccess.DTOs;
-using FutureNHS.Api.DataAccess.Models.User;
-using FutureNHS.Api.Models.Member;
-using FutureNHS.Application.Application;
+﻿using FutureNHS.Api.DataAccess.Models.User;
 
 namespace FutureNHS.Api.Services.Admin.Interfaces
 {

@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using FutureNHS.Api.Application.Application.HardCodedSettings;
 using FutureNHS.Api.DataAccess.Database.Read.Interfaces;
-using FutureNHS.Api.DataAccess.Models.Search;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Services.Interfaces;

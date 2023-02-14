@@ -1,6 +1,4 @@
-﻿using FutureNHS.Api.DataAccess.Models.User;
-
-namespace FutureNHS.Api.DataAccess.Models.FileAndFolder
+﻿namespace FutureNHS.Api.DataAccess.Models.FileAndFolder
 {
     public record FolderContentsData
     {
