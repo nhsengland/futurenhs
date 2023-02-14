@@ -68,6 +68,44 @@ export const Like: (props: Props) => JSX.Element = ({
         }
     }
 
+    const renderLikes = () => {
+        if (Array.isArray(names) && names.length) {
+            const likedByString = 'Liked by: '
+            const andString = ' and '
+            const moreString = ' more'
+            const nameList = names.slice(0, 3)
+            let text =
+                likedByString + nameList.slice(0, -1).join(', ') + andString
+            let moreText = names.length - 2 + moreString
+
+            if (names.length <= 3) {
+                text =
+                    likedByString +
+                    nameList.slice(0, -1).join(', ') +
+                    andString +
+                    nameList.slice(-1)
+                moreText = ''
+            }
+
+            if (names.length === 1) {
+                text = likedByString + nameList[0]
+            }
+            return (
+                <span>
+                    {text}
+                    <a
+                        className="u-cursor-hover"
+                        onClick={() => {
+                            openMoreLikes(names)
+                        }}
+                    >
+                        {moreText}
+                    </a>
+                </span>
+            )
+        }
+    }
+
     useEffect(() => {
         shouldEnable && setIsActive(true)
 
@@ -84,7 +122,6 @@ export const Like: (props: Props) => JSX.Element = ({
 
         window.clearTimeout(processingTimeOut?.current)
     }, [isLiked, likeCount])
-
 
     if (isActive) {
         return (
@@ -105,31 +142,10 @@ export const Like: (props: Props) => JSX.Element = ({
                         {dynamicLikeCount === 1 ? countSingular : countPlural}
                     </span>
                 </button>
-                {names ? (
-                    <p className="nhsuk-body-s u-mt-3 u-text-theme-6">
-                        {'Liked by: '}
-                        {names
-                            .filter((name, i) => {
-                                if (i <= 1) {
-                                    return name
-                                }
-                            })
-                            .join(', ')}
-                        {names.length >= 3 ? (
-                            <text>
-                                {' '}
-                                and{' '}
-                                <a
-                                    className="u-cursor-hover"
-                                    onClick={()=>{openMoreLikes(names)}}
-                                >
-                                    {' '}
-                                    {names?.length - 2} more
-                                </a>
-                            </text>
-                        ) : null}
-                    </p>
-                ) : null}
+
+                <p className="nhsuk-body-s u-mt-3 u-text-theme-6">
+                    {renderLikes()}
+                </p>
             </div>
         )
     }
@@ -143,7 +159,9 @@ export const Like: (props: Props) => JSX.Element = ({
                     {dynamicLikeCount === 1 ? countSingular : countPlural}
                 </span>
             </span>
-            {names ? <p>Liked by: {names}</p> : null}
+            <p className="nhsuk-body-s u-mt-3 u-text-theme-6">
+                    {renderLikes()}
+                </p>
         </div>
     )
 }

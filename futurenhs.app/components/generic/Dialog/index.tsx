@@ -23,6 +23,7 @@ export const Dialog: (props: Props) => JSX.Element = ({
         <ReactModal
             id={id}
             className="c-dialog"
+            background="false"
             isOpen={isOpen}
             appElement={appElement}
             aria={{ labelledby: `dialog-header-${id}` }}
