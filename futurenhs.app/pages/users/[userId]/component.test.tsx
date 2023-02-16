@@ -4,6 +4,7 @@ import mockRouter from 'next-router-mock'
 import forms from '@config/form-configs/index'
 import { routes } from '@jestMocks/generic-props'
 import { actions } from '@constants/actions'
+import { mockUser } from '@helpers/hofs/withUser/hof.test'
 
 jest.mock('next/router', () => require('next-router-mock'))
 
@@ -16,12 +17,7 @@ describe('Site User Template', () => {
 
     const props: Props = {
         id: '',
-        user: {
-            id: 'userId',
-            text: {
-                userName: 'username',
-            },
-        },
+        user: mockUser,
         siteUser: {
             id: 'string',
             role: 'string',

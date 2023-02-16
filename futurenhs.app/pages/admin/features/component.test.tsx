@@ -17,16 +17,26 @@ describe('Admin features template', () => {
         routes: routes,
         contentText: {
             mainHeading: 'Mock main heading',
-            secondaryHeading: 'Mock secondary heading',
         },
         actions: [],
+        featureFlags: [
+            {
+                id: 'FlagId',
+                name: 'FlagName',
+                enabled: true,
+            },
+        ],
     }
 
     it('renders correctly', () => {
         render(<AdminFeaturesPage {...props} />)
 
         expect(screen.getAllByText('Mock main heading').length).toBe(1)
+    })
 
-        expect(screen.getAllByText('Mock secondary heading').length).toBe(1)
+    it('renders feature flags', () => {
+        render(<AdminFeaturesPage {...props} />)
+
+        expect(screen.getAllByText('FlagName').length).toBe(1)
     })
 })
