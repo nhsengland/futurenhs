@@ -47,7 +47,12 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
         const validation = validate(el.value, [VRules.EMAIL, VRules.REQUIRED])
         setValidation(validation)
     }
-    const onSubmit = async (formData: FormData) => {
+    const handleInvite = async () => {
+        /**
+         * TODO: This only sends the first email as an invite, project finished. Extend API to accept the full array of emails
+         */
+        if (!emails.length) return
+        const [email] = emails
         const headers = getStandardServiceHeaders({
             csrfToken,
             accessToken: user.accessToken,
@@ -56,16 +61,14 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
             await postGroupUserInvite({
                 user,
                 headers,
-                body: formData as any,
+                email: emails[0],
                 groupId,
             })
-
-            const emailAddress: FormDataEntryValue = formData.get('Email')
             useNotification({
                 notificationsContext,
                 text: {
                     heading: notifications.SUCCESS,
-                    body: `Invite sent to ${emailAddress}`,
+                    body: `Invite sent to ${email}`,
                 },
             })
         } catch (error) {}
@@ -88,6 +91,7 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
                         className={`c-button u-mt-10 ${
                             !emails.length ? 'c-button--disabled' : null
                         }`}
+                        onClick={handleInvite}
                         disabled={!emails.length}
                     >
                         Send invite

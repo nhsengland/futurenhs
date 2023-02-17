@@ -15,7 +15,7 @@ declare type Options = {
     user: User
     groupId: string
     headers?: any
-    body: FormData | ServerSideFormData
+    email: string
 }
 
 declare type Dependencies = {
@@ -24,13 +24,12 @@ declare type Dependencies = {
 }
 
 export const postGroupUserInvite = async (
-    { user, groupId, headers = {}, body }: Options,
+    { user, groupId, headers = {}, email }: Options,
     dependencies?: Dependencies
 ): Promise<ServiceResponse<null>> => {
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const emailAddress: FormDataEntryValue = body.get('Email')
 
     const gateway = process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
     const registrationPath = api.GROUP_INVITE.replace('%GROUP_ID%', groupId)
@@ -39,7 +38,7 @@ export const postGroupUserInvite = async (
         method: requestMethods.POST,
         headers: headers,
         body: {
-            emailAddress: emailAddress,
+            emailAddress: email,
         },
     })
     const apiResponse: any = await fetchJSON(
