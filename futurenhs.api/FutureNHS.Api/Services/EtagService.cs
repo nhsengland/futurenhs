@@ -1,5 +1,4 @@
-﻿using FutureNHS.Api.Exceptions;
-using FutureNHS.Api.Services.Interfaces;
+﻿using FutureNHS.Api.Services.Interfaces;
 using Microsoft.Net.Http.Headers;
 
 namespace FutureNHS.Api.Services

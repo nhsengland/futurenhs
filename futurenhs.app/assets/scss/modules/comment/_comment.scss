@@ -11,6 +11,9 @@ $card-hero-padding: 10px;
     border-left-width: $card-border-highlight-width;
     position: relative;
     width: 100%;
+    &_modal{
+        &-text{}
+    }
 
     &--reply {
         border: none;

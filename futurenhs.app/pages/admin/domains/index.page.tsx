@@ -93,7 +93,6 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
             console.log(error)
         }
     }
-    const hasDomains: boolean = true
     const shouldEnableLoadMore: boolean = true
     const shouldRenderAddDomainLink: boolean =
         true ?? actions.includes(actionConstants.SITE_ADMIN_DOMAINS_ADD)
@@ -153,6 +152,7 @@ export const AdminDomainsPage: (props: Props) => JSX.Element = ({
 
         return rows
     })
+    const hasDomains: boolean = !!dynamicDomainsList?.length
 
     /**
      * Handle client-side pagination

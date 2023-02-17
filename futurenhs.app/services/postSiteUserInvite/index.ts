@@ -29,11 +29,10 @@ export const postSiteUserInvite = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const { id } = user
     const emailAddress: FormDataEntryValue = body.get('Email')
 
     const gateway = process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL
-    const registrationPath = api.SITE_INVITE.replace('%USER_ID%', id)
+    const registrationPath = api.SITE_INVITE
     const apiUrl: string = gateway + registrationPath
     const apiResponse: any = await fetchJSON(
         apiUrl,

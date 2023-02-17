@@ -1,5 +1,4 @@
-﻿using System.Net;
-using FutureNHS.Api.Models.FileServer;
+﻿using FutureNHS.Api.Models.FileServer;
 
 namespace FutureNHS.Api.Services.Interfaces
 {

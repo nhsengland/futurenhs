@@ -18,19 +18,19 @@ export const enum routes {
 }
 
 export const enum api {
-    USER_GROUP_INVITES = '/v1/groups/invites',
-    USER_GROUP_INVITE = '/v1/groups/invite/%GROUP_INVITE_ID%',
-
-    GROUP_INVITE = '/v1/groups/%GROUP_ID%/registration/invite',
-    FEATURE_FLAG = '/v1/features/%FLAG%',
+    GROUP_INVITES = '/v1/groups/invites',
+    GROUP_INVITE_ID = '/v1/groups/invite/%INVITE_ID%',
+    POST_GROUP_INVITE = '/v1/groups/%GROUP_ID%/registration/invite',
 
     SITE_FEATURE_FLAGS = '/v1/features',
+
+    FEATURE_FLAG_SLUG = '/v1/features/%FLAG%',
     SITE_INVITE = '/v1/registration/invite',
-    SITE_INVITE_DETAILS = '/v1/registration/invite/%SITE_INVITE_ID%',
+    SITE_INVITE_ID = '/v1/registration/invite/%INVITE_ID%',
     SITE_USER_REGISTER = '/v1/registration/register',
     SITE_IDENTITY = '/v1/registration/identity',
     SITE_DOMAINS = '/v1/registration/domains',
-    SITE_DOMAIN = '/v1/registration/domains/%DOMAIN%',
+    SITE_DOMAIN_ID = '/v1/registration/domains/%DOMAIN_ID%',
     SITE_PUBLIC_REGISTRATION_EXISTS = '/v1/registration/public/exists',
 
     // ADMIN_FEATURE_FLAGS = '/v1/admin/features',

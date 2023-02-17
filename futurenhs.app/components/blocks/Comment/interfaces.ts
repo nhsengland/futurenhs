@@ -1,5 +1,6 @@
 import { Image } from '@appTypes/image'
 import { DiscussionComment } from '@appTypes/discussion'
+import { CommentLike } from '@services/getGroupDiscussionCommentLikes'
 
 export interface Props {
     id?: string
@@ -61,5 +62,11 @@ export interface Props {
      * Determines whether the user has liked the comment already
      */
     isLiked?: boolean
+    likes: Array<CommentLike>
     className?: string
+
+    refreshLikes: () => void
+    likeIsDisabled: boolean
+    moreLikesIsOpen: boolean
+    openMoreLikes: (names: string[]) => void
 }

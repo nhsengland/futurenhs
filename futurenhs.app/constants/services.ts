@@ -10,6 +10,7 @@ export const enum services {
     GET_GROUP_DISCUSSIONS = 'getGroupDiscussions',
     GET_GROUP_DISCUSSION = 'getGroupDiscussion',
     GET_GROUP_DISCUSSION_COMMENTS = 'getGroupDiscussionComments',
+    GET_GROUP_DISCUSSION_COMMENT_LIKES = 'getGroupDiscussionCommentLikes',
     GET_GROUP_DISCUSSION_REPLIES = 'getGroupDiscussionReplies',
     GET_GROUP_DISCUSSION_COMMENTS_WITH_REPLIES = 'getGroupDiscussionCommentsWithReplies',
     GET_GROUP_FOLDER_CONTENTS = 'getGroupFolderContents',
@@ -64,5 +65,6 @@ export const enum services {
     DELETE_GROUP_MEMBERSHIP = 'deleteGroupMembership',
     DELETE_GROUP_FOLDER = 'deleteGroupFolder',
     DELETE_GROUP_INVITE = 'deleteGroupInvite',
+    DELETE_PLATFORM_INVITE = 'deletePlatformInvite',
     DELETE_DOMAIN = 'deleteDomain',
 }

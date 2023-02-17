@@ -31,4 +31,12 @@ describe('Contact us page', () => {
         } as any)
         expect(serverSideProps).toHaveProperty('props.contentText')
     })
+
+    it('gets required server side props', async () => {
+        const serverSideProps = await getServerSideProps({
+            req: {},
+            res: {},
+        } as any)
+        expect(serverSideProps).toHaveProperty('props.contentText')
+    })
 })

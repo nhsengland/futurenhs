@@ -1,9 +1,7 @@
 using FutureNHS.Api.Attributes;
-using FutureNHS.Api.Configuration;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace FutureNHS.Api.Controllers
 {

@@ -19,6 +19,7 @@ module.exports = {
         ...preset.transform,
     },
     testEnvironment: 'jsdom',
+    automock: false,
     setupFilesAfterEnv: ['./jest.setup.ts'],
     testMatch: [
         '<rootDir>/components/**/*.test.{ts,tsx,js,jsx}',

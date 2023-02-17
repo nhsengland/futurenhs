@@ -104,6 +104,6 @@ export const getActiveUsers = async (
         },
         serviceResponse.data
     )
-    console.log(apiData)
+
     return serviceResponse
 }

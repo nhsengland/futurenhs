@@ -47,6 +47,16 @@ namespace FutureNHS.Api.Controllers
 
             return Ok(comment);
         }
+        
+        [HttpGet]
+        [Route("groups/{slug}/discussions/{discussionsId:guid}/comments/{commentId:guid}/likes")]
+        [TypeFilter(typeof(ETagFilter))]
+        public async Task<IActionResult> GetLikesForCommentAsync(string slug, Guid commentId, CancellationToken cancellationToken)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var likes = await _likeService.GetLikesForEntityAsync(identity.MembershipUserId, slug, commentId, cancellationToken);
+            return Ok(likes);
+        }
 
         [HttpGet]
         [Route("groups/{slug}/discussions/{discussionId:guid}/comments")]

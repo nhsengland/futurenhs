@@ -8,8 +8,6 @@ using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProvider;
 using FutureNHS.Api.DataAccess.Repositories.ContentApi.ContentApiProviders.Interfaces;
 using FutureNHS.Api.DataAccess.Repositories.Write;
 using FutureNHS.Api.DataAccess.Repositories.Write.Interfaces;
-using FutureNHS.Api.Services.Admin;
-using FutureNHS.Api.Services.Admin.Interfaces;
 
 namespace FutureNHS.Api.DataAccess
 {
@@ -44,6 +42,7 @@ namespace FutureNHS.Api.DataAccess
             services.AddScoped<IDiscussionCommand, DiscussionCommand>();
             services.AddScoped<IEntityCommand, EntityCommand>();
             services.AddScoped<IGroupCommand, GroupCommand>();
+            services.AddScoped<IRegistrationCommand, RegistrationCommand>();
             services.AddScoped<IFileCommand, FileCommand>();
             services.AddScoped<IFolderCommand, FolderCommand>();
             services.AddScoped<IImageCommand, ImageCommand>();

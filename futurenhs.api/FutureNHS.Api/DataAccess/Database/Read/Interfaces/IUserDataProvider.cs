@@ -1,5 +1,4 @@
 ﻿using FutureNHS.Api.DataAccess.Models.User;
-using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member;
 
 namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces

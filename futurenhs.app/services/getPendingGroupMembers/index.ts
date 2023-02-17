@@ -15,12 +15,12 @@ import {
 } from '@appTypes/service'
 import { Pagination } from '@appTypes/pagination'
 import { User } from '@appTypes/user'
-import { GroupMember } from '@appTypes/group'
+import { GroupMember, InviteDetails } from '@appTypes/group'
 import jwtHeader from '@helpers/util/jwt/jwtHeader'
 
 declare type Options = {
     user: User
-    groupId: string
+    slug: string
     pagination?: Pagination
 }
 
@@ -29,11 +29,25 @@ declare type Dependencies = {
     fetchJSON: any
 }
 
+export type PendingMember = {
+    id: string
+    userId: string | null
+    email: string
+    createdAtUTC: string
+    inviteType: InviteType.GROUP | InviteType.PLATFORM
+    rowVersion: string
+}
+
+export enum InviteType {
+    GROUP = 'group',
+    PLATFORM = 'platform',
+}
+
 export const getPendingGroupMembers: Service = async (
-    { user, groupId, pagination }: Options,
+    { user, slug, pagination }: Options,
     dependencies?: Dependencies
 ): Promise<ServicePaginatedResponse<Array<GroupMember>>> => {
-    const serviceResponse: ServicePaginatedResponse<Array<GroupMember>> = {
+    const serviceResponse: ServicePaginatedResponse<Array<PendingMember>> = {
         data: [],
     }
 
@@ -41,7 +55,6 @@ export const getPendingGroupMembers: Service = async (
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
 
-    const id: string = user.id
     const paginationQueryParams: string = getApiPaginationQueryParams({
         pagination,
         defaults: {
@@ -50,11 +63,12 @@ export const getPendingGroupMembers: Service = async (
         },
     })
 
-    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${groupId}/members/pending?${paginationQueryParams}`
-    const authHeader = jwtHeader(user.accessToken)
+    const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}/v1/groups/${slug}/members/pending?${paginationQueryParams}`
     const apiHeaders = setFetchOptions({
         method: requestMethods.GET,
-        headers: authHeader,
+        headers: {
+            ...jwtHeader(user.accessToken),
+        },
     })
     const apiResponse: FetchResponse = await fetchJSON(
         apiUrl,
@@ -79,14 +93,18 @@ export const getPendingGroupMembers: Service = async (
         )
     }
 
-    apiData.data?.forEach((datum) => {
-        serviceResponse.data.push({
-            id: datum.id ?? '',
-            fullName: datum.name ?? '',
-            email: datum.email ?? '',
-            requestDate: datum.applicationDateUtc ?? '',
-        })
-    })
+    apiData.data?.forEach(
+        ({ id, userId, email, createdAtUTC, inviteType, rowVersion }) => {
+            serviceResponse.data.push({
+                id,
+                userId: userId ?? null,
+                email,
+                createdAtUTC,
+                inviteType,
+                rowVersion,
+            })
+        }
+    )
 
     serviceResponse.pagination = getClientPaginationFromApi({
         apiPaginatedResponse: apiData,

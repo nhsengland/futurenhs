@@ -1,9 +1,6 @@
 import { SVGIcon } from '@components/generic/SVGIcon'
 import classNames from 'classnames'
 import {
-    mdiEarth,
-    mdiGlobeLightOutline,
-    mdiGlobeModel,
     mdiLockOutline,
 } from '@mdi/js'
 import React from 'react'

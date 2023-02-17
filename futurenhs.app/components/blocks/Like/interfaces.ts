@@ -1,3 +1,5 @@
+import { CommentLike } from '@services/getGroupDiscussionCommentLikes'
+
 export interface Props {
     /**
      * Id of entity being liked
@@ -32,5 +34,10 @@ export interface Props {
         like: string
         removeLike: string
     }
+    likes: Array<CommentLike>
     className?: string
+    refreshLikes: () => void
+    likeIsDisabled: boolean
+    moreLikesIsOpen: boolean
+    openMoreLikes: (names:string[]) => void
 }

@@ -1,6 +1,4 @@
-﻿using FutureNHS.Api.DataAccess.Models.User;
-
-namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces
+﻿namespace FutureNHS.Api.DataAccess.Database.Read.Interfaces
 {
     public interface IAnalyticsDataProvider
     {

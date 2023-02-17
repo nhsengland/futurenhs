@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Security;
-using System.Text;
 using FutureNHS.Api.Configuration;
 using FutureNHS.Api.Models.FileServer;
 using FutureNHS.Api.Services.Interfaces;

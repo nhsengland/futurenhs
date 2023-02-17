@@ -1,15 +1,11 @@
 using FutureNHS.Api.Attributes;
 using FutureNHS.Api.Configuration;
-using FutureNHS.Api.DataAccess.Models.Group;
-using FutureNHS.Api.DataAccess.Models.Registration;
 using FutureNHS.Api.Models.Domain.Request;
 using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Member.Request;
 using FutureNHS.Api.Models.Pagination.Filter;
 using FutureNHS.Api.Models.Pagination.Helpers;
 using FutureNHS.Api.Models.UserInvite;
-using FutureNHS.Api.Services;
-using FutureNHS.Api.Services.Admin.Interfaces;
 using FutureNHS.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -134,6 +130,17 @@ namespace FutureNHS.Api.Controllers
 
             var invite = await _registrationService.GetRegistrationInviteDetailsAsync(id, cancellationToken);
             return Ok(invite);
+        }
+        
+        [HttpDelete]
+        [Route("registration/invite/{inviteId}")]
+        public async Task<IActionResult> DeleteDomainAsync(Guid inviteId, CancellationToken cancellationToken)
+        {
+            var identity = await GetUserIdentityAsync(cancellationToken);
+            var rowVersion = _etagService.GetIfMatch();
+            await _registrationService.DeletePlatformInviteAsync(identity.MembershipUserId, inviteId, rowVersion, cancellationToken);
+
+            return Ok();
         }
         
         [HttpGet]

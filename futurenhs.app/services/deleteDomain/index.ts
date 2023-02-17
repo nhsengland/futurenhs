@@ -28,7 +28,7 @@ export const deleteDomain = async (
     const setFetchOptions =
         dependencies?.setFetchOptions ?? setFetchOptionsHelper
     const fetchJSON = dependencies?.fetchJSON ?? fetchJSONHelper
-    const domainPath = api.SITE_DOMAIN.replace('%DOMAIN%', domainId)
+    const domainPath = api.SITE_DOMAIN_ID.replace('%DOMAIN_ID%', domainId)
     const apiUrl: string = `${process.env.NEXT_PUBLIC_API_GATEWAY_BASE_URL}${domainPath}`
     const apiResponse: any = await fetchJSON(
         apiUrl,

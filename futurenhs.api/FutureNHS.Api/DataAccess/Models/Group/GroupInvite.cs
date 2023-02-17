@@ -8,6 +8,7 @@
         {
             Id = invite.Id;
             MembershipUser_Id = invite.MembershipUser_Id;
+            CreatedAtUTC = invite.CreatedAtUTC;
             GroupId = invite.GroupId;
             RowVersion = invite.RowVersion;
         }

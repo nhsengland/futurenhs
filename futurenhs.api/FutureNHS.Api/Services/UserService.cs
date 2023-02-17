@@ -8,7 +8,6 @@ using FutureNHS.Api.DataAccess.Storage.Providers.Interfaces;
 using FutureNHS.Api.Exceptions;
 using FutureNHS.Api.Helpers;
 using FutureNHS.Api.Models.Identity.Enums;
-using FutureNHS.Api.Models.Identity.Request;
 using FutureNHS.Api.Models.Identity.Response;
 using FutureNHS.Api.Models.Member;
 using FutureNHS.Api.Services.Interfaces;
