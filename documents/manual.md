@@ -7,6 +7,7 @@
 ## My Groups
 
 ![image](https://user-images.githubusercontent.com/9471595/220078360-77f3392e-d518-431f-961a-31d59265a5dd.png)
+![image](https://user-images.githubusercontent.com/9471595/220147922-1363ac9a-41c8-40ad-88e5-d254a827d20b.png)
 
 ## Groups
 
@@ -73,6 +74,13 @@
 ## Admin - Manager analytics
 
 ![image](https://user-images.githubusercontent.com/9471595/220081536-bfa6ef2d-c394-4b33-b870-48078a3e597f.png)
+
+## Static pages
+
+![image](https://user-images.githubusercontent.com/9471595/220148040-9df1d36d-f0fd-42df-8662-91e804e6611b.png)
+
+## Support centre (Zendesk)
+![image](https://user-images.githubusercontent.com/9471595/220148288-c489ed13-66af-4c29-89f3-27020b4662ca.png)
 
 
 
