@@ -8,7 +8,7 @@ export const inviteUserForm: FormConfig = {
             fields: [
                 {
                     name: 'Email',
-                    inputType: 'email',
+                    inputType: 'multi',
                     text: {
                         label: 'Email address',
                     },

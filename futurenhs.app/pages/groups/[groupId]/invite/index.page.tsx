@@ -3,13 +3,7 @@ import { useContext, useState } from 'react'
 import { pipeSSRProps } from '@helpers/util/ssr/pipeSSRProps'
 import { handleSSRSuccessProps } from '@helpers/util/ssr/handleSSRSuccessProps'
 import { actions as actionConstants } from '@constants/actions'
-import classNames from 'classnames'
-import {
-    features,
-    groupTabIds,
-    layoutIds,
-    routeParams,
-} from '@constants/routes'
+import { features, groupTabIds, layoutIds } from '@constants/routes'
 import { withUser } from '@helpers/hofs/withUser'
 import { withRoutes } from '@helpers/hofs/withRoutes'
 import { GetServerSidePropsContext } from '@appTypes/next'
@@ -17,31 +11,25 @@ import { withTextContent } from '@helpers/hofs/withTextContent'
 import { withGroup } from '@helpers/hofs/withGroup'
 import { formTypes } from '@constants/forms'
 import {
-    selectCsrfToken,
     selectFormData,
-    selectParam,
     selectRequestMethod,
-    selectUser,
     selectPageProps,
     selectPagination,
+    selectUser,
 } from '@helpers/selectors/context'
-import { User } from '@appTypes/user'
-import { getGenericFormError, ServerSideFormData } from '@helpers/util/form'
+import { ServerSideFormData } from '@helpers/util/form'
 import { requestMethods } from '@constants/fetch'
-import { getServiceErrorDataValidationErrors } from '@services/index'
-import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
 import { notifications } from '@constants/notifications'
-import { FormConfig, FormErrors } from '@appTypes/form'
-import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
 import { NotificationsContext } from '@helpers/contexts/index'
-import { useFormConfig } from '@helpers/hooks/useForm'
 import { useNotification } from '@helpers/hooks/useNotification'
 import { GroupPage } from '@appTypes/page'
 import { postGroupUserInvite } from '@services/postGroupUserInvite'
 import { getStandardServiceHeaders } from '@helpers/fetch'
 import { getFeatureEnabled } from '@services/getFeatureEnabled'
+import { VMessage, VRules, validate } from '@helpers/validation'
+import { MultiInput } from '@components/forms/MultiInput'
 import { GenericPageTextContent } from '@appTypes/content'
 import { DynamicListContainer } from '@components/layouts/DynamicListContainer'
 import { DataGrid } from '@components/layouts/DataGrid'
@@ -59,6 +47,10 @@ import { Dialog } from '@components/generic/Dialog'
 import { deletePlatformInvite } from '@services/deletePlatformInvite'
 import { deleteGroupInvite } from '@services/deleteGroupInvite'
 import { LayoutWidthContainer } from '@components/layouts/LayoutWidthContainer'
+import { User } from '@appTypes/user'
+import { handleSSRErrorProps } from '@helpers/util/ssr/handleSSRErrorProps'
+import { getServiceErrorDataValidationErrors } from '@services/index'
+import { FormErrors } from '@appTypes/form'
 
 declare interface ContentText extends GenericPageTextContent {
     noPendingInvites: string
@@ -75,21 +67,23 @@ export interface Props extends GroupPage {
  */
 export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     csrfToken,
-    forms,
     user,
-    contentText,
     groupId,
     pagination,
     pendingList,
+    contentText,
 }) => {
-    const formConfig: FormConfig = useFormConfig(
-        formTypes.INVITE_USER,
-        forms[formTypes.INVITE_USER]
-    )
+    const [validation, setValidation] = useState<Array<VMessage>>([])
+    const [emails, setEmails] = useState<Array<string>>([])
+    const notificationsContext: any = useContext(NotificationsContext)
+    const onChange = (e) => {
+        const el = e.target as HTMLInputElement
+        const validation = validate(el.value, [VRules.EMAIL, VRules.REQUIRED])
+        setValidation(validation)
+    }
+
     const [dynamicPendingList, setPendingList] = useState(pendingList)
     const [dynamicPagination, setPagination] = useState(pagination)
-    const [errors, setErrors] = useState(formConfig?.errors)
-    const notificationsContext: any = useContext(NotificationsContext)
     const [inviteToDelete, setInviteToDelete] = useState<PendingMember | null>(
         null
     )
@@ -193,9 +187,13 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
     const hasPendingInvites = !!dynamicPendingList?.length
 
     /**
-     * Client-side submission handler - TODO: Pending API
+     *TODO: Only accepts first email selected. Project ended. Extend API endpoint to take full array of emails
      */
-    const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
+    const handleInvite = async () => {
+        if (Array.isArray(emails) && emails.length) {
+            return
+        }
+        const [email] = emails
         const headers = getStandardServiceHeaders({
             csrfToken,
             accessToken: user.accessToken,
@@ -204,33 +202,23 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
             await postGroupUserInvite({
                 user,
                 headers,
-                body: formData as any,
+                email: emails[0],
                 groupId,
             })
-
-            const emailAddress: FormDataEntryValue = formData.get('Email')
             useNotification({
                 notificationsContext,
                 text: {
                     heading: notifications.SUCCESS,
-                    body: `Invite sent to ${emailAddress}`,
+                    body: `Invite sent to ${email}`,
                 },
             })
-            handleGetPage({
-                pageNumber: pagination.pageNumber,
-                pageSize: pagination.pageSize,
-                refresh: true,
-            })
-            return Promise.resolve({})
-        } catch (error) {
-            const errors: FormErrors =
-                getServiceErrorDataValidationErrors(error) ||
-                getGenericFormError(error)
-
-            setErrors(errors)
-
-            return Promise.resolve(errors)
-        }
+        } catch (error) {}
+        handleGetPage({
+            pageNumber: pagination.pageNumber,
+            pageSize: pagination.pageSize,
+            refresh: true,
+        })
+        return Promise.resolve({})
     }
 
     /**
@@ -263,76 +251,58 @@ export const GroupMemberInvitePage: (props: Props) => JSX.Element = ({
      * Render
      */
     return (
-        <>
-            <Dialog
-                id="dialog-delete-domain"
-                isOpen={isDeleteInviteOpen}
-                text={{
-                    cancelButton: 'Cancel',
-                    confirmButton: 'Yes, cancel invite',
-                    heading: 'Cancel invite',
-                }}
-                cancelAction={() => {
-                    setInviteToDelete(null)
-                }}
-                confirmAction={() => {
-                    handleDeleteInvite()
-                    setInviteToDelete(null)
-                }}
-            >
-                <p className="u-text-bold">
-                    {`Are you sure you would like to cancel the invite for ${inviteToDelete?.email}?`}
-                </p>
-            </Dialog>
-            <LayoutColumn className="c-page-body">
-                <div className="u-mb-12">
-                    <FormWithErrorSummary
-                        csrfToken={csrfToken}
-                        formConfig={formConfig}
-                        errors={errors}
-                        text={{
-                            form: {
-                                submitButton: 'Send invite',
-                            },
-                        }}
-                        submitAction={handleSubmit}
-                        shouldClearOnSubmitSuccess={true}
+        <LayoutColumn className="c-page-body">
+            <LayoutColumnContainer>
+                <LayoutColumn tablet={8}>
+                    <MultiInput
+                        label="Email address"
+                        type="text"
+                        validation={validation}
+                        onChange={onChange}
+                        getMulti={setEmails}
+                    />
+                    <button
+                        className={`c-button u-mt-10 ${
+                            !emails.length ? 'c-button--disabled' : null
+                        }`}
+                        onClick={handleInvite}
+                        disabled={!emails.length}
                     >
-                        <h2 className="nhsuk-heading-l">{mainHeading}</h2>
-                    </FormWithErrorSummary>
-                </div>
-                <div>
-                    <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
-                    {hasPendingInvites ? (
-                        <DynamicListContainer
-                            containerElementType="div"
-                            shouldEnableLoadMore
-                            className="u-list-none u-p-0"
-                        >
-                            <DataGrid
-                                id="admin-table-pending-invites"
-                                columnList={columnList}
-                                rowList={rowList}
-                                text={{
-                                    caption: 'Pending invites',
-                                }}
-                            />
-
-                            <PaginationWithStatus
-                                id="group-list-pagination"
+                        Send invite
+                    </button>
+                    <div>
+                        <h2 className="nhsuk-heading-l">{secondaryHeading}</h2>
+                        {hasPendingInvites ? (
+                            <DynamicListContainer
+                                containerElementType="div"
                                 shouldEnableLoadMore
-                                getPageAction={handleGetPage}
-                                {...dynamicPagination}
-                            />
-                        </DynamicListContainer>
-                    ) : (
-                        <div>
-                            <p>{noPendingInvites}</p>
-                        </div>
-                    )}
-                </div>
-            </LayoutColumn>
-        </>
+                                className="u-list-none u-p-0"
+                            >
+                                <DataGrid
+                                    id="admin-table-pending-invites"
+                                    columnList={columnList}
+                                    rowList={rowList}
+                                    text={{
+                                        caption: 'Pending invites',
+                                    }}
+                                />
+
+                                <PaginationWithStatus
+                                    id="group-list-pagination"
+                                    shouldEnableLoadMore
+                                    getPageAction={handleGetPage}
+                                    {...dynamicPagination}
+                                />
+                            </DynamicListContainer>
+                        ) : (
+                            <div>
+                                <p>{noPendingInvites}</p>
+                            </div>
+                        )}
+                    </div>
+                </LayoutColumn>
+            </LayoutColumnContainer>
+        </LayoutColumn>
     )
 }
 
@@ -402,36 +372,6 @@ export const getServerSideProps: GetServerSideProps = async (
 
                 props.pendingList = result.data
             } catch (e) {}
-
-            /**
-             * Handle server-side form post
-             */
-            if (formData && requestMethod === requestMethods.POST) {
-                props.forms[formTypes.INVITE_USER].initialValues = formData
-
-                try {
-                    const emailAddress: string = formData.get('Email')
-                    props.notifications = [
-                        {
-                            heading: notifications.SUCCESS,
-                            main: `Invite sent to ${emailAddress}`,
-                        },
-                    ]
-                    return {
-                        props: props,
-                    }
-                } catch (error) {
-                    const validationErrors: FormErrors =
-                        getServiceErrorDataValidationErrors(error)
-
-                    if (validationErrors) {
-                        props.forms[formTypes.INVITE_USER].errors =
-                            validationErrors
-                    } else {
-                        return handleSSRErrorProps({ props, error })
-                    }
-                }
-            }
 
             /**
              * Return data to page template

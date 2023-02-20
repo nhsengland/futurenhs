@@ -14,6 +14,7 @@ export const SVGIcon: (props: Props) => JSX.Element = ({
     className,
     material,
     size = '21px',
+    color,
 }) => {
     const fullPath: string = useAssetPath(url)
     const xlinkHref: string = fullPath ? `${fullPath}#${name}` : `#${name}`
@@ -31,6 +32,12 @@ export const SVGIcon: (props: Props) => JSX.Element = ({
             <use xlinkHref={xlinkHref} />
         </svg>
     ) : (
-        <Icon path={name} title={name} size={size} className={className} />
+        <Icon
+            path={name}
+            color={color}
+            title={name}
+            size={size}
+            className={className}
+        />
     )
 }

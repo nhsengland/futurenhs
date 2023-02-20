@@ -3,7 +3,7 @@ import { useFormConfig } from '@helpers/hooks/useForm'
 import { formTypes } from '@constants/forms'
 import { FormConfig } from '@appTypes/form'
 import { useCsrf } from '@helpers/hooks/useCsrf'
-import { Form } from '@components/forms/Form'
+import { Form } from '@components/old_forms/Form'
 
 export const PendingMemberActions: (props: Props) => JSX.Element = ({
     acceptAction,

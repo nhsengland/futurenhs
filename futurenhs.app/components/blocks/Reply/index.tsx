@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import classNames from 'classnames'
 
 import { formTypes } from '@constants/forms'
-import { Form } from '@components/forms/Form'
+import { Form } from '@components/old_forms/Form'
 import { Accordion } from '@components/generic/Accordion'
 import { SVGIcon } from '@components/generic/SVGIcon'
 import forms from '@config/form-configs/index'

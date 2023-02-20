@@ -15,10 +15,19 @@ export interface Props {
         hint?: string
         error?: string
     }
-    inputType?: 'text' | 'email' | 'password' | 'number' | 'file'
+    inputType?: InputTypes
     shouldRenderRemainingCharacterCount?: boolean
     validators?: Array<any>
     className?: string
     autoComplete?: string
     disabled?: boolean
+}
+
+export enum InputTypes {
+    MULTI = 'multi',
+    PASSWORD = 'password',
+    NUMBER = 'number',
+    FILE = 'file',
+    TEXT = 'text',
+    EMAIL = 'email',
 }

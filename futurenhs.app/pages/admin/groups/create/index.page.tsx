@@ -25,7 +25,7 @@ import { User } from '@appTypes/user'
 import { FormConfig, FormErrors } from '@appTypes/form'
 import { formTypes } from '@constants/forms'
 import { getGenericFormError } from '@helpers/util/form'
-import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { FormWithErrorSummary } from '@components/old_forms/FormWithErrorSummary'
 import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { useFormConfig } from '@helpers/hooks/useForm'
@@ -62,11 +62,10 @@ export const AdminCreateGroupPage: (props: Props) => JSX.Element = ({
      * Client-side submission handler
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
-        const headers =
-                getStandardServiceHeaders({
-                    csrfToken,
-                    accessToken: user.accessToken,
-                })
+        const headers = getStandardServiceHeaders({
+            csrfToken,
+            accessToken: user.accessToken,
+        })
         try {
             await services.postGroup({ user, headers, body: formData as any })
 

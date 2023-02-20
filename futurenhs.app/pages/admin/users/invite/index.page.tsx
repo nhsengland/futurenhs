@@ -19,7 +19,7 @@ import { withTextContent } from '@helpers/hofs/withTextContent'
 import { ServerSideFormData } from '@helpers/util/form'
 import { getGenericFormError } from '@helpers/util/form'
 import { formTypes } from '@constants/forms'
-import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { FormWithErrorSummary } from '@components/old_forms/FormWithErrorSummary'
 import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { postSiteUserInvite } from '@services/postSiteUserInvite'
@@ -60,11 +60,10 @@ export const AdminUsersInvitePage: (props: Props) => JSX.Element = ({
      * Client-side submission handler
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
-        const headers =
-                getStandardServiceHeaders({
-                    csrfToken,
-                    accessToken: user.accessToken,
-                })
+        const headers = getStandardServiceHeaders({
+            csrfToken,
+            accessToken: user.accessToken,
+        })
         try {
             await services.postSiteUserInvite({
                 user,
@@ -167,7 +166,7 @@ export const getServerSideProps: GetServerSideProps = async (
              */
             if (formData && requestMethod === requestMethods.POST) {
                 props.forms[formTypes.INVITE_USER].initialValues = formData
-                
+
                 try {
                     return {
                         props: props,

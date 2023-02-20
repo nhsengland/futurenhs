@@ -28,7 +28,7 @@ import { User } from '@appTypes/user'
 import { withTextContent } from '@helpers/hofs/withTextContent'
 import { ServerSideFormData } from '@helpers/util/form'
 import { getGenericFormError } from '@helpers/util/form'
-import { FormWithErrorSummary } from '@components/forms/FormWithErrorSummary'
+import { FormWithErrorSummary } from '@components/old_forms/FormWithErrorSummary'
 import { LayoutColumnContainer } from '@components/layouts/LayoutColumnContainer'
 import { LayoutColumn } from '@components/layouts/LayoutColumn'
 import { FormErrors, FormConfig } from '@appTypes/form'
@@ -68,11 +68,10 @@ export const GroupCreateDiscussionPage: (props: Props) => JSX.Element = ({
      */
     const handleSubmit = async (formData: FormData): Promise<FormErrors> => {
         try {
-            const headers =
-                getStandardServiceHeaders({
-                    csrfToken,
-                    accessToken: user.accessToken,
-                })
+            const headers = getStandardServiceHeaders({
+                csrfToken,
+                accessToken: user.accessToken,
+            })
             await services.postGroupDiscussion({
                 groupId,
                 user,
